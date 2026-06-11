@@ -53,8 +53,7 @@ async function guardStreamingFirstChunk(
         const errorMatch = firstEvent.match(/"message"\s*:\s*"([^"]+)"/);
         return errorResponse(
           502,
-          errorMatch?.[1] ??
-            `Upstream error on ${modelStr} (reported before first content token)`
+          errorMatch?.[1] ?? `Upstream error on ${modelStr} (reported before first content token)`
         );
       }
       break;
@@ -78,10 +77,15 @@ async function guardStreamingFirstChunk(
           for (const chunk of chunks) controller.enqueue(chunk);
           while (true) {
             const { done, value } = await reader.read();
-            if (done) { controller.close(); return; }
+            if (done) {
+              controller.close();
+              return;
+            }
             if (value) controller.enqueue(value);
           }
-        } catch (err) { controller.error(err); }
+        } catch (err) {
+          controller.error(err);
+        }
       },
     });
     return new Response(body, {
@@ -97,7 +101,10 @@ async function guardStreamingFirstChunk(
         for (const chunk of chunks) controller.enqueue(chunk);
         while (true) {
           const { done, value } = await reader.read();
-          if (done) { controller.close(); return; }
+          if (done) {
+            controller.close();
+            return;
+          }
           if (value) controller.enqueue(value);
         }
       } catch (err) {
@@ -3396,10 +3403,16 @@ export async function handleComboChat({
         )
       : new Map<string, PreScreenResult>();
   if (orderedTargets.length === 0) {
-    log.warn("COMBO", `[DIAG] Zero targets after filtering for combo "${combo.name}" (strategy=${strategy})`);
+    log.warn(
+      "COMBO",
+      `[DIAG] Zero targets after filtering for combo "${combo.name}" (strategy=${strategy})`
+    );
     return comboModelNotFoundResponse("Combo has no executable targets");
   }
-  log.info("COMBO", `[DIAG] Combo "${combo.name}" (${strategy}): ${orderedTargets.length} targets — ${orderedTargets.map((t, idx) => `[${idx}] ${t.modelStr}${t.connectionId ? ` (${t.connectionId})` : ""}`).join(", ")}`);
+  log.info(
+    "COMBO",
+    `[DIAG] Combo "${combo.name}" (${strategy}): ${orderedTargets.length} targets — ${orderedTargets.map((t, idx) => `[${idx}] ${t.modelStr}${t.connectionId ? ` (${t.connectionId})` : ""}`).join(", ")}`
+  );
 
   scheduleShadowRouting(
     combo,
@@ -3717,7 +3730,9 @@ export async function handleComboChat({
                     mlSettings.baseCooldownMs,
                     profile,
                     {
-                      exactCooldownMs: mlSettings.useExponentialBackoff ? 0 : mlSettings.baseCooldownMs,
+                      exactCooldownMs: mlSettings.useExponentialBackoff
+                        ? 0
+                        : mlSettings.baseCooldownMs,
                       maxCooldownMs: mlSettings.maxCooldownMs,
                     }
                   );
@@ -3735,11 +3750,18 @@ export async function handleComboChat({
             }
 
             if (provider && rawModel) {
-              const dcResult = decayModelFailureCount(provider, target.connectionId || "", rawModel);
+              const dcResult = decayModelFailureCount(
+                provider,
+                target.connectionId || "",
+                rawModel
+              );
               if (dcResult.cleared) {
                 log.info("COMBO", `Model ${modelStr} fully recovered — lockout cleared`);
               } else if (dcResult.newFailureCount > 0) {
-                log.debug("COMBO", `Model ${modelStr} decayed to failureCount=${dcResult.newFailureCount}`);
+                log.debug(
+                  "COMBO",
+                  `Model ${modelStr} decayed to failureCount=${dcResult.newFailureCount}`
+                );
               }
             }
 
@@ -4118,10 +4140,17 @@ export async function handleComboChat({
               const mlSettings = resolveModelLockoutSettings(settings);
               if (mlSettings.enabled && mlSettings.errorCodes.includes(result.status)) {
                 recordModelLockoutFailure(
-                  provider, target.connectionId || "", rawModel, classifyLockoutReason(result.status),
-                  result.status, mlSettings.baseCooldownMs, profile,
+                  provider,
+                  target.connectionId || "",
+                  rawModel,
+                  classifyLockoutReason(result.status),
+                  result.status,
+                  mlSettings.baseCooldownMs,
+                  profile,
                   {
-                    exactCooldownMs: mlSettings.useExponentialBackoff ? 0 : mlSettings.baseCooldownMs,
+                    exactCooldownMs: mlSettings.useExponentialBackoff
+                      ? 0
+                      : mlSettings.baseCooldownMs,
                     maxCooldownMs: mlSettings.maxCooldownMs,
                   }
                 );
@@ -4204,7 +4233,10 @@ export async function handleComboChat({
       for (let i = 0; i < orderedTargets.length; i++) {
         if (anySuccess) break;
 
-        log.info("COMBO", `[DIAG] Loop iteration i=${i}/${orderedTargets.length - 1} model=${orderedTargets[i]?.modelStr || "unknown"} anySuccess=${anySuccess}`);
+        log.info(
+          "COMBO",
+          `[DIAG] Loop iteration i=${i}/${orderedTargets.length - 1} model=${orderedTargets[i]?.modelStr || "unknown"} anySuccess=${anySuccess}`
+        );
 
         const abortController = new AbortController();
         abortControllers.set(i, abortController);
@@ -4214,7 +4246,10 @@ export async function handleComboChat({
         const task = (async () => {
           try {
             const res = await executeTarget(i);
-            log.info("COMBO", `[DIAG] executeTarget(${i}) returned: ${res === null ? "null (fallback)" : res.ok ? "ok (success)" : `fatal (status=${(res.response as any)?.status || "?"})`}`);
+            log.info(
+              "COMBO",
+              `[DIAG] executeTarget(${i}) returned: ${res === null ? "null (fallback)" : res.ok ? "ok (success)" : `fatal (status=${res.response?.status || "?"})`}`
+            );
             if (res && !anySuccess) {
               if (res.ok) {
                 anySuccess = true;
@@ -4257,13 +4292,19 @@ export async function handleComboChat({
 
       if (anySuccess) {
         const resp = await globalPromise;
-        log.info("COMBO", `[DIAG] Combo "${combo.name}" succeeded with response status=${resp.status}`);
+        log.info(
+          "COMBO",
+          `[DIAG] Combo "${combo.name}" succeeded with response status=${resp.status}`
+        );
         return resp;
       }
 
       // All models failed in this set try
       const latencyMs = Date.now() - startTime;
-      log.info("COMBO", `[DIAG] All ${orderedTargets.length} targets failed in set try ${setTry} (${latencyMs}ms) lastStatus=${lastStatus ?? "none"} lastError=${lastError ?? "none"}`);
+      log.info(
+        "COMBO",
+        `[DIAG] All ${orderedTargets.length} targets failed in set try ${setTry} (${latencyMs}ms) lastStatus=${lastStatus ?? "none"} lastError=${lastError ?? "none"}`
+      );
       if (recordedAttempts === 0) {
         recordComboRequest(combo.name, null, {
           success: false,
@@ -4305,7 +4346,10 @@ export async function handleComboChat({
         return unavailableResponse(status, msg, earliestRetryAfter, retryHuman);
       }
 
-      log.warn("COMBO", `[DIAG] Final error: status=${status} msg="${msg}" fallbackCount=${fallbackCount} earliestRetryAfter=${earliestRetryAfter}`);
+      log.warn(
+        "COMBO",
+        `[DIAG] Final error: status=${status} msg="${msg}" fallbackCount=${fallbackCount} earliestRetryAfter=${earliestRetryAfter}`
+      );
       return new Response(JSON.stringify({ error: { message: msg } }), {
         status,
         headers: { "Content-Type": "application/json" },

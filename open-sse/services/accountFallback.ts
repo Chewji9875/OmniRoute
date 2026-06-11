@@ -347,11 +347,31 @@ export async function getRuntimeProviderProfile(provider: string | null | undefi
 
 // ─── Per-Model Lockout Tracking ─────────────────────────────────────────────
 // In-memory map: "provider:connectionId:model" → { reason, until, lockedAt }
-const modelLockouts = ((globalThis as any).__omnirouteModelLockouts || new Map()) as Map<string, ModelLockoutEntry>;
-(globalThis as any).__omnirouteModelLockouts = modelLockouts;
+const modelLockouts = ((
+  globalThis as {
+    __omnirouteModelLockouts?: Map<string, ModelLockoutEntry>;
+    __omnirouteModelFailureState?: Map<string, ModelFailureState>;
+  }
+).__omnirouteModelLockouts || new Map()) as Map<string, ModelLockoutEntry>;
+(
+  globalThis as {
+    __omnirouteModelLockouts?: Map<string, ModelLockoutEntry>;
+    __omnirouteModelFailureState?: Map<string, ModelFailureState>;
+  }
+).__omnirouteModelLockouts = modelLockouts;
 
-const modelFailureState = ((globalThis as any).__omnirouteModelFailureState || new Map()) as Map<string, ModelFailureState>;
-(globalThis as any).__omnirouteModelFailureState = modelFailureState;
+const modelFailureState = ((
+  globalThis as {
+    __omnirouteModelLockouts?: Map<string, ModelLockoutEntry>;
+    __omnirouteModelFailureState?: Map<string, ModelFailureState>;
+  }
+).__omnirouteModelFailureState || new Map()) as Map<string, ModelFailureState>;
+(
+  globalThis as {
+    __omnirouteModelLockouts?: Map<string, ModelLockoutEntry>;
+    __omnirouteModelFailureState?: Map<string, ModelFailureState>;
+  }
+).__omnirouteModelFailureState = modelFailureState;
 
 function getModelLockKey(provider: string, connectionId: string, model: string) {
   const canonicalProvider = resolveProviderId(provider) || provider;
@@ -360,10 +380,7 @@ function getModelLockKey(provider: string, connectionId: string, model: string) 
 
 function getFailureWindowMs(profile: ProviderProfile | null = null, fallbackMs = 30 * 60 * 1000) {
   const configured = profile?.resetTimeoutMs;
-  return Math.max(
-    fallbackMs,
-    typeof configured === "number" && configured > 0 ? configured : 0
-  );
+  return Math.max(fallbackMs, typeof configured === "number" && configured > 0 ? configured : 0);
 }
 
 function cleanupModelLockKey(key: string, now = Date.now()) {
@@ -590,11 +607,7 @@ export function decayModelFailureCount(
     return { newFailureCount: 0, cleared: false };
   }
 
-  const currentCount = Math.max(
-    lockEntry?.failureCount ?? 0,
-    failureEntry?.failureCount ?? 0,
-    1
-  );
+  const currentCount = Math.max(lockEntry?.failureCount ?? 0, failureEntry?.failureCount ?? 0, 1);
   const newCount = Math.floor(currentCount / 2);
 
   // Count reached 0 → fully recover (clear everything)
@@ -1111,10 +1124,8 @@ export function classifyErrorText(errorText: unknown): RateLimitReasonValue {
   const configuredRule = matchErrorRuleByText(errorText);
   if (configuredRule?.reason) return configuredRule.reason;
   if (lower.includes("rate_limit")) return RateLimitReason.RATE_LIMIT_EXCEEDED;
-  if (
-    lower.includes("resource exhausted") ||
-    lower.includes("high demand")
-  ) return RateLimitReason.MODEL_CAPACITY;
+  if (lower.includes("resource exhausted") || lower.includes("high demand"))
+    return RateLimitReason.MODEL_CAPACITY;
   if (
     lower.includes("unauthorized") ||
     lower.includes("invalid api key") ||
