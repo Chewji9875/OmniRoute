@@ -17,8 +17,14 @@ import {
 } from "./apiManagerPageUtils";
 import type { KeyStatus, KeyType } from "./apiManagerPageUtils";
 import { readActiveOnlyPreference, writeActiveOnlyPreference } from "./apiManagerPageStorage";
-import { buildApiKeyCreateScopes, mergeApiKeyPermissionScopes } from "./apiManagerScopes";
-import { SELF_ACCOUNT_QUOTA_SCOPE, SELF_USAGE_SCOPE } from "@/shared/constants/selfServiceScopes";
+import {
+  buildApiKeyCreateScopes,
+  mergeApiKeyPermissionScopes,
+} from "./apiManagerScopes";
+import {
+  SELF_ACCOUNT_QUOTA_SCOPE,
+  SELF_USAGE_SCOPE,
+} from "@/shared/constants/selfServiceScopes";
 
 // Constants for validation
 const MAX_KEY_NAME_LENGTH = 200;
@@ -416,7 +422,8 @@ export default function ApiManagerPageClient() {
   const isFiltered =
     activeOnly || statusFilter !== null || typeFilter !== null || searchQuery.trim() !== "";
 
-  const isQuotaKey = (k: ApiKey) => Array.isArray(k.allowedQuotas) && k.allowedQuotas.length > 0;
+  const isQuotaKey = (k: ApiKey) =>
+    Array.isArray(k.allowedQuotas) && k.allowedQuotas.length > 0;
 
   const quotaKeys = filteredKeys.filter(isQuotaKey);
   const normalKeys = filteredKeys.filter((k) => !isQuotaKey(k));
@@ -873,7 +880,8 @@ export default function ApiManagerPageClient() {
           (() => {
             const renderKeyRow = (key: ApiKey) => {
               const stats = usageStats[key.id];
-              const isRestricted = Array.isArray(key.allowedModels) && key.allowedModels.length > 0;
+              const isRestricted =
+                Array.isArray(key.allowedModels) && key.allowedModels.length > 0;
               const hasComboRestrictions =
                 Array.isArray(key.allowedCombos) && key.allowedCombos.length > 0;
               const hasConnectionRestrictions =
@@ -885,7 +893,8 @@ export default function ApiManagerPageClient() {
                   ? key.throttleDelayMs
                   : 0;
               const hasThrottle = throttleDelayMs > 0;
-              const hasManageScope = Array.isArray(key.scopes) && key.scopes.includes("manage");
+              const hasManageScope =
+                Array.isArray(key.scopes) && key.scopes.includes("manage");
               const hasJsonStreamDefault = key.streamDefaultMode === "json";
               const maxSessions = typeof key.maxSessions === "number" ? key.maxSessions : 0;
               const hasSessionLimit = maxSessions > 0;

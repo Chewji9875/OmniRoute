@@ -129,10 +129,7 @@ if (!existsSync(standaloneServerJs)) {
     stdio: "inherit",
   });
   if (!existsSync(standaloneServerJs)) {
-    console.error(
-      "\n  ❌ Standalone build not found after `npm run build` at:",
-      standaloneServerJs
-    );
+    console.error("\n  ❌ Standalone build not found after `npm run build` at:", standaloneServerJs);
     console.error("     Make sure next.config.mjs has: output: 'standalone'");
     process.exit(1);
   }
@@ -382,9 +379,7 @@ const remainingUnexpectedFiles = findUnexpectedArtifactPaths(walkFiles(DIST_DIR)
 
 if (remainingUnexpectedFiles.length > 0) {
   console.error("\n  ❌ Staged dist/ still contains unexpected publish artifacts:");
-  remainingUnexpectedFiles.forEach((violation: string) =>
-    console.error(`     - dist/${violation}`)
-  );
+  remainingUnexpectedFiles.forEach((violation: string) => console.error(`     - dist/${violation}`));
   process.exit(1);
 }
 
