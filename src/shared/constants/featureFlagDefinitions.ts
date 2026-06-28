@@ -222,7 +222,7 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     warningLevel: "info",
   },
 
-  // ──────────────── Runtime (10) ────────────────
+  // ──────────────── Runtime (12) ────────────────
   {
     key: "OMNIROUTE_MCP_ENFORCE_SCOPES",
     label: "MCP Enforce Scopes",
@@ -314,6 +314,30 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     warningLevel: "caution",
   },
   {
+    key: "STREAM_RECOVERY_ENABLED",
+    label: "Stream Recovery",
+    description:
+      "Enable transparent early retry for truncated upstream SSE streams before any response bytes reach the client.",
+    descriptionI18nKey: "featureFlagStreamRecoveryEnabledDescription",
+    category: "runtime",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "caution",
+  },
+  {
+    key: "STREAM_RECOVERY_MIDSTREAM_ENABLED",
+    label: "Mid-Stream Continuation",
+    description:
+      "Allow stream recovery to re-request and stitch a response after bytes have already reached the client.",
+    descriptionI18nKey: "featureFlagStreamRecoveryMidstreamEnabledDescription",
+    category: "runtime",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "danger",
+  },
+  {
     key: "MODEL_CATALOG_INCLUDE_NAMES",
     label: "Model Catalog Names",
     description:
@@ -322,6 +346,19 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     category: "runtime",
     defaultValue: "true",
     type: "boolean",
+    requiresRestart: false,
+    warningLevel: "info",
+  },
+  {
+    key: "MODELS_CATALOG_PREFIX_MODE",
+    label: "Models Catalog Prefix Mode",
+    description:
+      "Controls how model IDs are prefixed in /v1/models. 'dual' (default) emits both alias and canonical provider-id prefixes for backward compatibility. 'alias' emits only the short alias prefix (e.g. ds-web/model, not deepseek-web/model). 'canonical' emits only the full provider-id prefix.",
+    descriptionI18nKey: "featureFlagModelsCatalogPrefixModeDescription",
+    category: "runtime",
+    defaultValue: "dual",
+    type: "enum",
+    enumValues: ["dual", "alias", "canonical"],
     requiresRestart: false,
     warningLevel: "info",
   },

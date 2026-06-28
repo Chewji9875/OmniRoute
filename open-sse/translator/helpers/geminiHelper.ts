@@ -10,7 +10,10 @@ export const GEMINI_UNSUPPORTED_SCHEMA_KEYS = new Set([
   "maxLength",
   "exclusiveMinimum",
   "exclusiveMaximum",
-  "pattern",
+  // NOTE: `pattern` is intentionally NOT in this set. Antigravity (Gemini-derived
+  // surface) accepts `pattern` on string constraints, and glob/grep/file-search
+  // tools depend on it to express their argument regex. Removing it produced
+  // upstream 400s and wrong-tool semantics (decolua/9router#1368).
   "minItems",
   "maxItems",
   "format",
@@ -101,6 +104,38 @@ export function convertOpenAIContentToParts(content: unknown): JsonRecord[] {
       const rec = toRecord(item);
       if (rec.type === "text") {
         parts.push({ text: rec.text });
+      } else if (rec.type === "input_audio" || rec.type === "audio") {
+        // OpenAI Chat Completions audio input shape (ports decolua/9router#912 + #913):
+        // { type:"input_audio", input_audio:{data,format} } — some clients use the
+        // { type:"audio", audio:{data,format} } shape — -> Gemini
+        // `inlineData: { mimeType: "audio/<format>", data }`. mp3 normalizes to the
+        // canonical `audio/mpeg`; a leading `data:<mime>;base64,` prefix is stripped so
+        // Gemini receives raw base64.
+        const audio = toRecord(rec.input_audio || rec.audio);
+        if (typeof audio.data === "string" && audio.data) {
+          const format = typeof audio.format === "string" && audio.format ? audio.format : "wav";
+          const mimeType = format === "mp3" ? "audio/mpeg" : `audio/${format}`;
+          parts.push({
+            inlineData: {
+              mimeType,
+              data: audio.data.replace(/^data:[a-zA-Z0-9/+-]+;base64,/, ""),
+            },
+          });
+        }
+      } else if (rec.type === "audio_url") {
+        // OpenAI-style audio_url (data: URI). Mirrors the image_url data-URL
+        // parser below but produces an audio inlineData part (#913).
+        const audioUrl = toRecord(rec.audio_url);
+        const url = typeof audioUrl.url === "string" ? audioUrl.url : "";
+        if (url.startsWith("data:")) {
+          const commaIndex = url.indexOf(",");
+          if (commaIndex !== -1) {
+            const mimePart = url.substring(5, commaIndex); // skip "data:"
+            const data = url.substring(commaIndex + 1);
+            const mimeType = mimePart.split(";")[0] || "audio/wav";
+            parts.push({ inlineData: { mimeType, data } });
+          }
+        }
       } else {
         // 1. Handle Gemini native inline_data injected into OpenAI arrays (e.g. Cherry Studio)
         const geminiInline = toRecord(rec.inline_data || rec.inlineData);

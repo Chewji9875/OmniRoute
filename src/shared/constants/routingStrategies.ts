@@ -14,6 +14,7 @@ export const ROUTING_STRATEGY_VALUES = [
   "auto",
   "lkgp",
   "context-optimized",
+  "fusion",
 ] as const;
 
 export type RoutingStrategyValue = (typeof ROUTING_STRATEGY_VALUES)[number];
@@ -169,6 +170,13 @@ export const ROUTING_STRATEGIES: RoutingStrategyOption[] = [
     combosDescKey: "contextOptimizedDesc",
     settingsDescKey: "contextOptDesc",
     icon: "text_snippet",
+  },
+  {
+    value: "fusion",
+    labelKey: "fusion",
+    combosDescKey: "fusionDesc",
+    settingsDescKey: "fusionDesc",
+    icon: "hub",
   },
 ];
 

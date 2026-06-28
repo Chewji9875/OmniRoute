@@ -21,6 +21,7 @@ export {
   // Provider Nodes
   getProviderNodes,
   getProviderNodeById,
+  resolveProviderNodeForConnection,
   createProviderNode,
   updateProviderNode,
   deleteProviderNode,
@@ -64,6 +65,7 @@ export {
   getModelUpstreamExtraHeaders,
   getModelIsHidden,
   setModelIsHidden,
+  getHiddenModelsByProvider,
 
   // Synced Available Models
   getSyncedAvailableModels,
@@ -89,6 +91,7 @@ export {
 
 export * from "./db/compressionCacheStats";
 export * from "./db/compressionCombos";
+export * from "./db/compressionRunTelemetry";
 
 export {
   // API Keys

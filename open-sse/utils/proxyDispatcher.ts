@@ -9,6 +9,15 @@ const DISPATCHER_CACHE_KEY = Symbol.for("omniroute.proxyDispatcher.cache");
 const DEFAULT_DISPATCHER_KEY = Symbol.for("omniroute.proxyDispatcher.default");
 const RETRY_DISPATCHER_KEY = Symbol.for("omniroute.proxyDispatcher.retry");
 const SUPPORTED_PROTOCOLS = new Set(["http:", "https:", "socks5:"]);
+// Edge-relay proxy types. These do NOT go through an HTTP/SOCKS dispatcher —
+// the caller wraps the upstream URL with buildRelayHeaders() and fetches the
+// relay endpoint directly. Keep this set as the single source of truth so
+// every dispatch decision stays in sync when a new relay backend lands.
+export const RELAY_TYPES: ReadonlySet<string> = new Set(["vercel", "deno"]);
+
+export function isRelayType(type: string | undefined | null): boolean {
+  return typeof type === "string" && RELAY_TYPES.has(type);
+}
 const DEFAULT_PROXY_DISPATCHER_CONNECTIONS = 32;
 const MAX_PROXY_DISPATCHER_CONNECTIONS = 256;
 
@@ -33,6 +42,58 @@ type ProxyConfigObject = {
   password?: string;
   family?: string;
 };
+
+/**
+ * Direct upstream fan-out dispatcher.
+ *
+ * A single Undici Agent configured with `connections > 1` should be enough in
+ * theory, but real Codex `/backend-api/codex/responses` streams on Node 24 have
+ * still been observed queuing every subsequent same-origin request until the
+ * previous stream emits trailers. Using several one-connection Agents gives
+ * each long SSE stream an independent pool/client and prevents one stream from
+ * monopolizing the effective queue while keeping pipelining disabled.
+ */
+class RoundRobinDispatcher {
+  private readonly dispatchers: Dispatcher[];
+  private nextIndex = 0;
+
+  constructor(dispatchers: Dispatcher[]) {
+    this.dispatchers = dispatchers;
+  }
+
+  dispatch(options: Dispatcher.DispatchOptions, handler: Dispatcher.DispatchHandler): boolean {
+    const dispatcher = this.dispatchers[this.nextIndex % this.dispatchers.length];
+    this.nextIndex = (this.nextIndex + 1) % this.dispatchers.length;
+    return dispatcher.dispatch(options, handler);
+  }
+
+  close(callback?: () => void): Promise<void> | void {
+    const done = Promise.all(this.dispatchers.map((dispatcher) => dispatcher.close())).then(
+      () => undefined
+    );
+    if (callback) {
+      done.then(callback);
+      return;
+    }
+    return done;
+  }
+
+  destroy(
+    errorOrCallback?: Error | null | (() => void),
+    callback?: () => void
+  ): Promise<void> | void {
+    const callbackFn = typeof errorOrCallback === "function" ? errorOrCallback : callback;
+    const error = typeof errorOrCallback === "function" ? null : (errorOrCallback ?? null);
+    const done = Promise.all(this.dispatchers.map((dispatcher) => dispatcher.destroy(error))).then(
+      () => undefined
+    );
+    if (callbackFn) {
+      done.then(callbackFn);
+      return;
+    }
+    return done;
+  }
+}
 
 function getDispatcherCache(): DispatcherCache {
   const globalWithCache = globalThis as GlobalWithDispatcherCache;
@@ -108,10 +169,54 @@ function getProxyDispatcherOptions(env: Record<string, string | undefined> = pro
   };
 }
 
+export function getDefaultDispatcherConnectionLimit(
+  env: Record<string, string | undefined> = process.env
+): number {
+  const raw = env.OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS;
+  if (raw == null || raw.trim() === "") return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    console.warn(
+      `[ProxyDispatcher] Invalid OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS="${raw}". Using default ${DEFAULT_PROXY_DISPATCHER_CONNECTIONS}.`
+    );
+    return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
+  }
+
+  return Math.min(Math.floor(parsed), MAX_PROXY_DISPATCHER_CONNECTIONS);
+}
+
+function getDefaultDispatcherOptions(env: Record<string, string | undefined> = process.env) {
+  const options = getDispatcherOptions();
+  // #4580 — On the direct egress path, undici's default pipelining (1) let a long
+  // SSE stream monopolize the single pooled socket per origin. Keep the public
+  // connection-limit option here, but getDefaultDispatcher() fans it out across
+  // independent one-connection Agents; in production traces, one multi-connection
+  // Agent could still queue same-origin Codex streams behind prior trailers.
+  return {
+    ...options,
+    connections: getDefaultDispatcherConnectionLimit(env),
+    pipelining: 0,
+  };
+}
+
+function createRoundRobinDirectDispatcher(connectionLimit: number): Dispatcher {
+  const baseOptions = getDispatcherOptions();
+  const perAgentOptions = {
+    ...baseOptions,
+    connections: 1,
+    pipelining: 0,
+  };
+  const dispatchers = Array.from({ length: connectionLimit }, () => new Agent(perAgentOptions));
+  return new RoundRobinDispatcher(dispatchers) as unknown as Dispatcher;
+}
+
 export function getDefaultDispatcher(): Dispatcher {
   const globalWithCache = globalThis as GlobalWithDispatcherCache;
   if (!globalWithCache[DEFAULT_DISPATCHER_KEY]) {
-    globalWithCache[DEFAULT_DISPATCHER_KEY] = new Agent(getDispatcherOptions());
+    globalWithCache[DEFAULT_DISPATCHER_KEY] = createRoundRobinDirectDispatcher(
+      getDefaultDispatcherConnectionLimit()
+    );
   }
   return globalWithCache[DEFAULT_DISPATCHER_KEY];
 }
@@ -285,6 +390,11 @@ export function buildVercelRelayHeaders(
   };
 }
 
+// Vercel + Deno Deploy share the same x-relay-{target,path,auth} envelope.
+// Use this alias when the call is intentionally backend-agnostic; the named
+// vercel-specific export above stays for direct callers that already use it.
+export const buildRelayHeaders = buildVercelRelayHeaders;
+
 export function proxyConfigToUrl(
   proxyConfig: unknown,
   { allowSocks5 = isSocks5ProxyEnabled() } = {}
@@ -305,9 +415,10 @@ export function proxyConfigToUrl(
   if (!config.host) return null;
   const type = String(config.type || "http").toLowerCase();
 
-  // Vercel Relay entries carry the relay URL in `host` — no dispatcher needed;
-  // callers should use buildVercelRelayHeaders() and fetch directly.
-  if (type === "vercel") {
+  // Edge-relay entries (vercel / deno) carry the relay URL in `host` — no
+  // dispatcher needed; callers should use buildRelayHeaders() and fetch
+  // the relay endpoint directly.
+  if (RELAY_TYPES.has(type)) {
     return config.host ? `https://${config.host}` : null;
   }
 
@@ -360,6 +471,16 @@ export function __getProxyDispatcherOptionsForTest(
   env: Record<string, string | undefined> = process.env
 ) {
   return getProxyDispatcherOptions(env);
+}
+
+export function __getDefaultDispatcherOptionsForTest(
+  env: Record<string, string | undefined> = process.env
+) {
+  return getDefaultDispatcherOptions(env);
+}
+
+export function __createRoundRobinDispatcherForTest(dispatchers: Dispatcher[]): Dispatcher {
+  return new RoundRobinDispatcher(dispatchers) as unknown as Dispatcher;
 }
 
 export function createProxyDispatcher(proxyUrl: string): Dispatcher {

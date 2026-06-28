@@ -132,6 +132,10 @@ const IGNORE_FROM_CODE = new Set([
   // Test-only opt-out: instructs bin/omniroute.mjs to skip auto-loading the
   // repository .env so isolation tests get a deterministic environment.
   "OMNIROUTE_CLI_SKIP_REPO_ENV",
+  // Eval-harness only: operator-supplied provider credentials JSON read by the
+  // opt-in `npm run eval:compression` CLI (scripts/compression-eval/index.ts).
+  // A dev/ops measurement tool, never OmniRoute runtime config.
+  "OMNIROUTE_EVAL_CREDENTIALS",
   // Build-time only: set by `build:release` (git short SHA) and read by
   // write-build-sha.mjs to stamp dist/BUILD_SHA — injected by the build, never
   // configured by users in .env.
@@ -195,6 +199,9 @@ const DOC_ONLY_ALLOWLIST = new Set([
   // Source-code constants referenced in the docs narrative for the local
   // endpoints / route-guard classification (PR-3 in #3932).
   "LOCAL_ONLY_API_PREFIXES",
+  // SQL keyword mentioned in the new VACUUM scheduler docs (#4437).
+  // The check's regex picks up the bare word in description text.
+  "VACUUM",
 ]);
 
 // Vars present in .env.example but intentionally absent from ENVIRONMENT.md.

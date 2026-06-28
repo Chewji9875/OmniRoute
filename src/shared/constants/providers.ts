@@ -1,5 +1,3 @@
-// Provider definitions
-
 /**
  * Service kind — declarative tag for what a provider can do beyond basic LLM chat.
  * Affects UI filtering and playground routing; does not influence request routing.
@@ -127,7 +125,15 @@ export const NOAUTH_PROVIDERS = {
   },
 };
 
-export const FREE_APIKEY_PROVIDER_IDS = new Set(["qoder", "mimocode", "opencode"]);
+export const FREE_APIKEY_PROVIDER_IDS = new Set([
+  "qoder",
+  "mimocode",
+  "opencode",
+  // codebuddy-cn is OAuth-primary but the Tencent gateway also accepts a direct
+  // API key (Authorization: Bearer). Admit it through the same managed-provider
+  // gate so POST /api/providers accepts the dual-auth shape.
+  "codebuddy-cn",
+]);
 
 export function supportsApiKeyOnFreeProvider(providerId: unknown): boolean {
   return typeof providerId === "string" && FREE_APIKEY_PROVIDER_IDS.has(providerId);
@@ -330,6 +336,19 @@ export const OAUTH_PROVIDERS = {
     authHint:
       "Requires the Devin CLI binary. Run `devin auth login` to authenticate, or provide your WINDSURF_API_KEY. Install: https://cli.devin.ai",
     website: "https://cli.devin.ai",
+  },
+  "codebuddy-cn": {
+    id: "codebuddy-cn",
+    alias: "cbcn",
+    name: "CodeBuddy CN",
+    icon: "smart_toy",
+    color: "#006EFF",
+    textIcon: "CB",
+    website: "https://copilot.tencent.com",
+    subscriptionRisk: true,
+    riskNoticeVariant: "oauth",
+    authHint:
+      "Tencent CodeBuddy CN (copilot.tencent.com). Sign in via the official CLI device-code flow, or paste a direct API key (sent as Authorization: Bearer). Catalog: GLM / Kimi / MiniMax / DeepSeek / Hunyuan.",
   },
 };
 
@@ -999,9 +1018,12 @@ export const APIKEY_PROVIDERS = {
     textIcon: "BZ",
     website: "https://bazaarlink.ai",
     hasFree: true,
-    freeNote: "Free tier with auto:free routing — zero-cost inference, no credit card required",
+    freeNote:
+      "Free tier: 4M tokens/day per account with auto:free routing — zero-cost inference, no credit card required.",
+    authHint:
+      "Use your BazaarLink API key (starts with sk-bl-) in Authorization: Bearer <key>. OpenAI SDK works with base URL https://bazaarlink.ai/api/v1. Models use provider/model-name format.",
     apiHint:
-      "Get free API key at https://bazaarlink.ai — use model 'auto:free' for zero-cost inference. OpenAI-compatible.",
+      "Create a free API key at https://bazaarlink.ai — model 'auto:free' routes to zero-cost inference. All models use the provider/model-name format, e.g. xiaomi/mimo-v2.5-pro.",
   },
   xai: {
     id: "xai",
@@ -1745,7 +1767,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "GLB",
     website: "https://opengateway.gitlawb.com",
     hasFree: false,
-    freeNote: "Free MiMo (xiaomi/mimo-v2.5) revoked 2026-05 — Opengateway is now a pay-as-you-go credit gateway; no recurring free model.",
+    freeNote:
+      "Free MiMo (xiaomi/mimo-v2.5) revoked 2026-05 — Opengateway is now a pay-as-you-go credit gateway; no recurring free model.",
     apiHint: "Get your API key from Gitlawb Opengateway dashboard.",
   },
   "gitlawb-gmi": {
@@ -1757,7 +1780,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "GMI",
     website: "https://opengateway.gitlawb.com",
     hasFree: false,
-    freeNote: "Free Nemotron promo ended 2026-06 — the GMI Cloud route is now pay-as-you-go credit only.",
+    freeNote:
+      "Free Nemotron promo ended 2026-06 — the GMI Cloud route is now pay-as-you-go credit only.",
     apiHint: "Get your API key from Gitlawb Opengateway dashboard.",
   },
   "inference-net": {
@@ -1974,7 +1998,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "CH",
     website: "https://chutes.ai",
     hasFree: false,
-    freeNote: "No free tier as of 2026 — Chutes moved to pay-as-you-go (free Early Access ended 2026-03).",
+    freeNote:
+      "No free tier as of 2026 — Chutes moved to pay-as-you-go (free Early Access ended 2026-03).",
     authHint: "Bearer API key for the Chutes OpenAI-compatible gateway.",
     passthroughModels: true,
   },
@@ -2082,7 +2107,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "IF",
     website: "https://xinghuo.xfyun.cn",
     hasFree: true,
-    freeNote: "Spark Lite is free (2 QPS rate-limited), but iFlytek ToS §2.4(3) prohibits programmatic extraction and requires Chinese real-name auth — use with caution.",
+    freeNote:
+      "Spark Lite is free (2 QPS rate-limited), but iFlytek ToS §2.4(3) prohibits programmatic extraction and requires Chinese real-name auth — use with caution.",
     passthroughModels: true,
     authHint: "Get API key at console.xfyun.cn",
   },
@@ -2108,7 +2134,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "YI",
     website: "https://01.ai",
     hasFree: false,
-    freeNote: "No free API tier (2026) — Yi-Light retired; platform.01.ai is pay-as-you-go (Yi-Lightning paid). Open weights are download-only.",
+    freeNote:
+      "No free API tier (2026) — Yi-Light retired; platform.01.ai is pay-as-you-go (Yi-Lightning paid). Open weights are download-only.",
     passthroughModels: true,
     authHint: "Get API key at platform.lingyiwanwu.com",
   },
@@ -2186,7 +2213,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "SD",
     website: "https://xinghuo.xfyun.cn",
     hasFree: true,
-    freeNote: "Spark Lite free (alias for iflytek), but ToS restricts to personal/non-commercial use and prohibits relaying access to third parties — use with caution.",
+    freeNote:
+      "Spark Lite free (alias for iflytek), but ToS restricts to personal/non-commercial use and prohibits relaying access to third parties — use with caution.",
     passthroughModels: true,
     authHint: "Get API key at console.xfyun.cn",
   },
@@ -2296,7 +2324,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "MA",
     website: "https://monsterapi.ai",
     hasFree: true,
-    freeNote: "One-time signup trial credits for decentralized GPU inference (no recurring free plan). No credit card required.",
+    freeNote:
+      "One-time signup trial credits for decentralized GPU inference (no recurring free plan). No credit card required.",
     passthroughModels: true,
     authHint: "Get API key at monsterapi.ai",
   },
@@ -2439,7 +2468,8 @@ export const APIKEY_PROVIDERS = {
     textIcon: "TK",
     website: "https://tokenrouter.com",
     hasFree: true,
-    freeNote: "Free tier includes the MiniMax 3 model. Get your API key at https://tokenrouter.com.",
+    freeNote:
+      "Free tier includes the MiniMax 3 model. Get your API key at https://tokenrouter.com.",
     authHint:
       "Use your TokenRouter API key in Authorization: Bearer <key>. Fully OpenAI-compatible. API base URL: https://api.tokenrouter.com/v1.",
     apiHint:
@@ -2959,17 +2989,15 @@ export function isSelfHostedChatProvider(providerId: unknown): boolean {
 
 export function providerAllowsOptionalApiKey(providerId: unknown): boolean {
   return (
+    // ponytail: any noAuth provider auto-qualifies — no per-provider maintenance
+    (typeof providerId === "string" && providerId in NOAUTH_PROVIDERS) ||
     providerId === "searxng-search" ||
     providerId === "pollinations" ||
     providerId === "copilot-web" ||
-    providerId === "duckduckgo-web" ||
-    providerId === "veoaifree-web" ||
     providerId === "hackclub" ||
     providerId === "huggingchat" ||
     providerId === "gitlawb" ||
     providerId === "gitlawb-gmi" ||
-    providerId === "mimocode" ||
-    providerId === "opencode" ||
     isLocalProvider(providerId) ||
     isSelfHostedChatProvider(providerId) ||
     isOpenAICompatibleProvider(providerId) ||
@@ -3212,11 +3240,13 @@ export const USAGE_SUPPORTED_PROVIDERS = [
   "claude",
   "cursor",
   "kimi-coding",
+  "kimi-coding-apikey",
   "glm",
   "glm-cn",
   "zai",
   "glmt",
   "opencode-go",
+  "ollama-cloud",
   "minimax",
   "minimax-cn",
   "crof",
@@ -3225,6 +3255,7 @@ export const USAGE_SUPPORTED_PROVIDERS = [
   "xiaomi-mimo",
   "vertex",
   "vertex-partner",
+  "codebuddy-cn",
 ];
 
 // ── Zod validation at module load (Phase 7.2) ──

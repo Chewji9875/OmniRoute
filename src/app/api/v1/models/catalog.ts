@@ -8,7 +8,9 @@ import {
   getSettings,
   getProviderNodes,
   getModelIsHidden,
+  getModelAliases,
 } from "@/lib/localDb";
+import { extractAliasBackedModels } from "./aliasBackedModels";
 import { appendNoThinkingVariants } from "@omniroute/open-sse/utils/noThinkingAlias";
 import { getAllEmbeddingModels } from "@omniroute/open-sse/config/embeddingRegistry";
 import { getAllImageModels } from "@omniroute/open-sse/config/imageRegistry";
@@ -34,11 +36,16 @@ import {
   enrichCatalogModelEntry,
   getCanonicalModelMetadata,
   getCatalogDiagnosticsHeaders,
+  disambiguateCatalogModelNames,
 } from "@/lib/modelMetadataRegistry";
 import { getSyncedCapability } from "@/lib/modelsDevSync";
 import { getModelSpec } from "@/shared/constants/modelSpecs";
 import { isAuthRequired, isDashboardSessionAuthenticated } from "@/shared/utils/apiAuth";
-import { isModelCatalogNamesEnabled } from "@/shared/utils/featureFlags";
+import {
+  isModelCatalogNamesEnabled,
+  getModelsCatalogPrefixMode,
+} from "@/shared/utils/featureFlags";
+import { dedupeExactCatalogIds } from "./catalogDedupe";
 import {
   isNoAuthProviderBlocked,
   isNoAuthProviderKey,
@@ -58,6 +65,12 @@ interface CustomModelEntry {
   supportedEndpoints?: string[];
   inputTokenLimit?: number;
   isHidden?: boolean;
+  // User-set "vision-capable" flag (persisted by addCustomModel / replaceCustomModels
+  // in src/lib/db/models.ts). Surfaced into `/v1/models` via
+  // getCustomVisionCapabilityFields so user-added vision models appear with
+  // `capabilities.vision: true` even when their id does not match the
+  // conservative isVisionModelId heuristic.
+  supportsVision?: boolean;
 }
 
 const FALLBACK_ALIAS_TO_PROVIDER = {
@@ -142,6 +155,39 @@ function getVisionCapabilityFields(modelId: string) {
     input_modalities: ["text", "image"],
     output_modalities: ["text"],
   };
+}
+
+/**
+ * Vision-capability fields for a user-added custom chat model. Honours an
+ * explicit `supportsVision` flag on the saved entry (the dashboard "vision-
+ * capable" toggle) IN ADDITION TO the conservative id-based heuristic used by
+ * built-in models. Without this, a user who registered e.g. `my-vision-llm`
+ * and ticked vision saw no `capabilities.vision` in `/v1/models`, so the LLM
+ * selector and downstream routing treated the model as text-only.
+ *
+ * Port of upstream decolua/9router 5e5e78d3. Conservative: an explicit
+ * `supportsVision === false` wins so users can downgrade a mis-classified
+ * model (same anti-FP discipline as #4071 / #4072).
+ */
+export function getCustomVisionCapabilityFields(
+  entry: { supportsVision?: boolean } | null | undefined,
+  ...candidateIds: Array<string | null | undefined>
+): { capabilities: { vision: true }; input_modalities: string[]; output_modalities: string[] } | null {
+  if (entry && entry.supportsVision === false) return null;
+  if (entry && entry.supportsVision === true) {
+    return {
+      capabilities: { vision: true },
+      input_modalities: ["text", "image"],
+      output_modalities: ["text"],
+    };
+  }
+  for (const id of candidateIds) {
+    if (typeof id === "string" && id) {
+      const fields = getVisionCapabilityFields(id);
+      if (fields) return fields;
+    }
+  }
+  return null;
 }
 
 function qualifyOpenRouterModelId(modelId: string): string {
@@ -323,15 +369,18 @@ export async function getUnifiedModelsResponse(
       ...diagnosticHeaders,
     });
     if (authRejection) return authRejection;
-
     const { aliasToProviderId, providerIdToAlias } = buildAliasMaps();
+    const _qp = new URL(request.url).searchParams.get("prefix");
+    const prefixMode =
+      _qp === "alias" || _qp === "canonical" || _qp === "dual" ? _qp : getModelsCatalogPrefixMode();
+    const includeAlias = prefixMode !== "canonical";
+    const includeCanonical = prefixMode !== "alias";
     const resolveCanonicalProviderId = (aliasOrProviderId: string, fallbackProviderId?: string) =>
       aliasToProviderId[aliasOrProviderId] ||
       (fallbackProviderId ? aliasToProviderId[fallbackProviderId] : undefined) ||
       FALLBACK_ALIAS_TO_PROVIDER[aliasOrProviderId] ||
       fallbackProviderId ||
       aliasOrProviderId;
-
     // Issue #96: Allow blocking specific providers from the models list
     const blockedProviders = normalizeBlockedProviderSet(settings.blockedProviders);
 
@@ -737,8 +786,6 @@ export async function getUnifiedModelsResponse(
       });
     }
 
-    // Resolve synced available models (from auto-sync) — used to skip static
-    // PROVIDER_MODELS entries for providers that have a live, API-fresh list.
     let syncedModelsByProvider: Record<string, SyncedAvailableModel[]> = {};
     try {
       syncedModelsByProvider = await getAllSyncedAvailableModels();
@@ -770,8 +817,6 @@ export async function getUnifiedModelsResponse(
         continue;
       }
 
-      // Skip static models for providers that have synced available models
-      // (auto-sync provides the authoritative, up-to-date list from the API).
       if (providersWithSyncedModels.has(canonicalProviderId)) continue;
 
       for (const model of providerModels) {
@@ -781,21 +826,20 @@ export async function getUnifiedModelsResponse(
 
         const visionFields =
           getVisionCapabilityFields(aliasId) || getVisionCapabilityFields(model.id);
-
-        models.push({
-          id: aliasId,
-          object: "model",
-          created: timestamp,
-          owned_by: canonicalProviderId,
-          permission: [],
-          root: model.id,
-          parent: null,
-          ...(visionFields || {}),
-        });
-
-        // Add provider-id prefix in addition to short alias (ex: kiro/model + kr/model).
-        // This improves compatibility for clients that expect full provider names.
+        if (includeAlias) {
+          models.push({
+            id: aliasId,
+            object: "model",
+            created: timestamp,
+            owned_by: canonicalProviderId,
+            permission: [],
+            root: model.id,
+            parent: null,
+            ...(visionFields || {}),
+          });
+        }
         if (
+          includeCanonical &&
           canonicalProviderId !== alias &&
           !isNoAuthProviderKey(canonicalProviderId) &&
           prefixRoutesToProvider(canonicalProviderId, canonicalProviderId)
@@ -810,7 +854,7 @@ export async function getUnifiedModelsResponse(
             owned_by: canonicalProviderId,
             permission: [],
             root: model.id,
-            parent: aliasId,
+            parent: includeAlias ? aliasId : null,
             ...(providerVisionFields || {}),
           });
         }
@@ -845,8 +889,6 @@ export async function getUnifiedModelsResponse(
     }
 
     try {
-      // Data already loaded above into syncedModelsByProvider; the try block
-      // here protects the for-loop / model processing from unexpected errors.
       for (const [providerId, syncedModels] of Object.entries(syncedModelsByProvider)) {
         if (!Array.isArray(syncedModels) || syncedModels.length === 0) continue;
         if (blockedProviders.has(providerId)) continue;
@@ -870,8 +912,6 @@ export async function getUnifiedModelsResponse(
           if (!providerSupportsModel(canonicalProviderId, sm.id)) continue;
           if (getModelIsHidden(providerId, sm.id)) continue;
 
-          // Strip modelIdPrefix (e.g. "accounts/fireworks/models/") from display ID
-          // so synced model IDs match the short IDs from static registry.
           const registryEntry = REGISTRY[providerId];
           const displayModelId =
             registryEntry?.modelIdPrefix && sm.id.startsWith(registryEntry.modelIdPrefix)
@@ -918,18 +958,19 @@ export async function getUnifiedModelsResponse(
             continue;
           }
 
-          models.push({
-            id: aliasId,
-            object: "model",
-            created: timestamp,
-            owned_by: canonicalProviderId,
-            permission: [],
-            root: sm.id,
-            parent: null,
-            ...syncedFields,
-          });
-
-          if (modelType === "audio") {
+          if (includeAlias) {
+            models.push({
+              id: aliasId,
+              object: "model",
+              created: timestamp,
+              owned_by: canonicalProviderId,
+              permission: [],
+              root: sm.id,
+              parent: null,
+              ...syncedFields,
+            });
+          }
+          if (includeAlias && modelType === "audio") {
             models.push({
               id: aliasId,
               object: "model",
@@ -950,7 +991,7 @@ export async function getUnifiedModelsResponse(
             });
           }
 
-          if (canonicalProviderId !== alias && !prefix) {
+          if (includeCanonical && canonicalProviderId !== alias && !prefix) {
             const providerPrefixedId = `${canonicalProviderId}/${displayModelId}`;
             if (!models.some((model) => model.id === providerPrefixedId)) {
               models.push({
@@ -960,7 +1001,7 @@ export async function getUnifiedModelsResponse(
                 owned_by: canonicalProviderId,
                 permission: [],
                 root: sm.id,
-                parent: aliasId,
+                parent: includeAlias ? aliasId : null,
                 ...syncedFields,
               });
             }
@@ -1262,39 +1303,40 @@ export async function getUnifiedModelsResponse(
           }
           const visionFields =
             modelType === "chat"
-              ? getVisionCapabilityFields(aliasId) || getVisionCapabilityFields(modelId)
+              ? getCustomVisionCapabilityFields(model, aliasId, modelId)
               : null;
 
-          models.push({
-            id: aliasId,
-            object: "model",
-            created: timestamp,
-            owned_by: canonicalProviderId,
-            permission: [],
-            root: modelId,
-            parent: null,
-            custom: true,
-            ...(modelType ? { type: modelType } : {}),
-            ...(apiFormat !== "chat-completions" ? { api_format: apiFormat } : {}),
-            ...(endpoints.length > 1 || !endpoints.includes("chat")
-              ? { supported_endpoints: endpoints }
-              : {}),
-            ...(typeof model.inputTokenLimit === "number"
-              ? { context_length: model.inputTokenLimit }
-              : {}),
-            ...(typeof (model as any).outputTokenLimit === "number"
-              ? { max_output_tokens: (model as any).outputTokenLimit }
-              : {}),
-            ...(visionFields || {}),
-          });
+          if (includeAlias) {
+            models.push({
+              id: aliasId,
+              object: "model",
+              created: timestamp,
+              owned_by: canonicalProviderId,
+              permission: [],
+              root: modelId,
+              parent: null,
+              custom: true,
+              ...(modelType ? { type: modelType } : {}),
+              ...(apiFormat !== "chat-completions" ? { api_format: apiFormat } : {}),
+              ...(endpoints.length > 1 || !endpoints.includes("chat")
+                ? { supported_endpoints: endpoints }
+                : {}),
+              ...(typeof model.inputTokenLimit === "number"
+                ? { context_length: model.inputTokenLimit }
+                : {}),
+              ...(typeof (model as any).outputTokenLimit === "number"
+                ? { max_output_tokens: (model as any).outputTokenLimit }
+                : {}),
+              ...(visionFields || {}),
+            });
+          }
 
-          if (canonicalProviderId !== alias && !prefix && !isNoAuthProvider) {
+          if (includeCanonical && canonicalProviderId !== alias && !prefix && !isNoAuthProvider) {
             const providerPrefixedId = `${canonicalProviderId}/${modelId}`;
             if (models.some((m) => m.id === providerPrefixedId)) continue;
             const providerVisionFields =
               modelType === "chat"
-                ? getVisionCapabilityFields(providerPrefixedId) ||
-                  getVisionCapabilityFields(modelId)
+                ? getCustomVisionCapabilityFields(model, providerPrefixedId, modelId)
                 : null;
             models.push({
               id: providerPrefixedId,
@@ -1303,7 +1345,7 @@ export async function getUnifiedModelsResponse(
               owned_by: canonicalProviderId,
               permission: [],
               root: modelId,
-              parent: aliasId,
+              parent: includeAlias ? aliasId : null,
               custom: true,
               ...(modelType ? { type: modelType } : {}),
               ...(typeof model.inputTokenLimit === "number"
@@ -1319,6 +1361,88 @@ export async function getUnifiedModelsResponse(
       }
     } catch (e) {
       console.log("Could not fetch custom models");
+    }
+
+    // Port of decolua/9router#730 — surface models registered ONLY through a model
+    // alias (`key_value` namespace `modelAliases`, value `"<providerKey>/<modelId>"`).
+    // Without this walk, a compatible-provider entry like `setModelAlias("kimi-k2.6",
+    // "custom/kimi-k2.6")` resolves at request time but never shows up in `/v1/models`.
+    // We respect the same gating as the static/custom listing path: provider must be
+    // active (or noAuth+unblocked), model must not be hidden, and the canonical alias
+    // entry must not already exist (so we don't shadow combo / synced / custom rows).
+    try {
+      const modelAliases = await getModelAliases();
+      const aliasBacked = extractAliasBackedModels(modelAliases);
+      for (const { providerKey, modelId } of aliasBacked) {
+        const canonicalProviderId = resolveCanonicalProviderId(providerKey);
+        if (!canonicalProviderId) continue;
+        if (
+          blockedProviders.has(providerKey) ||
+          blockedProviders.has(canonicalProviderId) ||
+          isNoAuthProviderBlocked(blockedProviders, canonicalProviderId, providerKey)
+        ) {
+          continue;
+        }
+
+        const alias = providerIdToAlias[canonicalProviderId] || providerKey;
+        if (
+          !activeAliases.has(alias) &&
+          !activeAliases.has(canonicalProviderId) &&
+          !activeAliases.has(providerKey)
+        ) {
+          continue;
+        }
+
+        if (getModelIsHidden(canonicalProviderId, modelId)) continue;
+
+        const aliasId = `${alias}/${modelId}`;
+        const rawPrefixedId = `${providerKey}/${modelId}`;
+        if (
+          models.some((m: any) => m?.id === aliasId) ||
+          models.some((m: any) => m?.id === rawPrefixedId)
+        ) {
+          continue;
+        }
+
+        const visionFields =
+          getVisionCapabilityFields(aliasId) || getVisionCapabilityFields(modelId);
+
+        if (includeAlias) {
+          models.push({
+            id: aliasId,
+            object: "model",
+            created: timestamp,
+            owned_by: canonicalProviderId,
+            permission: [],
+            root: modelId,
+            parent: null,
+            ...(visionFields || {}),
+          });
+        }
+        if (
+          includeCanonical &&
+          canonicalProviderId !== alias &&
+          !isNoAuthProviderKey(canonicalProviderId) &&
+          prefixRoutesToProvider(canonicalProviderId, canonicalProviderId)
+        ) {
+          const providerPrefixedId = `${canonicalProviderId}/${modelId}`;
+          if (models.some((m: any) => m?.id === providerPrefixedId)) continue;
+          const providerVisionFields =
+            getVisionCapabilityFields(providerPrefixedId) || getVisionCapabilityFields(modelId);
+          models.push({
+            id: providerPrefixedId,
+            object: "model",
+            created: timestamp,
+            owned_by: canonicalProviderId,
+            permission: [],
+            root: modelId,
+            parent: includeAlias ? aliasId : null,
+            ...(providerVisionFields || {}),
+          });
+        }
+      }
+    } catch (e) {
+      console.log("Could not fetch model aliases");
     }
 
     // Add managed fallback models for compatible providers that don't import a model list.
@@ -1368,15 +1492,18 @@ export async function getUnifiedModelsResponse(
     if (apiKey) {
       const { isModelAllowedForKey, getApiKeyMetadata } = await import("@/lib/db/apiKeys");
 
-      // Quota-exclusive keys (allowedQuotas non-empty): show only the
-      // quotaShared-* virtual models for the key's assigned pools (Phase B3).
-      // This takes precedence over the normal allowedModels filter.
+      // Quota-exclusive keys (allowedQuotas non-empty): list ONLY the pool's qtSd/*
+      // virtual models. #4806: build from the hidden qtSd/* combos directly — the base
+      // `models` list drops hidden combos, so filtering it returned nothing (0 models).
       const keyMeta = await getApiKeyMetadata(apiKey);
       if (keyMeta && keyMeta.allowedQuotas && keyMeta.allowedQuotas.length > 0) {
-        const { resolveQuotaKeyScope } = await import("@/lib/quota/quotaKey");
-        const { filterModelsToQuotaPools } = await import("@/lib/quota/quotaCombos");
-        const scope = await resolveQuotaKeyScope(keyMeta.allowedQuotas);
-        finalModels = filterModelsToQuotaPools(models, scope.poolSlugs);
+        const { buildQuotaExclusiveModels } = await import("@/lib/quota/quotaCombos");
+        finalModels = await buildQuotaExclusiveModels(
+          keyMeta.allowedQuotas,
+          combos,
+          timestamp,
+          (c) => buildComboCatalogMetadata(c, combos)
+        );
       } else {
         const filtered = [];
         for (const m of models) {
@@ -1395,7 +1522,16 @@ export async function getUnifiedModelsResponse(
 
     // Advertise no-thinking gateway variants (Fase 8.1). Derived from the already
     // key-filtered list, so a variant only appears when its real model is permitted.
-    finalModels = appendNoThinkingVariants(finalModels);
+    finalModels = appendNoThinkingVariants(
+      finalModels,
+      prefixMode === "canonical" ? aliasToProviderId : undefined
+    );
+
+    // #4424 follow-up — drop exact-duplicate ids that slip through the per-source push
+    // guards (e.g. `codex/gpt-5.5`, `veo-free/seedance` listed twice). Keyed by listing
+    // identity (id, type, subtype) so the intentional same-id audio transcription/speech
+    // pair survives. Independent of MODELS_CATALOG_PREFIX_MODE; runs as the final guard.
+    finalModels = dedupeExactCatalogIds(finalModels);
 
     const getDefaultContextFallback = (model: any): number | undefined => {
       if (typeof model.context_length === "number") return undefined;
@@ -1415,18 +1551,19 @@ export async function getUnifiedModelsResponse(
     };
 
     const includeModelNames = isModelCatalogNamesEnabled();
-    const enrichedModels = finalModels.map((model) => {
-      if (model.owned_by === "combo") {
-        return maybeOmitCatalogModelName(model, includeModelNames);
-      }
-      const enriched = enrichCatalogModelEntry(model);
-      const fallbackContextLength = getDefaultContextFallback(enriched);
-      const listedModel = fallbackContextLength
-        ? { ...enriched, context_length: fallbackContextLength }
-        : enriched;
-      return maybeOmitCatalogModelName(listedModel, includeModelNames);
-    });
-
+    const enrichedModels = disambiguateCatalogModelNames(
+      finalModels.map((model) => {
+        if (model.owned_by === "combo") {
+          return maybeOmitCatalogModelName(model, includeModelNames);
+        }
+        const enriched = enrichCatalogModelEntry(model);
+        const fallbackContextLength = getDefaultContextFallback(enriched);
+        const listedModel = fallbackContextLength
+          ? { ...enriched, context_length: fallbackContextLength }
+          : enriched;
+        return maybeOmitCatalogModelName(listedModel, includeModelNames);
+      })
+    );
     // Codex CLI compatibility: its model-catalog refresh (codex_models_manager) does
     // GET /v1/models?client_version=<v> and decodes a JSON object with a TOP-LEVEL
     // `models` array, so the OpenAI-standard `{object,data}` shape makes it fail with

@@ -9,6 +9,16 @@
  * Phase 5: 'rtk' and 'stacked' modes (tool-output filters + multi-engine pipeline).
  */
 
+import { ENGINE_IDS } from "./engineCatalog.ts";
+import type { ContextBudgetConfig } from "./adaptiveCompression/types.ts";
+
+// Re-export so consumers that already import from this module (e.g. src/lib/db/compression.ts)
+// can get ENGINE_IDS without a second bare `@omniroute/open-sse/...engineCatalog.ts` specifier.
+// That bare alias resolves under tsc/tsx but NOT under vitest (Vite externalizes a brand-new
+// open-sse module to Node, which then can't load the `.ts` subpath), whereas this module is
+// already in Vite's graph and its relative `./engineCatalog.ts` import resolves in-pipeline.
+export { ENGINE_IDS };
+
 export type CompressionMode =
   | "off"
   | "lite"
@@ -60,6 +70,13 @@ export interface CavemanOutputModeConfig {
   autoClarity: boolean;
 }
 
+export type OutputStyleLevel = "lite" | "full" | "ultra";
+
+export interface OutputStyleSelectionEntry {
+  id: string;
+  level: OutputStyleLevel;
+}
+
 export interface RtkConfig {
   enabled: boolean;
   intensity: RtkIntensity;
@@ -108,6 +125,11 @@ export interface CompressionPipelineStep {
   config?: Record<string, unknown>;
 }
 
+export interface EngineToggle {
+  enabled: boolean;
+  level?: string;
+}
+
 export interface CompressionConfig {
   enabled: boolean;
   defaultMode: CompressionMode;
@@ -121,12 +143,44 @@ export interface CompressionConfig {
   stackedPipeline?: CompressionPipelineStep[];
   cavemanConfig?: CavemanConfig;
   cavemanOutputMode?: CavemanOutputModeConfig;
+  /** Phase 4A: selected output styles (supersedes cavemanOutputMode via a back-compat shim). */
+  outputStyles?: OutputStyleSelectionEntry[];
   rtkConfig?: RtkConfig;
   languageConfig?: CompressionLanguageConfig;
   aggressive?: AggressiveConfig;
   ultra?: UltraConfig;
   /** Provider-delegated context editing (Claude/Anthropic only). */
   contextEditing?: ContextEditingConfig;
+  /** Per-engine opt-in toggles for the config panel. */
+  engines: Record<string, EngineToggle>;
+  /** Active combo preset id, or null if none selected. */
+  activeComboId: string | null;
+  /**
+   * Runtime-only (NOT persisted): true when a stored `engines` row exists, i.e. the operator
+   * configured engines via the panel. When false, the `engines` map is a display-only backfill
+   * and dispatch falls back to the legacy `defaultMode`/default-combo path (zero behaviour
+   * change for installs that predate the panel). Set by `getCompressionSettings`.
+   */
+  enginesExplicit?: boolean;
+  /**
+   * Context-budget adaptive compression (Sub-project C). Absent / mode:"off" = legacy
+   * binary auto-trigger (byte-identical). When mode is "floor" or "replace-autotrigger"
+   * the adaptive resolver owns automatic-by-size escalation and the legacy
+   * shouldAutoTrigger branch is bypassed.
+   */
+  contextBudget?: ContextBudgetConfig;
+  /**
+   * Phase 4 (B): which tier the `ultra` mode uses.
+   * "heuristic" = Tier-A token pruner (`pruneByScore`, default, byte-identical to pre-B).
+   * "slm" = Tier-B LLMLingua-2 ONNX worker when available, else fail-open to Tier-A.
+   */
+  ultraEngine?: "heuristic" | "slm";
+  /**
+   * Phase 4 (B): best-effort pre-warm of the SLM model on the enable transition
+   * and on a cold restart when `ultraEngine: "slm"` is already set. Failures are
+   * swallowed; the lazy first-call path still applies. Default false.
+   */
+  ultraSlmPrewarm?: boolean;
 }
 
 export interface CompressionStats {
@@ -143,6 +197,14 @@ export interface CompressionStats {
   validationWarnings?: string[];
   validationErrors?: string[];
   fallbackApplied?: boolean;
+  /**
+   * Phase 4 (B): which `ultra` tier actually ran for this request.
+   * "slm" — Tier-B ran and produced the output.
+   * "heuristic-fallback" — Tier-B was selected but failed/timed out → Tier-A used.
+   * "heuristic" — Tier-A used directly (ultraEngine !== "slm" or SLM unavailable).
+   * Consumed by D0's persister as `CompressionRunTelemetry.ultraTier`.
+   */
+  ultraTier?: "slm" | "heuristic-fallback" | "heuristic";
   preservedBlockCount?: number;
   rtkRawOutputPointers?: Array<{
     id: string;
@@ -193,6 +255,10 @@ export const DEFAULT_COMPRESSION_CONFIG: CompressionConfig = {
     { engine: "rtk", intensity: "standard" },
     { engine: "caveman", intensity: "full" },
   ],
+  engines: Object.fromEntries(ENGINE_IDS.map((id) => [id, { enabled: false }])),
+  activeComboId: null,
+  ultraEngine: "heuristic",
+  ultraSlmPrewarm: false,
 };
 
 export const DEFAULT_CAVEMAN_CONFIG: CavemanConfig = {

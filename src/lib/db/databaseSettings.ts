@@ -6,6 +6,7 @@ import { backupDbFile } from "./backup";
 import { DATA_DIR, SQLITE_FILE, getDbInstance } from "./core";
 import { invalidateDbCache } from "./readCache";
 import { getDatabaseStats } from "./stats";
+import { getState as getVacuumSchedulerState, refreshVacuumScheduler } from "./vacuumScheduler";
 
 const DATABASE_SETTINGS_NAMESPACE = "databaseSettings";
 
@@ -225,6 +226,7 @@ export function getUserDatabaseSettings(): UserDatabaseSettings {
 
 export function getDatabaseSettings(): DatabaseSettings {
   const dbStats = getDatabaseStats();
+  const vacuumState = getVacuumSchedulerState();
 
   return {
     ...getUserDatabaseSettings(),
@@ -238,7 +240,8 @@ export function getDatabaseSettings(): DatabaseSettings {
       databaseSizeBytes: dbStats.totalSize,
       pageCount: dbStats.pageCount,
       freelistCount: getFreelistCount(),
-      lastVacuumAt: null,
+      lastVacuumAt:
+        vacuumState.lastRunAt !== null ? new Date(vacuumState.lastRunAt).toISOString() : null,
       lastOptimizationAt: null,
       integrityCheck: getIntegrityCheck(),
     },
@@ -249,6 +252,7 @@ export function updateDatabaseSettings(
   updates: Partial<UserDatabaseSettings>
 ): UserDatabaseSettings {
   const nextSettings = getUserDatabaseSettings();
+  const optimizationUpdated = updates.optimization !== undefined;
 
   for (const section of DATABASE_SETTINGS_SECTIONS) {
     if (updates[section] !== undefined) {
@@ -285,6 +289,7 @@ export function updateDatabaseSettings(
 
   backupDbFile("pre-write");
   invalidateDbCache("settings");
+  if (optimizationUpdated) refreshVacuumScheduler();
 
   return nextSettings;
 }

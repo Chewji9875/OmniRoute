@@ -9,7 +9,7 @@ import type { CompressionEngineApplyOptions } from "./engines/types.ts";
 import { applyLiteCompression } from "./lite.ts";
 import { cavemanCompress } from "./caveman.ts";
 import { compressAggressive } from "./aggressive.ts";
-import { ultraCompress } from "./ultra.ts";
+import { ultraCompress, ultraCompressHeuristic } from "./ultra.ts";
 import { createCompressionStats } from "./stats.ts";
 import { registerBuiltinCompressionEngines } from "./engines/index.ts";
 import { getCompressionEngine, getEngineEntry } from "./engines/registry.ts";
@@ -20,6 +20,23 @@ import {
   getCacheAwareStrategy,
   type CachingDetectionContext,
 } from "./cachingAware.ts";
+import { resolveCompressionPlan } from "./resolveCompressionPlan.ts";
+import { deriveDefaultPlan, type DerivedPlan } from "./deriveDefaultPlan.ts";
+import {
+  withSource,
+  planFromHeader,
+  formatCompressionMeta,
+  deriveDefaultPlanFromConfig,
+  buildNamedComboLookup,
+} from "./planResolution.ts";
+import { resolveAdaptivePlan } from "./adaptiveCompression/resolveAdaptivePlan.ts";
+import type { AdaptiveTelemetry } from "./adaptiveCompression/types.ts";
+
+// Re-export so existing importers (resolver test + chatCore dynamic import) keep resolving.
+export { planFromHeader, formatCompressionMeta, buildNamedComboLookup };
+
+/** Named-combo map: combo id → its stacked pipeline (operator-defined profiles). */
+type NamedCombos = Record<string, CompressionPipelineStep[]>;
 
 export function checkComboOverride(
   config: CompressionConfig,
@@ -33,19 +50,159 @@ export function shouldAutoTrigger(config: CompressionConfig, estimatedTokens: nu
   return config.autoTriggerTokens > 0 && estimatedTokens >= config.autoTriggerTokens;
 }
 
+/**
+ * Resolves the effective compression plan (mode + derived stacked pipeline) WITHOUT
+ * the caching-aware mode adjustment (that is layered on by {@link selectCompressionPlan}).
+ *
+ * Precedence — preserved from the historical {@link getEffectiveMode} ordering:
+ *   1. master off                     → off
+ *   2. routing-combo override (comboId)→ that mode (resolver honors it via ctx.comboId)
+ *   3. active named profile (Phase 2)  → that combo's stacked pipeline (manual operator choice)
+ *   4. auto-trigger (large prompt)     → autoTriggerMode, BEFORE the plain derived default
+ *   5. derived default                 → resolveCompressionPlan (engines map → mode/pipeline)
+ *
+ * Step 3 is an EXPLICIT operator selection (`config.activeComboId` resolved against the
+ * `combos` map): it beats auto-trigger (a manual choice outranks automatic escalation) but
+ * stays below a routing-combo override (route-scoped is more specific). Step 4 mirrors the
+ * historical behaviour: auto-trigger precedes the plain derived default but never a routing
+ * override.
+ *
+ * `combos` defaults to `{}` so Phase-1 callers are unchanged; when supplied, chatCore passes
+ * its DB-loaded named-combo map so the active profile can resolve here purely (no DB import).
+ */
+/** True when the adaptive resolver owns automatic-by-size escalation (D-C4). */
+function adaptiveEnabled(config: CompressionConfig): boolean {
+  const mode = config.contextBudget?.mode;
+  return mode === "floor" || mode === "replace-autotrigger";
+}
+
+function resolveBasePlan(
+  config: CompressionConfig,
+  comboId: string | null,
+  estimatedTokens: number,
+  combos: NamedCombos = {},
+  header: string | null = null
+): DerivedPlan {
+  if (!config.enabled) return withSource({ mode: "off", stackedPipeline: [] }, "off");
+
+  // Phase 3: an explicit, recognized header wins over every operator layer (Decision B).
+  // The master switch above is the hard kill: a header cannot turn compression on.
+  if (header) {
+    const fromHeader = planFromHeader(config, header, combos);
+    if (fromHeader) return fromHeader; // already tagged "request-header"
+  }
+
+  const comboMode = checkComboOverride(config, comboId);
+  if (comboMode) {
+    // A routing-combo "stacked" override still wants the configured stacked pipeline,
+    // so route it through the resolver (which reads config.stackedPipeline for stacked).
+    return withSource(resolveCompressionPlan(config, { comboId, combos }), "routing-override");
+  }
+
+  // Active profile: an EXPLICIT operator choice. Resolves regardless of enginesExplicit and
+  // above auto-trigger (manual choice beats automatic escalation), but below a routing-combo
+  // override (route-scoped is more specific).
+  if (config.activeComboId && combos[config.activeComboId]) {
+    return withSource(
+      { mode: "stacked", stackedPipeline: combos[config.activeComboId] },
+      "active-profile"
+    );
+  }
+
+  if (!adaptiveEnabled(config) && shouldAutoTrigger(config, estimatedTokens)) {
+    const mode = config.autoTriggerMode ?? "lite";
+    return withSource(
+      mode === "stacked"
+        ? { mode, stackedPipeline: config.stackedPipeline ?? [] }
+        : { mode, stackedPipeline: [] },
+      "auto-trigger"
+    );
+  }
+
+  const plan = deriveDefaultPlanFromConfig(config, comboId, combos);
+  return withSource(plan, plan.mode === "off" ? "off" : "default");
+}
+
+/**
+ * True when the EXPLICITLY-configured engines map (panel-saved) derives a multi-engine
+ * stacked pipeline. chatCore uses this to know the panel's derived pipeline is authoritative
+ * and the legacy default-combo fallback must NOT override it. Returns false for legacy
+ * (non-explicit) installs so their historical default-combo path is preserved untouched.
+ */
+export function enginesMapDerivesStackedPipeline(config: CompressionConfig): boolean {
+  if (!config.enginesExplicit) return false;
+  const plan = deriveDefaultPlan(config.engines ?? {}, config.enabled !== false);
+  return plan.mode === "stacked" && plan.stackedPipeline.length > 0;
+}
+
+/**
+ * True when the config has an active named-combo selection that exists in the supplied combos
+ * map. chatCore uses this to keep the legacy default-combo fallback from shadowing the
+ * operator's active profile.
+ */
+export function activeComboResolves(config: CompressionConfig, combos: NamedCombos = {}): boolean {
+  return Boolean(config.activeComboId && combos[config.activeComboId]);
+}
+
 export function getEffectiveMode(
   config: CompressionConfig,
   comboId: string | null,
-  estimatedTokens: number
+  estimatedTokens: number,
+  combos: NamedCombos = {},
+  header: string | null = null
 ): CompressionMode {
-  if (!config.enabled) return "off";
+  return resolveBasePlan(config, comboId, estimatedTokens, combos, header).mode as CompressionMode;
+}
 
-  const comboMode = checkComboOverride(config, comboId);
-  if (comboMode) return comboMode;
+/**
+ * Like {@link selectCompressionStrategy} but returns the full derived plan
+ * (effective `mode` + `stackedPipeline`). When the resolver derives a `stacked`
+ * plan from the per-engine toggle map, the pipeline is exposed here so the caller
+ * can feed it to {@link applyCompressionAsync} (which reads config.stackedPipeline).
+ * The caching-aware mode adjustment is applied to `mode` exactly as in
+ * {@link selectCompressionStrategy}.
+ */
+/** Adaptive (Sub-project C) inputs + telemetry sink for selectCompressionPlan. */
+export interface AdaptiveSelectOptions {
+  modelContextLimit?: number | null;
+  requestMaxTokens?: number | null;
+  onAdaptive?: (telemetry: AdaptiveTelemetry) => void;
+}
 
-  if (shouldAutoTrigger(config, estimatedTokens)) return config.autoTriggerMode ?? "lite";
+export function selectCompressionPlan(
+  config: CompressionConfig,
+  comboId: string | null,
+  estimatedTokens: number,
+  body?: Record<string, unknown>,
+  context?: CachingDetectionContext,
+  combos: NamedCombos = {},
+  header: string | null = null,
+  adaptiveOptions?: AdaptiveSelectOptions
+): DerivedPlan {
+  let plan = resolveBasePlan(config, comboId, estimatedTokens, combos, header);
 
-  return config.defaultMode;
+  // Adaptive context-budget floor/escalation (D-C4): after the base plan, replacing the
+  // (now-bypassed) auto-trigger branch. Pure resolver; chatCore supplies the model limit.
+  if (adaptiveEnabled(config) && config.contextBudget) {
+    const { plan: adaptivePlan, telemetry } = resolveAdaptivePlan({
+      basePlan: plan,
+      estimatedTokens,
+      modelContextLimit: adaptiveOptions?.modelContextLimit ?? null,
+      requestMaxTokens: adaptiveOptions?.requestMaxTokens ?? null,
+      config: config.contextBudget,
+    });
+    plan = adaptivePlan;
+    if (telemetry && adaptiveOptions?.onAdaptive) adaptiveOptions.onAdaptive(telemetry);
+  }
+
+  // Apply caching-aware adjustments to the mode if body is provided
+  if (body) {
+    const ctx = detectCachingContext(body, context);
+    const cacheAware = getCacheAwareStrategy(plan.mode as CompressionMode, ctx);
+    return { ...plan, mode: cacheAware.strategy as CompressionMode }; // ...plan preserves source
+  }
+
+  return plan;
 }
 
 export function selectCompressionStrategy(
@@ -53,18 +210,12 @@ export function selectCompressionStrategy(
   comboId: string | null,
   estimatedTokens: number,
   body?: Record<string, unknown>,
-  context?: CachingDetectionContext
+  context?: CachingDetectionContext,
+  combos: NamedCombos = {},
+  header: string | null = null
 ): CompressionMode {
-  const selectedMode = getEffectiveMode(config, comboId, estimatedTokens);
-
-  // Apply caching-aware adjustments if body is provided
-  if (body) {
-    const ctx = detectCachingContext(body, context);
-    const cacheAware = getCacheAwareStrategy(selectedMode, ctx);
-    return cacheAware.strategy as CompressionMode;
-  }
-
-  return selectedMode;
+  return selectCompressionPlan(config, comboId, estimatedTokens, body, context, combos, header)
+    .mode as CompressionMode;
 }
 
 /**
@@ -82,6 +233,10 @@ export function resolveCacheAwareConfig(
 ): CompressionConfig {
   if (!body) return config;
   const ctx = detectCachingContext(body, context);
+  // Only `skipSystemPrompt` is consumed here, and it depends solely on `ctx.isCachingProvider`
+  // (NOT on the strategy arg — see getCacheAwareStrategy), so the stored `defaultMode` is a safe
+  // input even though it may be "off" for a panel-configured install. If getCacheAwareStrategy is
+  // ever extended to key `skipSystemPrompt` on the mode, pass the resolved effective mode instead.
   const cacheAware = getCacheAwareStrategy(config.defaultMode, ctx);
   if (cacheAware.skipSystemPrompt && config.preserveSystemPrompt === false) {
     return { ...config, preserveSystemPrompt: true };
@@ -200,19 +355,22 @@ export function applyCompression(
       ...(options?.config?.ultra ?? {}),
       preserveSystemPrompt: options?.config?.preserveSystemPrompt !== false,
     };
-    const result = ultraCompress(messages, ultraConfig);
+    const result = ultraCompressHeuristic(messages, ultraConfig);
     const compressedBody = { ...compressionBody, messages: result.messages };
     return {
       body: adapter.restore(compressedBody),
       compressed: result.stats.savingsPercent > 0,
-      stats: createCompressionStats(
-        compressionBody,
-        compressedBody,
-        mode,
-        ["ultra"],
-        result.stats.rulesApplied,
-        result.stats.durationMs
-      ),
+      stats: {
+        ...createCompressionStats(
+          compressionBody,
+          compressedBody,
+          mode,
+          ["ultra"],
+          result.stats.rulesApplied,
+          result.stats.durationMs
+        ),
+        ultraTier: result.stats.ultraTier,
+      },
     };
   }
   return { body, compressed: false, stats: null };
@@ -277,9 +435,41 @@ async function applyUltraAsync(
   const ultraConfig = options?.config?.ultra;
   const modelPath = typeof ultraConfig?.modelPath === "string" ? ultraConfig.modelPath.trim() : "";
 
-  // No model configured → heuristic ultra (unchanged default).
+  // No explicit modelPath → run the two-tier ultra resolver (heuristic, or SLM when
+  // config.ultraEngine === "slm" and the worker backend is available). This is the
+  // Phase-4 (B) path; it fail-opens to the heuristic and records the resolved tier.
   if (!modelPath) {
-    return applyCompression(body, "ultra", options);
+    const adapter = adaptBodyForCompression(body);
+    const messages = (adapter.body.messages ?? []) as Array<{
+      role: string;
+      content?: string | unknown[];
+      [key: string]: unknown;
+    }>;
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return { body, compressed: false, stats: null };
+    }
+    const ultraConfig = {
+      ...(options?.config?.ultra ?? {}),
+      preserveSystemPrompt: options?.config?.preserveSystemPrompt !== false,
+      ultraEngine: options?.config?.ultraEngine,
+    };
+    const result = await ultraCompress(messages, ultraConfig);
+    const compressedBody = { ...adapter.body, messages: result.messages };
+    return {
+      body: adapter.restore(compressedBody),
+      compressed: result.stats.savingsPercent > 0,
+      stats: {
+        ...createCompressionStats(
+          adapter.body,
+          compressedBody,
+          "ultra",
+          result.stats.techniquesUsed,
+          result.stats.rulesApplied,
+          result.stats.durationMs
+        ),
+        ultraTier: result.stats.ultraTier,
+      },
+    };
   }
 
   registerBuiltinCompressionEngines();
@@ -306,9 +496,7 @@ async function applyUltraAsync(
           stats: {
             ...slm.stats,
             mode: "ultra",
-            techniquesUsed: Array.from(
-              new Set([...(slm.stats.techniquesUsed ?? []), "ultra-slm"])
-            ),
+            techniquesUsed: Array.from(new Set([...(slm.stats.techniquesUsed ?? []), "ultra-slm"])),
           },
         };
       }
@@ -318,7 +506,11 @@ async function applyUltraAsync(
   }
 
   // SLM tier unavailable or produced no gain → fall back per slmFallbackToAggressive.
-  return applyCompression(body, ultraConfig?.slmFallbackToAggressive ? "aggressive" : "ultra", options);
+  return applyCompression(
+    body,
+    ultraConfig?.slmFallbackToAggressive ? "aggressive" : "ultra",
+    options
+  );
 }
 
 function normalizePipelineStep(step: CompressionPipelineStep | string): CompressionPipelineStep {

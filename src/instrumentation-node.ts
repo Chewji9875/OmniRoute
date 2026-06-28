@@ -239,6 +239,17 @@ export async function registerNodejs(): Promise<void> {
 
   await import("@/lib/db/core").then(({ ensureDbInitialized }) => ensureDbInitialized());
 
+  // Storage-configured scheduled VACUUM (#4437): registers the timer from
+  // Settings > System & Storage and persists lastVacuumAt for the UI.
+  try {
+    const { initVacuumScheduler } = await import("@/lib/db/vacuumScheduler");
+    initVacuumScheduler();
+    console.log("[STARTUP] Scheduled VACUUM initialized (#4437)");
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("[STARTUP] Could not initialize vacuum scheduler (non-fatal):", msg);
+  }
+
   if (!isBackgroundServicesDisabled()) {
     try {
       const { bootstrapEmbeddedServices } = await import("@/lib/services/bootstrap");
