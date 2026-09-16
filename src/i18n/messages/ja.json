@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "完了したバッチをすべて削除する",
     "batchListBatchesTable": "バッチ",
     "changelogViewerLoading": "GitHub から変更ログを読み込んでいます...",
-    "profile": "__MISSING__:Profile",
+    "profile": "プロフィール",
     "profileLoading": "プロファイルを読み込んでいます...",
     "profileHowToEarn": "稼ぎ方",
     "bootstrapBannerDismiss": "解雇する",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "/v1/models で Claude Code ゲートウェイのモデル発見リストに非 Claude モデルを表示するために、claude/&lt;provider&gt;/&lt;model&gt; ミラー ID を広告します。警告: グローバルに有効にすると、すべてのクライアントのカタログエントリが重複します。",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "プロバイダーへのディスパッチ用に、テナントごとの適応型仮想受付レーンを有効にします（#9654）：あるテナントのバーストが他のテナントに503を返さなくなります。OMNIROUTE_CHAT_VIRTUAL_LANES環境変数はこのダッシュボード設定より優先されます。変更はサーバー再起動時に反映されます。",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "ホーム",
     "dashboard": "ダッシュボード",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "ヘルスモニター",
     "reportIssue": "問題を報告する",
     "activeError": "{active} アクティブ · {errors} エラー",
+    "topologyLegendActive": "アクティブ",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "エラー",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "APIキー",
     "requestsShort": "{count} 件",
@@ -1819,11 +1826,11 @@
     "updateStarted": "更新を開始しました...",
     "reloadingPageAutomatically": "ページを自動的に再読み込みしています...",
     "providerTopology": "プロバイダー トポロジ",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMGをダウンロード (macOS)",
     "downloadDmgDescription": "OmniRouteデスクトップアプリの新しいバージョンが利用可能です。macOS DMGインストーラーをダウンロードしてインストールし、更新してください（現在のバージョン: v{version}）。",
     "downloadExe": "EXEをダウンロード (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gatewayモデル発見のためのsettings.json",
     "ccOnboardingCopy": "コピー",
     "ccOnboardingCopied": "コピーしました",
-    "ccOnboardingKeyPlaceholder": "<あなたのOmniRoute APIキー>",
+    "ccOnboardingKeyPlaceholder": "'<あなたのOmniRoute APIキー>'",
     "ccOnboardingWindowNote": "Claude Codeは、認識できないモデルIDに対して200Kのコンテキストウィンドウを仮定します。異なる実際のウィンドウを持つモデルの場合は、CLAUDE_CODE_AUTO_COMPACT_WINDOWをその直下に追加して、自動圧縮が早すぎることがないようにします。",
     "failedSave": "保存に失敗しました",
     "profileSyncTitle": "CLIプロファイルの自動同期",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "リセット対応 RR",
     "resetAwareDesc": "残りの割り当てと 5 時間および毎週のリセットのバランスをとり、同様のスコアをラウンドロビンします。",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "フュージョン",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "GPT-5、Claude Opus 4.6、Claude Sonnet 4.6、Qwen 3.5を含む40以上のモデルに対応した割引APIプロキシ。https://freeaiapikey.com/dashboard でAPIキーを取得してください。ベースURL: https://freeaiapikey.com/v1。",
       "freemodel-dev": "https://freemodel.dev で$300の無料APIクレジットを取得 — 支払い情報は不要です。OpenAI互換エンドポイント。GPT-5.4およびGPT-5.5モデルが利用可能です。",
       "friendliai": "サーバーレス推論の無料枠 — クレジットカード不要",
-      "gemini": "永久無料: Gemini 2.5 Flashが1,500 req/日 — クレジットカード不要、aistudio.google.com でキーを取得",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "APIキーでGigaChat (Sber)に接続します。",
       "gitlab": "パブリックCode Suggestions API用のGitLabパーソナルアクセストークン。gitlab.comを使用しない場合は、セルフホストのベースURLを設定してください。",
       "gitlawb-gmi": "Gitlawb OpengatewayダッシュボードからAPIキーを取得します。",
@@ -6175,7 +6184,7 @@
       "glm-cn": "APIキーでGLM Coding (China)に接続します。",
       "glmt": "より大きなトークンバジェット、思考の有効化、およびより長いタイムアウトを備えたプリセットGLMプロファイル。",
       "getgoapi": "APIキーでGoAPIに接続します。",
-      "groq": "無料枠: 30 RPM / 14.4K RPD — クレジットカード不要",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "haiper.ai/haiper-api でAPIキーを取得",
       "heroku": "APIキーでHeroku AIに接続します。",
       "hcnsec": "api.hcnsec.cn でAPIキーを取得",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Command Code authの起動に失敗しました",
     "connectionDeleted": "接続が削除されました",
     "connectionFallback": "接続",
-    "coolingConnectionsDescription": "これらの接続は、最後のリクエストで429（レート制限）を返しました。OmniRouteは、タイマーが切れるまでそれらをスキップします — 手動での無効化は必要ありません。",
+    "coolingConnectionsDescription": "これらの接続は前回のリクエスト後に冷却中です。タイマーが切れるまで OmniRoute はそれらをスキップします — 手動で無効にする必要はありません。",
     "coolingConnectionsTitle": "現在冷却中 ({count})",
     "failedDeleteAlias": "エイリアスの削除に失敗しました",
     "failedDeleteConnection": "接続の削除に失敗しました",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "利用可能な最も安いアカウントを優先する",
     "resetAware": "リセット対応 RR",
     "resetAwareDesc": "残りのクォータが健全でリセットに近いアカウントを優先する",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "スティッキー制限",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "有効にすると、失敗したプロバイダーがグローバルに追跡され、クールダウン期間中スキップされます。",
     "resilienceProviderCooldownMin": "最小クールダウン",
     "resilienceProviderCooldownMax": "最大クールダウン",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "資格情報のヘルスチェック",
+    "resilienceCredentialHealthScope": "すべての有効な API キーおよび OAuth 接続",
+    "resilienceCredentialHealthTrigger": "一定の間隔で定期的に",
+    "resilienceCredentialHealthEffect": "各接続の資格情報を調べ、有効/エラーと記録します。失敗した接続は指数バックオフします",
+    "resilienceCredentialHealthDesc": "各有効接続の資格情報をプロバイダー呼び出しで検証するバックグラウンド掃引です。完全に無効にするには 0 を設定します。接続ごとのヘルスチェック値（編集ダイアログ）は常にこのグローバル既定値より優先されます。",
+    "resilienceCredentialHealthInterval": "グローバル検査間隔",
+    "resilienceCredentialHealthEveryMinutes": "{minutes} 分ごと",
+    "resilienceCredentialHealthHint": "0 はバックグラウンド掃引を無効にします（最大 1440 分 = 24 時間）。独自のヘルスチェック値を持つ接続はこのグローバル既定を無視します。ある接続を 0 にすると、グローバル掃引がオンでも対象外になります。",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "セッションアフィニティ",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "言語パック: {packs}",
     "dragToReorder": "ドラッグしてステップを並べ替え",
     "engine": "エンジン",
-    "intensity": "強度"
+    "intensity": "強度",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "利用可能な圧縮実行はありません。",
@@ -8692,6 +8705,7 @@
     "run": "実行",
     "laneRejected": "拒否されました: {reason}",
     "error": "エラー",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "結合フロー",
     "eachLayer": "各レイヤー個別",
     "diff": "差分",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "最大",
     "grokAutoTopUpMonth": "月",
     "grokAdditionalCredits": "追加のクレジット",
+    "kiloAccountBalance": "口座残高",
+    "kiloPassBonus": "利用可能なボーナス",
+    "kiloPassMeterLabel": "Kilo Pass 使用量メーター",
+    "kiloPassPaid": "支払い済み",
+    "kiloPassRemaining": "残り",
+    "kiloPassRenews": "{count} 日後に更新",
+    "kiloPassUsageLabel": "今月の使用量",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "レイテンシー最適化",
     "poolMembersLabel": "プールメンバー ({count})",
     "poolNoMembers": "このプールにはまだプロキシがありません。",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "削除",
     "poolRemoveFailed": "プールからプロキシを削除できませんでした",
     "poolAddLabel": "プロキシを追加",
@@ -11327,11 +11351,11 @@
       "copy": "コピー",
       "autoscrollOn": "自動スクロール: オン",
       "autoscrollOff": "自動スクロール: オフ",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "すべて折りたたむ",
+      "collapseOneLevel": "1レベル折りたたむ",
+      "currentExpandLevel": "現在の展開レベル",
+      "expandOneLevel": "1レベル展開",
+      "expandAllLevels": "すべて展開",
       "payload": {
         "clientRawRequest": "クライアント生リクエスト",
         "clientRequest": "クライアントリクエスト",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Allow stream recovery to request the response again and stitch it after bytes have already reached the client."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "ストリームが有用なフレームを送出する前に閉じ、同一接続での上限付き再試行も使い切った場合に、兄弟接続へ一度だけフェイルオーバーします。使用可能な兄弟接続がない場合は、元の early-EOF エラーを返します。オフ: 再試行後の early-EOF はそのまま終了扱いです。"
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Include display-friendly name fields in /v1/models responses. Disable this for clients that accept model IDs only."
       },
@@ -12982,7 +13012,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Enable network access in the skills sandbox."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "並べ替え",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "手動",
+        "provider": "プロバイダー",
+        "score": "スコア（無料モデル）",
+        "name": "名前"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "スコア順は無料プロバイダーにのみ適用されます。それ以外はそのままです。"
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "各セグメント = 1つの無料プール · プール重複排除、誠実なカウント（誇張されたレート制限上限なし）。",
     "boost": "1回限りの$10のOpenRouterチャージで、月あたりさらに約{tokens}をアンロック（50 → 1000 リクエスト/日）",
     "uncapped": "恒久的に無料、公開された上限なし（レート制限あり） — 見出しにはカウントされない、実際のアクセス：",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# 個のモデル} other {# 個のモデル}}が利用規約制限としてフラグ立てされています — ご自身で判断してください",
     "provider": "プロバイダー",
     "model": "モデル",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "新しい",
     "setupGuide": "セットアップガイド",
     "disabledByFeed": "レーダーフィードによって無効化されています",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "ディスパッチ前にリクエストを拒否します。ターゲットモデルに必要な機能（ビジョン、ツール、構造化出力、コンテキストウィンドウ）が欠けている場合。コンボレイヤーの互換性フィルターをバイパスする直接の単一プロバイダーリクエストを保護します。",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "ページが見つかりません",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24時間",
     "historyRange7d": "7日間",
     "historyRange30d": "30日間",
+    "compareMode": "実行を比較",
+    "compareExit": "比較モードを終了",
+    "compareHint": "比較する2件の実行を選択",
+    "compareTitle": "比較",
+    "compareDetailFailed": "この実行の詳細を読み込めませんでした",
+    "compareDifferentIdentity": "ソースまたはスキルが異なります — 差分は参考情報です",
+    "compareDuration": "期間",
+    "compareCost": "コスト",
+    "compareEvents": "イベント",
+    "compareDeltaLegend": "Δ 右 − 左",
     "showCompleted": "完了を表示",
     "searchPlaceholder": "タスクを検索…",
     "filterStates": "状態",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "キャンセル済み",
     "overflowMore": "他 {count} 件",
     "emptyTitle": "まだ何も実行されていません",
+    "noMatches": "これらのフィルターに一致するタスクはありません",
     "emptyCloudAgentCta": "クラウドエージェントを設定",
     "emptyA2ACta": "A2Aを開く",
     "emptyConductorCta": "指揮者を開く",

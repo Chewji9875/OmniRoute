@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Удалить все завершенные пакеты",
     "batchListBatchesTable": "Пакеты",
     "changelogViewerLoading": "Загрузка журнала изменений с GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Профиль",
     "profileLoading": "Загрузка профиля...",
     "profileHowToEarn": "Как заработать",
     "bootstrapBannerDismiss": "Уволить",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Публиковать claude/&lt;провайдер&gt;/&lt;модель&gt; зеркальные ID на /v1/models, чтобы Claude Code мог видеть не-Claude модели. Внимание: удваивает записи каталога для всех клиентов при глобальном включении.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Включите адаптивные виртуальные полосы допуска для каждого тенанта при маршрутизации к провайдерам (#9654): всплеск нагрузки одного тенанта больше не вызывает 503 у другого. Переменная окружения OMNIROUTE_CHAT_VIRTUAL_LANES имеет приоритет над этой настройкой в панели; изменения вступают в силу после перезапуска сервера.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Главная",
     "dashboard": "Панель управления",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Монитор здоровья",
     "reportIssue": "Сообщить о проблеме",
     "activeError": "{active} активен · {errors} ошибка",
+    "topologyLegendActive": "Активный",
+    "topologyLegendRecent": "Недавнее",
+    "topologyLegendError": "Ошибка",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API-ключ",
     "requestsShort": "{count} требуется",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Обновление начато...",
     "reloadingPageAutomatically": "Автоматическая перезагрузка страницы...",
     "providerTopology": "Топология провайдера",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "Скачать DMG (macOS)",
     "downloadDmgDescription": "Доступна новая версия настольного приложения OmniRoute. Пожалуйста, загрузите и установите установщик DMG для macOS, чтобы обновить (текущая: v{version}).",
     "downloadExe": "Скачать EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json для обнаружения gateway моделей",
     "ccOnboardingCopy": "Копировать",
     "ccOnboardingCopied": "Скопировано",
-    "ccOnboardingKeyPlaceholder": "<ваш API ключ OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<ваш API ключ OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code предполагает окно контекста в 200K для любой незнакомой модели. Если у модели другой реальный размер окна, добавьте CLAUDE_CODE_AUTO_COMPACT_WINDOW прямо под ней, чтобы авто-компактизация не срабатывала слишком рано.",
     "failedSave": "Не удалось сохранить",
     "profileSyncTitle": "Автосинхронизация профилей CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Запись с учетом сброса",
     "resetAwareDesc": "Балансирует оставшуюся квоту с 5-часовым и еженедельным сбросом, затем выполняет циклический анализ одинаковых результатов.",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Строгий случайный",
     "strictRandomDesc": "Перемешивание колоды - каждая модель используется по одному разу перед новым перемешиванием",
     "fusion": "Слияние",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "API-прокси со скидкой для более чем 40 моделей, включая GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Получите API-ключ на https://freeaiapikey.com/dashboard. Базовый URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Получите бесплатный баланс API $300 на https://freemodel.dev — платежная информация не требуется. Совместимая с OpenAI конечная точка. Доступны модели GPT-5.4 и GPT-5.5.",
       "friendliai": "Бесплатный тариф для бессерверного инференса — кредитная карта не требуется",
-      "gemini": "Бесплатно навсегда: 1 500 запросов в день для Gemini 2.5 Flash — без кредитной карты, получите ключ на aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Подключите GigaChat (Сбер) с помощью API-ключа.",
       "gitlab": "Персональный токен доступа GitLab для публичного Code Suggestions API. Настройте собственный базовый URL-адрес, если не используете gitlab.com.",
       "gitlawb-gmi": "Получите API-ключ в панели управления Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Подключите GLM Coding (Китай) с помощью API-ключа.",
       "glmt": "Предустановленный профиль GLM с увеличенным лимитом токенов, включенным режимом рассуждения и более длительным таймаутом.",
       "getgoapi": "Подключите GoAPI с помощью API-ключа.",
-      "groq": "Бесплатный тариф: 30 RPM / 14.4K RPD — без кредитной карты",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Получите API-ключ на haiper.ai/haiper-api",
       "heroku": "Подключите Heroku AI с помощью API-ключа.",
       "hcnsec": "Получите API-ключ на api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Не удалось запустить команду Code auth",
     "connectionDeleted": "Соединение удалено",
     "connectionFallback": "соединение",
-    "coolingConnectionsDescription": "Эти соединения вернули 429 (лимит частоты) в своем последнем запросе. OmniRoute пропустит их, пока таймер не истечет — отключение вручную не требуется.",
+    "coolingConnectionsDescription": "Эти соединения остывают после последнего запроса. OmniRoute пропустит их, пока не истечёт таймер — отключать вручную не нужно.",
     "coolingConnectionsTitle": "В настоящее время охлаждение ({count})",
     "failedDeleteAlias": "Не удалось удалить псевдоним",
     "failedDeleteConnection": "Не удалось удалить соединение",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Предпочитаю самый дешевый доступный аккаунт",
     "resetAware": "Запись с учетом сброса",
     "resetAwareDesc": "Предпочитайте учетные записи со здоровой оставшейся квотой и более близким к сбросу.",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Строгий случайный",
     "strictRandomDesc": "Перемешивание колоды — каждый аккаунт используется один раз перед повторным перемешиванием",
     "stickyLimit": "Липкий лимит",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Если включено, сбои провайдеров отслеживаются глобально, и они пропускаются на время кулдауна.",
     "resilienceProviderCooldownMin": "Минимальный кулдаун",
     "resilienceProviderCooldownMax": "Максимальный кулдаун",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Проверка состояния учётных данных",
+    "resilienceCredentialHealthScope": "Все активные подключения с API-ключом и OAuth",
+    "resilienceCredentialHealthTrigger": "Периодически, с фиксированным ритмом",
+    "resilienceCredentialHealthEffect": "Проверяет учётные данные каждого подключения и помечает его активным/ошибкой; неудачные подключения уходят в экспоненциальный backoff",
+    "resilienceCredentialHealthDesc": "Фоновое сканирование, которое проверяет учётные данные каждого активного подключения, вызывая его провайдера. Установите 0, чтобы полностью отключить. Значения проверки состояния для отдельного подключения (в диалоге правки) всегда перекрывают этот глобальный параметр.",
+    "resilienceCredentialHealthInterval": "Глобальный интервал проверки",
+    "resilienceCredentialHealthEveryMinutes": "Каждые {minutes} мин",
+    "resilienceCredentialHealthHint": "0 отключает фоновое сканирование (макс. 1440 мин = 24 ч). Подключения со своим значением проверки состояния игнорируют этот глобальный параметр; 0 у конкретного подключения исключает его даже при включённом глобальном сканировании.",
     "forcedFingerprintTitle": "Всегда включено для {provider} — требуется для безопасности OAuth-аккаунта; отключить нельзя.",
     "forcedFingerprintBadge": "Обязательно",
     "sessionAffinityTitle": "Привязка сессии",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Языковые пакеты: {packs}",
     "dragToReorder": "Перетащите для изменения порядка шагов",
     "engine": "Движок",
-    "intensity": "Интенсивность"
+    "intensity": "Интенсивность",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Нет доступных запусков сжатия.",
@@ -8692,6 +8705,7 @@
     "run": "Запустить",
     "laneRejected": "отклонено: {reason}",
     "error": "ошибка",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Комбинированный поток",
     "eachLayer": "Каждый слой отдельно",
     "diff": "Разница",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "макс",
     "grokAutoTopUpMonth": "месяц",
     "grokAdditionalCredits": "Дополнительные кредиты",
+    "kiloAccountBalance": "Баланс аккаунта",
+    "kiloPassBonus": "Доступный бонус",
+    "kiloPassMeterLabel": "Счетчик использования Kilo Pass",
+    "kiloPassPaid": "Оплачено",
+    "kiloPassRemaining": "Осталось",
+    "kiloPassRenews": "Продление через {count} дн.",
+    "kiloPassUsageLabel": "Использование в этом месяце",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Оптимизация по задержке",
     "poolMembersLabel": "Участники пула ({count})",
     "poolNoMembers": "В этом пуле пока нет прокси.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Удалить",
     "poolRemoveFailed": "Не удалось удалить прокси из пула",
     "poolAddLabel": "Добавить прокси",
@@ -11327,11 +11351,11 @@
       "copy": "Копировать",
       "autoscrollOn": "Автопрокрутка: включена",
       "autoscrollOff": "Автопрокрутка: выключена",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Свернуть всё",
+      "collapseOneLevel": "Свернуть на уровень",
+      "currentExpandLevel": "Текущий уровень развёртывания",
+      "expandOneLevel": "Развернуть на уровень",
+      "expandAllLevels": "Развернуть всё",
       "payload": {
         "clientRawRequest": "Сырой запрос клиента",
         "clientRequest": "Запрос клиента",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Allow stream recovery to request the response again and stitch it after bytes have already reached the client."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Однократно переключиться на соседнее подключение, если поток закрылся, не отправив ни одного полезного фрейма, а ограниченная повторная попытка на том же подключении исчерпана. Если подходящего соседнего подключения нет, возвращается исходная ошибка early-EOF. Выкл.: early-EOF остаётся окончательным после повторной попытки."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Include display-friendly name fields in /v1/models responses. Disable this for clients that accept model IDs only."
       },
@@ -12982,7 +13012,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Enable network access in the skills sandbox."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Сортировать по",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Вручную",
+        "provider": "Провайдер",
+        "score": "Оценка (бесплатные модели)",
+        "name": "Имя"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Сортировка по оценке действует только для бесплатных провайдеров; остальные остаются на месте."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Каждый сегмент = один бесплатный пул · дедупликация пулов, честный подсчет (без завышенных лимитов частоты запросов).",
     "boost": "Разблокируйте еще ~{tokens}/мес. с помощью разового пополнения OpenRouter на $10 (50 → 1000 запр./день)",
     "uncapped": "Навсегда бесплатно, без опубликованного лимита (с ограничением частоты) — реальный доступ, не учитывается в заголовке:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# модель помечена как ограниченная Условиями использования} few {# модели помечены как ограниченные Условиями использования} many {# моделей помечено как ограниченные Условиями использования} other {# моделей помечено как ограниченные Условиями использования}} — решать вам",
     "provider": "Провайдер",
     "model": "Модель",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "новый",
     "setupGuide": "Руководство по настройке",
     "disabledByFeed": "Отключено лентой Радар",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Отклонять запросы перед отправкой, когда целевая модель не имеет необходимых возможностей (визуализация, инструменты, структурированный вывод, контекстное окно). Защищает прямые запросы от единственного поставщика, которые обходят фильтр совместимости комбинированного слоя.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Страница не найдена",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 ч",
     "historyRange7d": "7 дней",
     "historyRange30d": "30 дней",
+    "compareMode": "Сравнить запуски",
+    "compareExit": "Выйти из режима сравнения",
+    "compareHint": "Выберите два запуска для сравнения",
+    "compareTitle": "Сравнение",
+    "compareDetailFailed": "Не удалось загрузить детали этого запуска",
+    "compareDifferentIdentity": "Разные источники или навыки — различия носят только информационный характер",
+    "compareDuration": "Продолжительность",
+    "compareCost": "Стоимость",
+    "compareEvents": "События",
+    "compareDeltaLegend": "Δ справа − слева",
     "showCompleted": "Показать завершённые",
     "searchPlaceholder": "Поиск задач…",
     "filterStates": "Состояния",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Отменено",
     "overflowMore": "+ещё {count}",
     "emptyTitle": "Пока ничего не выполняется",
+    "noMatches": "Нет задач, соответствующих этим фильтрам",
     "emptyCloudAgentCta": "Настроить облачных агентов",
     "emptyA2ACta": "Открыть A2A",
     "emptyConductorCta": "Открыть Кондуктор",

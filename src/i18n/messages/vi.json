@@ -993,6 +993,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Quảng bá các id phản chiếu claude/&lt;provider&gt;/&lt;model&gt; trên /v1/models để tính năng khám phá mô hình qua gateway của Claude Code liệt kê được các mô hình không phải Claude. Cảnh báo: khi bật ở phạm vi toàn cục, số mục trong danh mục tăng gấp đôi với mọi client.",
   "featureFlagNoThinkingAliasEnabledDescription": "Công tắc chính cho các bí danh gateway no-think/&lt;provider&gt;/&lt;model&gt;. Bật (mặc định): /v1/models quảng bá biến thể không suy nghĩ cho mọi mô hình Claude có khả năng suy nghĩ đủ điều kiện, và id no-think/ được gửi trên một yêu cầu sẽ giải quyết lại về mô hình thực với phần lý luận bị triệt tiêu. Tắt: không có biến thể nào được quảng bá và id no-think/ được xử lý như bất kỳ id mô hình không xác định nào khác. Tùy chọn tham gia/từ chối ModelSpec.noThinkingAlias theo từng mô hình vẫn áp dụng khi tính năng này bật.",
   "featureFlagChatVirtualLanesEnabledDescription": "Bật làn tiếp nhận ảo thích ứng cho từng đối tượng thuê (tenant) để phân phối nhà cung cấp (#9654): một đợt bùng phát của tenant này không còn trả 503 cho tenant khác. Biến môi trường OMNIROUTE_CHAT_VIRTUAL_LANES được ưu tiên hơn cài đặt bảng điều khiển này; các thay đổi có hiệu lực khi khởi động lại máy chủ.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "Các pool proxy và cơ chế xoay vòng theo tài khoản của opencode ngừng dùng lại một proxy vừa thất bại (thăm dò TCP bị từ chối, hoặc nhận 429 qua proxy đó) trong một khoảng thời gian theo tiến trình, tăng gấp đôi sau mỗi lần lặp lại, tối đa đến một giới hạn. Không ghi trạng thái proxy nào; khi mọi ứng viên đều bị tạm gác, lựa chọn vẫn như cũ. Tắt theo mặc định: thứ tự chọn giữ nguyên xoay vòng thông thường.",
+  "featureFlagProxyPoolEgressObservationDescription": "Hiển thị, bên dưới một nhóm proxy trong bảng điều khiển, số IP đầu ra quan sát được đã phục vụ các thành viên của nhóm trong 24 giờ qua, số kết nối đã dùng chúng và số lớn nhất thấy sau cùng một IP. Chỉ đọc, tính từ nhật ký proxy, không bao giờ dùng để định tuyến. Tắt theo mặc định: trình chỉnh sửa nhóm không đổi và tuyến quan sát trả về null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "Trong lượt kiểm tra sức khỏe proxy, cho phép một lần thăm dò bị đích từ chối (401/403/429: proxy đã chuyển tiếp, đích từ chối IP đầu ra này) đặt lại chuỗi lỗi liên tiếp của proxy, giống như một lần thăm dò được phục vụ. Tắt theo mặc định: lần từ chối vẫn trung lập và giữ nguyên chuỗi. Lỗi 5xx vẫn không kết luận trong mọi trường hợp, và lần từ chối không bao giờ xóa, vô hiệu hóa hay kích hoạt lại proxy.",
   "sidebar": {
     "home": "Trang chủ",
     "dashboard": "Trang tổng quan",
@@ -1808,6 +1812,9 @@
     "healthMonitor": "Trình theo dõi tình trạng",
     "reportIssue": "Báo cáo sự cố",
     "activeError": "{active} đang hoạt động · {errors} lỗi",
+    "topologyLegendActive": "Đang hoạt động",
+    "topologyLegendRecent": "Gần đây",
+    "topologyLegendError": "Lỗi",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "Khóa API",
     "requestsShort": "{count} yêu cầu",
@@ -2711,7 +2718,7 @@
     "ccOnboardingTitle": "settings.json cho việc khám phá mô hình qua gateway",
     "ccOnboardingCopy": "Sao chép",
     "ccOnboardingCopied": "Đã sao chép",
-    "ccOnboardingKeyPlaceholder": "<khóa API OmniRoute của bạn>",
+    "ccOnboardingKeyPlaceholder": "'<khóa API OmniRoute của bạn>'",
     "ccOnboardingWindowNote": "Claude Code mặc định coi mọi id mô hình mà nó không nhận ra là có cửa sổ ngữ cảnh 200K. Với mô hình có cửa sổ thực tế khác, hãy thêm CLAUDE_CODE_AUTO_COMPACT_WINDOW ngay bên dưới để việc nén ngữ cảnh tự động không kích hoạt quá sớm.",
     "failedSave": "Không thể lưu",
     "profileSyncTitle": "Tự động đồng bộ hồ sơ CLI",
@@ -3262,6 +3269,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "RR nhận biết đặt lại",
     "resetAwareDesc": "Cân bằng hạn ngạch còn lại với các mốc đặt lại sau 5 giờ và hằng tuần, sau đó xoay vòng các mô hình có điểm số tương tự",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Ngẫu nhiên nghiêm ngặt",
     "strictRandomDesc": "Trộn bài — sử dụng mỗi mô hình một lần trước khi trộn lại",
     "fusion": "Hợp nhất",
@@ -6170,7 +6179,7 @@
       "freeaiapikey": "Proxy API giảm giá cho hơn 40 mô hình, gồm GPT-5, Claude Opus 4.6, Claude Sonnet 4.6 và Qwen 3.5. Lấy khóa API tại https://freeaiapikey.com/dashboard. URL cơ sở: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Nhận 300 USD tín dụng API miễn phí tại https://freemodel.dev — không cần thông tin thanh toán. Endpoint tương thích OpenAI. Có GPT-5.4 và GPT-5.5.",
       "friendliai": "Gói miễn phí cho suy luận serverless — không cần thẻ tín dụng",
-      "gemini": "Miễn phí vĩnh viễn: 1.500 yêu cầu/ngày cho Gemini 2.5 Flash — không cần thẻ tín dụng, lấy khóa tại aistudio.google.com",
+      "gemini": "Gói miễn phí qua Google AI Studio; hạn mức theo từng mô hình không còn được công bố (xem trang hạn mức trong AI Studio) — không cần thẻ tín dụng.",
       "gigachat": "Kết nối GigaChat (Sber) bằng khóa API.",
       "gitlab": "Personal access token GitLab cho API Code Suggestions công khai. Cấu hình URL cơ sở tự lưu trữ khi không dùng gitlab.com.",
       "gitlawb-gmi": "Lấy khóa API của bạn từ Gitlawb Opengateway dashboard.",
@@ -6179,7 +6188,7 @@
       "glm-cn": "Kết nối GLM Coding (China) bằng khóa API.",
       "glmt": "Hồ sơ GLM đặt sẵn với ngân sách token cao hơn, bật thinking và thời gian chờ dài hơn.",
       "getgoapi": "Kết nối GoAPI bằng khóa API.",
-      "groq": "Gói miễn phí: 30 RPM / 14,4 nghìn RPD — không cần thẻ tín dụng",
+      "groq": "Gói miễn phí: giới hạn theo từng mô hình (200K token/ngày cho mỗi mô hình chat; xem console.groq.com/docs/rate-limits để biết RPM/RPD) — không cần đăng ký phương thức thanh toán.",
       "haiper": "Lấy khóa API tại haiper.ai/haiper-api",
       "heroku": "Kết nối Heroku AI bằng khóa API.",
       "hcnsec": "Lấy khóa API tại api.hcnsec.cn",
@@ -6430,7 +6439,7 @@
     "commandCodeStartFailed": "Không thể bắt đầu xác thực Command Code",
     "connectionDeleted": "Đã xóa kết nối",
     "connectionFallback": "kết nối",
-    "coolingConnectionsDescription": "Các kết nối này trả về 429 (giới hạn tốc độ) trong yêu cầu gần nhất. OmniRoute sẽ bỏ qua chúng cho đến khi bộ hẹn giờ hết hạn — không cần tắt thủ công.",
+    "coolingConnectionsDescription": "Các kết nối này đang nguội sau yêu cầu gần nhất. OmniRoute sẽ bỏ qua chúng đến khi hết giờ — không cần tắt thủ công.",
     "coolingConnectionsTitle": "Các kết nối đang tạm làm mát ({count})",
     "failedDeleteAlias": "Không thể xóa alias",
     "failedDeleteConnection": "Không thể xóa kết nối",
@@ -7062,6 +7071,8 @@
     "costOptDesc": "Ưu tiên tài khoản khả dụng rẻ nhất",
     "resetAware": "RR có nhận biết thời điểm đặt lại",
     "resetAwareDesc": "Ưu tiên các tài khoản có hạn ngạch còn lại ở mức tốt và thời điểm đặt lại sớm hơn",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Ngẫu nhiên nghiêm ngặt",
     "strictRandomDesc": "Trộn bộ bài — sử dụng mỗi tài khoản một lần trước khi trộn lại",
     "stickyLimit": "Sticky Limit",
@@ -7738,6 +7749,10 @@
     "legacyJsonImportSuccess": "Đã nhập JSON kiểu cũ thành công!",
     "jsonImportFailed": "Không thể nhập JSON",
     "jsonImportError": "Đã xảy ra lỗi khi nhập JSON",
+    "jsonImportAuthRequired": "Cần xác thực để nhập cấu hình JSON kiểu cũ. Vui lòng đăng nhập hoặc hoàn tất thiết lập trước.",
+    "databaseSettingsAuthRequiredTitle": "Cần xác thực",
+    "databaseSettingsAuthRequiredBody": "Cài đặt cơ sở dữ liệu và tính năng nhập JSON chỉ dành cho quản trị viên đã xác thực. Hãy đăng nhập hoặc hoàn tất thiết lập để xem và chỉnh sửa.",
+    "databaseSettingsAuthRequiredCta": "Đăng nhập",
     "storagePurgeData": "Xóa sạch dữ liệu",
     "storagePurgeDataDesc": "Xóa ngay lập tức tất cả các bản ghi mà không áp dụng kiểm tra thời gian lưu trữ. Hãy thận trọng khi sử dụng.",
     "storageRetentionCleanup": "Cài đặt thời hạn lưu giữ",
@@ -8667,7 +8682,9 @@
     "languagePacksList": "Gói ngôn ngữ: {packs}",
     "dragToReorder": "Kéo để sắp xếp lại bước",
     "engine": "Bộ máy",
-    "intensity": "Cường độ"
+    "intensity": "Cường độ",
+    "activeProfileMasterSwitchOffWarning": "Hồ sơ đang dùng bên dưới sẽ không chạy cho đến khi công tắc tổng \"Nén prompt\" được bật.",
+    "activeProfileMasterSwitchOffCta": "Bật trong Cài đặt"
   },
   "compressionStudio": {
     "noRun": "Chưa có lượt nén nào.",
@@ -8696,6 +8713,7 @@
     "run": "Chạy",
     "laneRejected": "bị từ chối: {reason}",
     "error": "lỗi",
+    "combinedError": "Không thể xem trước luồng kết hợp: {reason}",
     "combinedFlow": "Luồng kết hợp",
     "eachLayer": "Từng lớp riêng biệt",
     "diff": "Khác biệt",
@@ -10951,6 +10969,9 @@
     "strategyLatency": "Tối ưu độ trễ (Latency-optimized)",
     "poolMembersLabel": "Thành viên nhóm proxy ({count})",
     "poolNoMembers": "Chưa có proxy nào trong nhóm này.",
+    "poolEgressObservation": "{exits, plural, other {# lối ra}} được dùng bởi {connections, plural, other {# kết nối}} · tối đa {max} trên một lối ra · {hours} giờ qua",
+    "poolEgressObservationEmpty": "Không ghi nhận lưu lượng trong {hours} giờ qua",
+    "poolEgressObservationHint": "Tính từ nhật ký proxy trong khoảng thời gian: số IP đầu ra khác nhau quan sát được của các thành viên nhóm proxy này và số kết nối OmniRoute đã dùng chúng. \"Trên một lối ra\" nghĩa là trong cả khoảng thời gian, không phải cùng lúc. Khóa 429 theo IP chỉ tạm dừng các kết nối cùng họ nhà cung cấp.",
     "poolRemove": "Gỡ bỏ",
     "poolRemoveFailed": "Không thể gỡ proxy khỏi nhóm",
     "poolAddLabel": "Thêm proxy",
@@ -12971,6 +12992,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Cho phép khôi phục luồng bằng cách yêu cầu lại và ghép phản hồi sau khi dữ liệu đã bắt đầu được gửi tới ứng dụng khách."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "Giúp việc tiếp tục luồng giữa chừng an toàn với lệnh gọi công cụ: không bao giờ tiếp tục một luồng bị ngắt sau khi đã gửi lệnh gọi công cụ (đang xử lý hoặc đã hoàn tất), và dừng sau một lần tiếp tục rỗng thay vì dùng hết số lần thử lại."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Chuyển dự phòng một lần sang kết nối anh em khi luồng dừng trước khi phát bất kỳ khung hữu ích nào và lần thử lại có giới hạn trên cùng kết nối đã cạn. Nếu không có kết nối anh em dùng được, lỗi early-EOF ban đầu sẽ được trả về. Tắt: early-EOF vẫn kết thúc sau lần thử lại."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Thêm trường tên dễ đọc vào phản hồi /v1/models. Tắt với các ứng dụng khách chỉ chấp nhận ID mô hình."
       },
@@ -12993,7 +13020,7 @@
         "description": "Sau khi đồng bộ mô hình nhà cung cấp, tạo lại các hồ sơ ~/.codex/*.config.toml từ danh mục trực tiếp. Không bao giờ thay đổi cấu hình Codex đang hoạt động hoặc cấu hình mặc định. Tính năng này mặc định tắt."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Sau khi đồng bộ mô hình nhà cung cấp, tạo lại các hồ sơ Claude Code tại ~/.claude/profiles/<name>/settings.json từ danh mục trực tiếp. Không bao giờ thay đổi cấu hình Claude đang hoạt động hoặc cấu hình mặc định. Tính năng này mặc định tắt."
+        "description": "Sau khi đồng bộ mô hình nhà cung cấp, tạo lại các hồ sơ Claude Code tại ~/.claude/profiles/'<name>'/settings.json từ danh mục trực tiếp. Không bao giờ thay đổi cấu hình Claude đang hoạt động hoặc cấu hình mặc định. Tính năng này mặc định tắt."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Tắt endpoint kiểm tra tình trạng của phiên bản cục bộ."
@@ -13003,6 +13030,18 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Cho phép môi trường sandbox của kỹ năng truy cập mạng."
+      },
+      "SERVER_OWNED_TOOL_LOOP_ENABLED": {
+        "label": "Vòng lặp công cụ do máy chủ sở hữu",
+        "description": "Tiếp tục các lời gọi công cụ do máy chủ sở hữu ở chế độ không streaming cho đến khi mô hình trả về phản hồi mà máy khách dùng được."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "Nguồn gốc của Retry-After",
+        "description": "Với các phản hồi không khả dụng 429/503 tổng hợp, bỏ Retry-After khi không biết thời điểm thử lại cụ thể thay vì gửi giá trị giả 1 giây, thêm error.retry_after_provenance và đọc gợi ý thử lại dạng văn bản trên các đường thoát của combo."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "Dừng ưu tiên được bảo vệ do hạ tầng trả 502",
+        "description": "Trả 502 thay vì 503 khi một mục tiêu ưu tiên chỉ dự phòng theo hạn mức dừng combo vì một nguyên nhân chắc chắn không phải hạn mức: bộ ngắt mạch của nhà cung cấp đang mở hoặc bỏ qua do dự đoán độ trễ."
       }
     }
   },
@@ -13144,6 +13183,7 @@
     "segmentHint": "Mỗi đoạn là một nhóm miễn phí · đã khử trùng lặp theo nhóm, đếm đúng thực tế (không thổi phồng trần giới hạn tốc độ).",
     "boost": "Mở khóa thêm khoảng {tokens}/tháng bằng một lần nạp $10 vào OpenRouter (50 → 1000 yêu cầu/ngày)",
     "uncapped": "Miễn phí vĩnh viễn, không công bố giới hạn (bị giới hạn tốc độ) — quyền truy cập thực, không tính vào tổng nổi bật:",
+    "gated": "~{tokens}/tháng nữa nằm sau bước xác minh danh tính theo khu vực (ví dụ: xác thực tên thật ở Trung Quốc đại lục) — hạn mức thật, không tính vào con số chính:",
     "tosRestricted": "{count, plural, one {# model} other {# models}} flagged as ToS-restricted — you decide",
     "provider": "Nhà cung cấp",
     "model": "Mô hình",
@@ -13414,6 +13454,9 @@
     "colLimits": "Giới hạn",
     "trainsOnPrompts": "Huấn luyện bằng prompt",
     "trainsOnPromptsHelp": "Nhà cung cấp này công bố có thể dùng prompt của bạn để huấn luyện mô hình",
+    "limitsUnknownHelp": "Giới hạn chỉ do nguồn Radar báo cáo; mục này không có giới hạn được công bố",
+    "contextUnknownHelp": "Chưa rõ cửa sổ ngữ cảnh của mục này",
+    "capabilityUnknownHelp": "Nguồn dữ liệu không báo cáo khả năng này",
     "colContext": "Ngữ cảnh",
     "colCapabilities": "Khả năng",
     "colTos": "Rủi ro ToS",
@@ -13612,6 +13655,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Từ chối yêu cầu trước khi gửi đi khi mô hình đích thiếu các khả năng bắt buộc (thị giác, công cụ, đầu ra có cấu trúc, cửa sổ ngữ cảnh). Bảo vệ các yêu cầu trực tiếp đến một nhà cung cấp khi chúng bỏ qua bộ lọc tương thích của combo.",
   "featureFlagDisableContextWindowChecksDescription": "Bỏ qua kiểm tra cục bộ của OmniRoute về cửa sổ ngữ cảnh và giới hạn token đầu vào tối đa cho yêu cầu trực tiếp đến một mô hình đơn lẻ. Nhà cung cấp thượng nguồn vẫn áp dụng các giới hạn thực tế. Tính năng nén prompt và giới hạn token đầu ra vẫn hoạt động.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Không tìm thấy trang",
@@ -13992,6 +14036,16 @@
     "historyRange1d": "24 giờ",
     "historyRange7d": "7 ngày",
     "historyRange30d": "30 ngày",
+    "compareMode": "So sánh lượt chạy",
+    "compareExit": "Thoát chế độ so sánh",
+    "compareHint": "Chọn hai lượt chạy để so sánh",
+    "compareTitle": "So sánh",
+    "compareDetailFailed": "Không thể tải chi tiết của lượt chạy này",
+    "compareDifferentIdentity": "Nguồn hoặc kỹ năng khác nhau — chênh lệch chỉ mang tính tham khảo",
+    "compareDuration": "Thời lượng",
+    "compareCost": "Chi phí",
+    "compareEvents": "Sự kiện",
+    "compareDeltaLegend": "Δ phải − trái",
     "showCompleted": "Hiển thị đã hoàn tất",
     "searchPlaceholder": "Tìm kiếm tác vụ…",
     "filterStates": "Trạng thái",
@@ -14013,6 +14067,7 @@
     "stateCancelled": "Đã hủy",
     "overflowMore": "+{count} nữa",
     "emptyTitle": "Chưa có gì đang chạy",
+    "noMatches": "Không có tác vụ nào khớp với các bộ lọc này",
     "emptyCloudAgentCta": "Thiết lập Tác nhân đám mây",
     "emptyA2ACta": "Mở A2A",
     "emptyConductorCta": "Mở Người dẫn dắt",

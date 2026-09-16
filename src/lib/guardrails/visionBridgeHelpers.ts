@@ -309,6 +309,14 @@ async function fetchRemoteImageAsDataUri(
   fetchImpl: typeof fetch = VISION_BRIDGE_UA_FETCH
 ): Promise<string> {
   const remoteImage = await fetchRemoteImage(imageUrl, {
+    // GHSA-34rg-3pqj-35g9: `imageUrl` is caller input (a chat `image_url` part) — pin
+    // `public-only` explicitly; never the operator outbound policy (`block-metadata` on a
+    // local-first default install), which would let a request body make the server
+    // fetch loopback/LAN URLs and inline the bytes into the vision self-call.
+    guard: "public-only",
+    // `pinDns` is validation-only here: with `fetchImpl` injected the library validates
+    // every DNS answer but cannot pin the connection (it never builds its own fetch).
+    pinDns: true,
     signal,
     // Bypass the runtime's hooked global fetch (ProxyFetch) — a dead local
     // proxy (e.g. 127.0.0.1:8317) would otherwise break the download.

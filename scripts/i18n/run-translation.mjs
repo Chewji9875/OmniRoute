@@ -380,16 +380,22 @@ const SYSTEM_PROMPT = (englishName, native) =>
     `Return ONLY the translated markdown — no preamble, no explanation, no surrounding fences.`,
   ].join(" ");
 
-// Splits a markdown body into chunks of <= maxChars, breaking on top-level `## ` headings only.
-function chunkMarkdown(markdown, maxChars = 6000) {
+// Splits a markdown body into chunks of <= maxChars. Top-level `## ` headings
+// are the preferred cut; a section that is still longer than maxChars is then
+// split again on `### ` headings and paragraph boundaries, never inside a
+// fenced code block. Before the second pass a single long section (README.md
+// has a 16 KB one, USER_GUIDE.md a 20 KB one) became one oversized request
+// that the slow fallback model could not answer inside the backend's
+// 10-minute fetch timeout, and the biggest docs failed on every retry.
+export function chunkMarkdown(markdown, maxChars = 6000) {
   if (markdown.length <= maxChars) return [markdown];
   const lines = markdown.split("\n");
-  const chunks = [];
+  const sections = [];
   let buf = [];
   let size = 0;
   for (const line of lines) {
     if (line.startsWith("## ") && size > maxChars * 0.5) {
-      chunks.push(buf.join("\n"));
+      sections.push(buf.join("\n"));
       buf = [line];
       size = line.length;
     } else {
@@ -397,7 +403,65 @@ function chunkMarkdown(markdown, maxChars = 6000) {
       size += line.length + 1;
     }
   }
-  if (buf.length) chunks.push(buf.join("\n"));
+  if (buf.length) sections.push(buf.join("\n"));
+  return sections.flatMap((section) =>
+    section.length <= maxChars ? [section] : splitOversizedSection(section, maxChars)
+  );
+}
+
+const FENCE_LINE = /^\s*(```|~~~)/;
+
+// Groups a section into blocks — a whole fenced code block, a heading-led run,
+// or a paragraph ending at a blank line — and packs them greedily. A block that
+// is itself larger than maxChars stays whole: cutting mid-paragraph or inside a
+// fence would hand the model a fragment it cannot translate faithfully.
+function splitOversizedSection(section, maxChars) {
+  const blocks = [];
+  let block = [];
+  let inFence = false;
+  for (const line of section.split("\n")) {
+    const isFence = FENCE_LINE.test(line);
+    if (inFence) {
+      block.push(line);
+      if (isFence) {
+        inFence = false;
+        blocks.push(block);
+        block = [];
+      }
+      continue;
+    }
+    if (isFence) {
+      if (block.length) blocks.push(block);
+      block = [line];
+      inFence = true;
+      continue;
+    }
+    if (/^##+ /.test(line) && block.length) {
+      blocks.push(block);
+      block = [];
+    }
+    block.push(line);
+    if (line.trim() === "") {
+      blocks.push(block);
+      block = [];
+    }
+  }
+  if (block.length) blocks.push(block);
+
+  const chunks = [];
+  let current = [];
+  let size = 0;
+  for (const lines of blocks) {
+    const length = lines.join("\n").length + 1;
+    if (size > 0 && size + length > maxChars) {
+      chunks.push(current.join("\n"));
+      current = [];
+      size = 0;
+    }
+    current.push(...lines);
+    size += length;
+  }
+  if (current.length) chunks.push(current.join("\n"));
   return chunks;
 }
 

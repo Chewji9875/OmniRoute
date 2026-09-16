@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Löschen Sie alle abgeschlossenen Chargen",
     "batchListBatchesTable": "Chargen",
     "changelogViewerLoading": "Änderungsprotokoll von GitHub wird geladen...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Profil wird geladen...",
     "profileHowToEarn": "So verdienen Sie",
     "bootstrapBannerDismiss": "Entlassen",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Bewerben Sie claude/&lt;provider&gt;/&lt;model&gt; Spiegel-IDs auf /v1/models, damit die Claude Code-Gateway-Modellentdeckung Nicht-Claude-Modelle auflistet. Warnung: Verdoppelt Katalogeinträge für alle Clients, wenn global aktiviert.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Aktivieren Sie adaptive virtuelle Zulassungsspuren pro Tenant für die Provider-Zustellung (#9654): Ein Burst eines Tenants führt nicht mehr zu 503 bei einem anderen. Die Umgebungsvariable OMNIROUTE_CHAT_VIRTUAL_LANES hat Vorrang vor dieser Dashboard-Einstellung; Änderungen werden erst nach einem Serverneustart wirksam.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Zuhause",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Gesundheitsmonitor",
     "reportIssue": "Problem melden",
     "activeError": "{active} aktiv · {errors} Fehler",
+    "topologyLegendActive": "Aktiv",
+    "topologyLegendRecent": "Zuletzt",
+    "topologyLegendError": "Fehler",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API-Schlüssel",
     "requestsShort": "{count} Anfr.",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Aktualisierung gestartet...",
     "reloadingPageAutomatically": "Seite wird automatisch neu geladen...",
     "providerTopology": "Anbietertopologie",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "Letzte Anfragen",
+    "recentRequestsEmpty": "Noch keine Anfragen.",
+    "recentRequestsModel": "Modell",
+    "recentRequestsTokens": "Eingabe / Ausgabe",
+    "recentRequestsWhen": "Wann",
     "downloadDmg": "DMG herunterladen (macOS)",
     "downloadDmgDescription": "Eine neue Version der OmniRoute-Desktop-App ist verfügbar. Bitte laden Sie den macOS DMG-Installer herunter und installieren Sie ihn, um zu aktualisieren (aktuell: v{version}).",
     "downloadExe": "EXE herunterladen (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json für die Entdeckung des Gateway-Modells",
     "ccOnboardingCopy": "Kopieren",
     "ccOnboardingCopied": "Kopiert",
-    "ccOnboardingKeyPlaceholder": "<dein OmniRoute API-Schlüssel>",
+    "ccOnboardingKeyPlaceholder": "'<dein OmniRoute API-Schlüssel>'",
     "ccOnboardingWindowNote": "Claude Code geht von einem 200K-Kontextfenster für jede Modell-ID aus, die es nicht erkennt. Für ein Modell mit einem anderen tatsächlichen Fenster fügen Sie CLAUDE_CODE_AUTO_COMPACT_WINDOW direkt darunter hinzu, damit die automatische Komprimierung nicht zu früh ausgelöst wird.",
     "failedSave": "Speichern fehlgeschlagen",
     "profileSyncTitle": "Automatische Synchronisierung von CLI-Profilen",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Leitet jeden wiederverwendbaren Prompt-Präfix konsistent zum selben Provider-Konto",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Gewichtet Restquote gegen 5h- und Wochen-Resets und rotiert ähnliche Scores per Round Robin",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusion",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Vergünstigter API-Proxy für über 40 Modelle, darunter GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Holen Sie sich Ihren API-Schlüssel unter https://freeaiapikey.com/dashboard. Basis-URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Holen Sie sich 300 $ kostenloses API-Guthaben unter https://freemodel.dev – keine Zahlungsinformationen erforderlich. OpenAI-kompatibler Endpunkt. GPT-5.4- und GPT-5.5-Modelle verfügbar.",
       "friendliai": "Kostenlose Stufe für serverlose Inferenz – keine Kreditkarte erforderlich",
-      "gemini": "Für immer kostenlos: 1.500 Anfragen/Tag für Gemini 2.5 Flash — keine Kreditkarte, Schlüssel unter aistudio.google.com anfordern",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "GigaChat (Sber) mit einem API-Schlüssel verbinden.",
       "gitlab": "Persönliches GitLab-Zugriffstoken für die öffentliche Code Suggestions API. Konfigurieren Sie eine selbstgehostete Basis-URL, wenn Sie nicht gitlab.com verwenden.",
       "gitlawb-gmi": "Holen Sie sich Ihren API-Schlüssel aus dem Gitlawb Opengateway-Dashboard.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "GLM Coding (China) mit einem API-Schlüssel verbinden.",
       "glmt": "Voreingestelltes GLM-Profil mit höherem Token-Budget, aktiviertem Denken und längerem Timeout.",
       "getgoapi": "GoAPI mit einem API-Schlüssel verbinden.",
-      "groq": "Kostenlose Stufe: 30 RPM / 14,4K RPD — keine Kreditkarte",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "API-Schlüssel unter haiper.ai/haiper-api anfordern",
       "heroku": "Heroku AI mit einem API-Schlüssel verbinden.",
       "hcnsec": "API-Schlüssel unter api.hcnsec.cn anfordern",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Fehler beim Starten des Befehls Code auth",
     "connectionDeleted": "Verbindung gelöscht",
     "connectionFallback": "Verbindung",
-    "coolingConnectionsDescription": "Diese Verbindungen haben bei ihrer letzten Anfrage einen 429 (Rate-Limit) zurückgegeben. OmniRoute wird sie überspringen, bis der Timer abläuft – eine manuelle Deaktivierung ist nicht erforderlich.",
+    "coolingConnectionsDescription": "Diese Verbindungen kühlen nach der letzten Anfrage ab. OmniRoute überspringt sie, bis der Timer abläuft — keine manuelle Deaktivierung nötig.",
     "coolingConnectionsTitle": "Aktuell kühlen ({count})",
     "failedDeleteAlias": "Alias konnte nicht gelöscht werden",
     "failedDeleteConnection": "Verbindung konnte nicht gelöscht werden",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Bevorzugen Sie das günstigste verfügbare Konto",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Bevorzugt Konten mit gesunder Restquote und näherem Reset",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky-Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Wenn diese Option aktiviert ist, werden fehlgeschlagene Anbieter global nachverfolgt und für eine Cooldown-Phase übersprungen.",
     "resilienceProviderCooldownMin": "Minimaler Cooldown",
     "resilienceProviderCooldownMax": "Maximaler Cooldown",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Anmeldedaten-Gesundheitsprüfung",
+    "resilienceCredentialHealthScope": "Alle aktiven API-Schlüssel- und OAuth-Verbindungen",
+    "resilienceCredentialHealthTrigger": "Periodisch, in festem Takt",
+    "resilienceCredentialHealthEffect": "Prüft die Anmeldedaten jeder Verbindung und markiert sie aktiv/Fehler; fehlgeschlagene Verbindungen gehen in exponentielles Backoff",
+    "resilienceCredentialHealthDesc": "Hintergrundscan, der die Anmeldedaten jeder aktiven Verbindung durch einen Aufruf beim Anbieter prüft. 0 schaltet den Scan vollständig ab. Gesundheitsprüfwerte pro Verbindung (im Bearbeitungsdialog) überschreiben immer diese globale Vorgabe.",
+    "resilienceCredentialHealthInterval": "Globales Prüfintervall",
+    "resilienceCredentialHealthEveryMinutes": "Alle {minutes} Min",
+    "resilienceCredentialHealthHint": "0 deaktiviert den Hintergrundscan (max. 1440 Min = 24 h). Verbindungen mit eigenem Gesundheitsprüfwert ignorieren diese globale Vorgabe; 0 bei einer Verbindung nimmt sie auch bei laufendem globalem Scan aus.",
     "forcedFingerprintTitle": "Für {provider} immer aktiviert — erforderlich für die Sicherheit von OAuth-Konten; kann nicht deaktiviert werden.",
     "forcedFingerprintBadge": "Erforderlich",
     "sessionAffinityTitle": "Sitzungsaffinität",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Sprachpakete: {packs}",
     "dragToReorder": "Ziehen, um Schritt neu anzuordnen",
     "engine": "Engine",
-    "intensity": "Intensität"
+    "intensity": "Intensität",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Kein Komprimierungsdurchlauf verfügbar.",
@@ -8692,6 +8705,7 @@
     "run": "Ausführen",
     "laneRejected": "abgelehnt: {reason}",
     "error": "Fehler",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Kombinierter Ablauf",
     "eachLayer": "Jede Ebene einzeln",
     "diff": "Differenz",
@@ -10947,6 +10961,9 @@
     "strategyLatency": "Latenzoptimiert",
     "poolMembersLabel": "Pool-Mitglieder ({count})",
     "poolNoMembers": "Noch keine Proxys in diesem Pool.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Entfernen",
     "poolRemoveFailed": "Fehler beim Entfernen des Proxys aus dem Pool",
     "poolAddLabel": "Proxy hinzufügen",
@@ -11334,11 +11351,11 @@
       "copy": "Kopieren",
       "autoscrollOn": "Autoscroll: ein",
       "autoscrollOff": "Autoscroll: aus",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Alle einklappen",
+      "collapseOneLevel": "Eine Ebene einklappen",
+      "currentExpandLevel": "Aktuelle Ausklappebene",
+      "expandOneLevel": "Eine Ebene ausklappen",
+      "expandAllLevels": "Alle ausklappen",
       "payload": {
         "clientRawRequest": "Client Rohanfrage",
         "clientRequest": "Kundenanfrage",
@@ -12967,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Stream-Wiederherstellung erlauben, um die Antwort erneut anzufordern und zusammenzufügen, nachdem bereits Bytes den Client erreicht haben."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Einmaliger Failover auf eine Geschwisterverbindung, wenn ein Stream schließt, bevor er einen nützlichen Frame gesendet hat, und der begrenzte Wiederholungsversuch auf derselben Verbindung aufgebraucht ist. Ohne nutzbare Geschwisterverbindung wird der ursprüngliche early-EOF-Fehler zurückgegeben. Aus: early-EOF bleibt nach dem Wiederholungsversuch endgültig."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Benutzerfreundliche Namensfelder in /v1/models-Antworten einschließen. Deaktivieren Sie dies für Clients, die nur Modell-IDs akzeptieren."
       },
@@ -12989,7 +13012,7 @@
         "description": "Nach der Anbieter-Modell-Synchronisierung ~/.codex/*.config.toml-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Codex-Konfiguration und ist standardmäßig deaktiviert."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Nach der Anbieter-Modell-Synchronisierung ~/.claude/profiles/<name>/settings.json-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Claude-Konfiguration und ist standardmäßig deaktiviert."
+        "description": "Nach der Anbieter-Modell-Synchronisierung ~/.claude/profiles/'<name>'/settings.json-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Claude-Konfiguration und ist standardmäßig deaktiviert."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Den Health-Check-Endpunkt der lokalen Instanz deaktivieren."
@@ -12999,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Netzwerkzugriff in der Skills-Sandbox aktivieren."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Sortieren nach",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Manuell",
+        "provider": "Anbieter",
+        "score": "Punktzahl (kostenlose Modelle)",
+        "name": "Name"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Die Punktzahl-Reihenfolge gilt nur für kostenlose Anbieter; alle anderen bleiben an Ort und Stelle."
     }
   },
   "comboControl": {
@@ -13140,6 +13171,7 @@
     "segmentHint": "Jedes Segment = ein kostenloser Pool · Pool-dedupliziert, ehrliche Zählung (keine künstlich erhöhten Rate-Limit-Obergrenzen).",
     "boost": "Schalten Sie ~{tokens} mehr/Monat mit einer einmaligen $10 OpenRouter-Aufladung frei (50 → 1000 Anfr./Tag)",
     "uncapped": "Dauerhaft kostenlos, kein veröffentlichtes Limit (ratenbegrenzt) — echter Zugang, nicht in der Überschrift gezählt:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# Modell} other {# Modelle}} als ToS-eingeschränkt markiert — Sie entscheiden",
     "provider": "Anbieter",
     "model": "Modell",
@@ -13413,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "neu",
     "setupGuide": "Einrichtungsanleitung",
     "disabledByFeed": "Durch den Radar-Feed deaktiviert",
@@ -13608,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Lehnen Sie Anfragen ab, bevor sie versendet werden, wenn das Zielmodell über die erforderlichen Funktionen (Vision, Werkzeuge, strukturierte Ausgabe, Kontextfenster) nicht verfügt. Schützt direkte Einzelanbieteranfragen, die den Kombo-Schicht-Kompatibilitätsfilter umgehen.",
   "featureFlagDisableContextWindowChecksDescription": "Lokale Kontextfenster- und Maximaleingabetoken-Prüfung von OmniRoute für direkte Einzelmodell-Anfragen überspringen. Upstream-Anbieter erzwingen weiterhin ihre tatsächlichen Grenzen. Prompt-Komprimierung und Ausgabetoken-Grenzen bleiben aktiv.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Seite nicht gefunden",
@@ -13988,6 +14024,16 @@
     "historyRange1d": "24 Std.",
     "historyRange7d": "7 Tage",
     "historyRange30d": "30 Tage",
+    "compareMode": "Ausführungen vergleichen",
+    "compareExit": "Vergleichsmodus beenden",
+    "compareHint": "Zwei Ausführungen zum Vergleich auswählen",
+    "compareTitle": "Vergleich",
+    "compareDetailFailed": "Details zu dieser Ausführung konnten nicht geladen werden",
+    "compareDifferentIdentity": "Unterschiedliche Quellen oder Skills — Abweichungen dienen nur zur Information",
+    "compareDuration": "Dauer",
+    "compareCost": "Kosten",
+    "compareEvents": "Ereignisse",
+    "compareDeltaLegend": "Δ rechts − links",
     "showCompleted": "Abgeschlossene anzeigen",
     "searchPlaceholder": "Aufgaben durchsuchen…",
     "filterStates": "Status",
@@ -14009,6 +14055,7 @@
     "stateCancelled": "Abgebrochen",
     "overflowMore": "+{count} weitere",
     "emptyTitle": "Noch nichts läuft",
+    "noMatches": "Keine Aufgaben entsprechen diesen Filtern",
     "emptyCloudAgentCta": "Cloud-Agenten einrichten",
     "emptyA2ACta": "A2A öffnen",
     "emptyConductorCta": "Leiter öffnen",

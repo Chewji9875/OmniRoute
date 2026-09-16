@@ -9,12 +9,38 @@ import type { AntigravityClientProfile } from "@/shared/constants/antigravityCli
 // returns a narrower list. Version strings track the live-captured CLI 1.0.81-6.
 export const GITHUB_COPILOT_API_VERSION = "2026-08-01";
 export const GITHUB_COPILOT_CLI_VERSION = "1.0.81-6";
+const GITHUB_COPILOT_VERSION_OVERRIDE_ENV = "GITHUB_COPILOT_CLI_VERSION";
+const SAFE_COPILOT_VERSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$/;
+
+function getSafeCopilotEnvValue(name: string, pattern: RegExp): string | null {
+  const raw = typeof process === "undefined" ? undefined : process.env?.[name];
+  if (typeof raw !== "string") return null;
+  const normalized = raw.trim();
+  if (!normalized || !pattern.test(normalized)) {
+    return null;
+  }
+  return normalized;
+}
+
+/** Captured pin, overridable via GITHUB_COPILOT_CLI_VERSION (#12417). */
+export function getGitHubCopilotCliVersion(): string {
+  return (
+    getSafeCopilotEnvValue(GITHUB_COPILOT_VERSION_OVERRIDE_ENV, SAFE_COPILOT_VERSION_PATTERN) ||
+    GITHUB_COPILOT_CLI_VERSION
+  );
+}
+
 export const GITHUB_COPILOT_EDITOR_VERSION = `copilot/${GITHUB_COPILOT_CLI_VERSION}`;
 export const GITHUB_COPILOT_CHAT_PLUGIN_VERSION = `copilot-chat/${GITHUB_COPILOT_CLI_VERSION}`;
 export const GITHUB_COPILOT_CHAT_USER_AGENT = `GitHubCopilotChat/${GITHUB_COPILOT_CLI_VERSION}`;
 export const GITHUB_COPILOT_CLI_USER_AGENT = `copilot/${GITHUB_COPILOT_CLI_VERSION}`;
 export const GITHUB_COPILOT_REFRESH_PLUGIN_VERSION = `copilot/${GITHUB_COPILOT_CLI_VERSION}`;
 export const GITHUB_COPILOT_REFRESH_USER_AGENT = "GithubCopilot/1.0";
+
+/** Request-time Copilot Chat UA. Pin consts above stay for lockstep tests (#12417). */
+export function getGitHubCopilotChatUserAgent(): string {
+  return `GitHubCopilotChat/${getGitHubCopilotCliVersion()}`;
+}
 export const GITHUB_COPILOT_INTEGRATION_ID = "copilot-developer-cli";
 export const GITHUB_COPILOT_OPENAI_INTENT = "conversation-agent";
 export const GITHUB_COPILOT_INTERACTION_TYPE = "conversation-user";
@@ -42,6 +68,14 @@ export const QWEN_STAINLESS_LANG = "js";
 
 export const QODER_DEFAULT_USER_AGENT = "Qoder-Cli";
 
+// CODEBUDDY_CN_USER_AGENT is the single source of truth for the CLI/CodeBuddy version
+// string. It MUST stay identical across OAuth (src/lib/oauth/constants/oauth.ts), chat
+// completions (open-sse/config/providers/registry/codebuddy-cn/index.ts) and usage/quota
+// (open-sse/services/usage/codebuddy-cn.ts) — a mismatched version string across a
+// single account's auth vs. chat calls is exactly the kind of internally-inconsistent
+// client fingerprint Tencent's WAF flags as anomalous (#12702).
+export const CODEBUDDY_CN_USER_AGENT = "CLI/2.108.1 CodeBuddy/2.108.1";
+
 export const KIRO_SDK_USER_AGENT = "AWS-SDK-JS/3.0.0 kiro-ide/1.0.0";
 export const KIRO_AMZ_USER_AGENT = "aws-sdk-js/3.0.0 kiro-ide/1.0.0";
 export const KIRO_STREAMING_TARGET =
@@ -62,10 +96,11 @@ export function getGitHubCopilotChatHeaders(
   // send exactly the CLI's set. The `copilot-integration-id` (copilot-developer-cli)
   // is the catalog-unlock lever; the stable X-Client-Machine-Id is the CLI's
   // per-install device fingerprint.
+  const version = getGitHubCopilotCliVersion();
   const headers: Record<string, string> = {
     "copilot-integration-id": GITHUB_COPILOT_INTEGRATION_ID,
-    "editor-version": GITHUB_COPILOT_EDITOR_VERSION,
-    "user-agent": GITHUB_COPILOT_CLI_USER_AGENT,
+    "editor-version": `copilot/${version}`,
+    "user-agent": `copilot/${version}`,
     "openai-intent": options.intent || GITHUB_COPILOT_OPENAI_INTENT,
     "x-interaction-type": GITHUB_COPILOT_INTERACTION_TYPE,
     "copilot-harness-id": GITHUB_COPILOT_HARNESS_ID,
@@ -128,23 +163,25 @@ export function getQwenCliUserAgent(version = QWEN_CLI_VERSION): string {
 }
 
 export function getGitHubCopilotInternalUserHeaders(authorization: string): Record<string, string> {
+  const version = getGitHubCopilotCliVersion();
   return {
     Authorization: authorization,
     Accept: "application/json",
     "X-GitHub-Api-Version": GITHUB_COPILOT_API_VERSION,
-    "User-Agent": GITHUB_COPILOT_CHAT_USER_AGENT,
-    "Editor-Version": GITHUB_COPILOT_EDITOR_VERSION,
-    "Editor-Plugin-Version": GITHUB_COPILOT_CHAT_PLUGIN_VERSION,
+    "User-Agent": `GitHubCopilotChat/${version}`,
+    "Editor-Version": `copilot/${version}`,
+    "Editor-Plugin-Version": `copilot-chat/${version}`,
   };
 }
 
 export function getGitHubCopilotRefreshHeaders(authorization: string): Record<string, string> {
+  const version = getGitHubCopilotCliVersion();
   return {
     Authorization: authorization,
     Accept: "application/json",
     "User-Agent": GITHUB_COPILOT_REFRESH_USER_AGENT,
-    "Editor-Version": GITHUB_COPILOT_EDITOR_VERSION,
-    "Editor-Plugin-Version": GITHUB_COPILOT_REFRESH_PLUGIN_VERSION,
+    "Editor-Version": `copilot/${version}`,
+    "Editor-Plugin-Version": `copilot/${version}`,
   };
 }
 

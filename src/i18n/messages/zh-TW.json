@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "刪除所有已完成的批次",
     "batchListBatchesTable": "批次",
     "changelogViewerLoading": "正在從 GitHub 載入變更日誌...",
-    "profile": "__MISSING__:Profile",
+    "profile": "個人資料",
     "profileLoading": "正在載入個人資料...",
     "profileHowToEarn": "如何賺取",
     "bootstrapBannerDismiss": "解僱",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "在 /v1/models 上廣告 claude/&lt;provider&gt;/&lt;model&gt; 鏡像 ID，以便 Claude Code 閘道模型發現列出非 Claude 模型。警告：當全域啟用時，會為所有客戶端重複目錄條目。",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "為提供者調度啟用按租戶的自適應虛擬准入通道（#9654）：一個租戶的突發流量不再導致另一個租戶收到 503。OMNIROUTE_CHAT_VIRTUAL_LANES 環境變數優先於此儀表板設定；變更在伺服器重新啟動後生效。",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "首頁",
     "dashboard": "儀表板",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "健康監測",
     "reportIssue": "報告問題",
     "activeError": "{active} 有效 · {errors} 錯誤",
+    "topologyLegendActive": "啟用中",
+    "topologyLegendRecent": "最近",
+    "topologyLegendError": "錯誤",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API金鑰",
     "requestsShort": "{count} 次請求",
@@ -1819,11 +1826,11 @@
     "updateStarted": "更新已開始...",
     "reloadingPageAutomatically": "自動重新載入頁面...",
     "providerTopology": "提供者拓撲",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "下載 DMG (macOS)",
     "downloadDmgDescription": "OmniRoute 桌面應用程式的新版本已經可用。請下載並安裝 macOS DMG 安裝程式以進行更新（目前版本：v{version}）。",
     "downloadExe": "下載 EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gateway 模型發現的 settings.json",
     "ccOnboardingCopy": "複製",
     "ccOnboardingCopied": "已複製",
-    "ccOnboardingKeyPlaceholder": "<您的 OmniRoute API 金鑰>",
+    "ccOnboardingKeyPlaceholder": "'<您的 OmniRoute API 金鑰>'",
     "ccOnboardingWindowNote": "Claude Code 假設對於任何它不認識的模型 ID，使用 200K 的上下文窗口。對於具有不同實際窗口的模型，請在其下方添加 CLAUDE_CODE_AUTO_COMPACT_WINDOW，以便自動壓縮不會過早觸發。",
     "failedSave": "無法儲存",
     "profileSyncTitle": "CLI 設定檔自動同步",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "復位感知RR",
     "resetAwareDesc": "平衡剩餘配額與 5 小時和每週重置，然後對相似分數進行迴圈賽",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "嚴格隨機",
     "strictRandomDesc": "洗牌池模式：每個模型使用一次後再重新洗牌",
     "fusion": "融合",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "40+ 種模型的折扣 API 代理，包括 GPT-5、Claude Opus 4.6、Claude Sonnet 4.6、Qwen 3.5。在 https://freeaiapikey.com/dashboard 取得 API 金鑰。基本 URL：https://freeaiapikey.com/v1。",
       "freemodel-dev": "在 https://freemodel.dev 取得 $300 美元免費 API 額度 — 無需付款資訊。OpenAI 相容端點。提供 GPT-5.4 和 GPT-5.5 模型。",
       "friendliai": "無伺服器推論的免費方案 — 無需信用卡",
-      "gemini": "永久免費：Gemini 2.5 Flash 每天 1,500 次請求 — 無需信用卡，在 aistudio.google.com 取得金鑰",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "使用 API 金鑰連線 GigaChat（Sber）。",
       "gitlab": "用於公開 Code Suggestions API 的 GitLab 個人存取權杖。不使用 gitlab.com 時，請設定自託管的基本 URL。",
       "gitlawb-gmi": "從 Gitlawb Opengateway 儀表板取得 API 金鑰。",
@@ -6175,7 +6184,7 @@
       "glm-cn": "使用 API 金鑰連線 GLM Coding（中國）。",
       "glmt": "預設 GLM 設定檔，具有較高的 token 預算、啟用思考功能，以及更長的超時時間。",
       "getgoapi": "使用 API 金鑰連線 GoAPI。",
-      "groq": "免費方案：每分鐘 30 次 / 每天 14,400 次請求 — 無需信用卡",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "在 haiper.ai/haiper-api 取得 API 金鑰",
       "heroku": "使用 API 金鑰連線 Heroku AI。",
       "hcnsec": "在 api.hcnsec.cn 取得 API 金鑰",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "無法啟動 Command Code auth",
     "connectionDeleted": "連線已刪除",
     "connectionFallback": "連接",
-    "coolingConnectionsDescription": "這些連接在最後一次請求時返回了 429（速率限制）。OmniRoute 將跳過它們，直到計時器到期 — 無需手動禁用。",
+    "coolingConnectionsDescription": "這些連線在上次請求後正在冷卻。計時器到期前 OmniRoute 會跳過它們 — 無需手動停用。",
     "coolingConnectionsTitle": "目前冷卻中 ({count})",
     "failedDeleteAlias": "無法刪除別名",
     "failedDeleteConnection": "無法刪除連接",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "優先選擇成本最低的可用帳戶",
     "resetAware": "復位感知RR",
     "resetAwareDesc": "優先選擇剩餘配額正常且重置時間較近的帳戶",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "嚴格隨機",
     "strictRandomDesc": "洗牌池模式：每個帳戶使用一次後再重新洗牌",
     "stickyLimit": "粘性限制",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "啟用後，失敗的提供者會在全域範圍內被追蹤並在冷卻期間內被跳過。",
     "resilienceProviderCooldownMin": "最小冷卻",
     "resilienceProviderCooldownMax": "最大冷卻",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "憑證健康檢查",
+    "resilienceCredentialHealthScope": "所有啟用的 API 金鑰與 OAuth 連線",
+    "resilienceCredentialHealthTrigger": "依固定節奏定期執行",
+    "resilienceCredentialHealthEffect": "探測每條連線的憑證並標為正常/錯誤；失敗的連線採指數退避",
+    "resilienceCredentialHealthDesc": "背景掃描：呼叫提供者以驗證每條啟用連線的憑證。設為 0 則完全關閉。各連線編輯對話框裡的健康檢查值一律覆寫此全域預設。",
+    "resilienceCredentialHealthInterval": "全域檢查間隔",
+    "resilienceCredentialHealthEveryMinutes": "每 {minutes} 分鐘",
+    "resilienceCredentialHealthHint": "0 關閉背景掃描（最長 1440 分鐘 = 24 小時）。帶有自身健康檢查值的連線忽略此全域預設；某連線設為 0 時即使全域掃描開啟也會略過它。",
     "forcedFingerprintTitle": "{provider} 始終啟用 — OAuth 帳戶安全所必需；無法關閉。",
     "forcedFingerprintBadge": "必需",
     "sessionAffinityTitle": "Session 親和性",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "語言包：{packs}",
     "dragToReorder": "拖曳以重新排序步驟",
     "engine": "引擎",
-    "intensity": "強度"
+    "intensity": "強度",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "無可用的壓縮執行記錄。",
@@ -8692,6 +8705,7 @@
     "run": "執行",
     "laneRejected": "已拒絕：{reason}",
     "error": "錯誤",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "組合流程",
     "eachLayer": "各圖層分開",
     "diff": "差異",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "最大",
     "grokAutoTopUpMonth": "月份",
     "grokAdditionalCredits": "額外的致謝",
+    "kiloAccountBalance": "帳戶餘額",
+    "kiloPassBonus": "可用獎勵",
+    "kiloPassMeterLabel": "Kilo Pass 用量儀表",
+    "kiloPassPaid": "已付費",
+    "kiloPassRemaining": "剩餘",
+    "kiloPassRenews": "{count} 天後續訂",
+    "kiloPassUsageLabel": "本月用量",
     "kimiExtraUsageCredits": "加油包餘額",
     "kimiExtraUsage": "額度加油包",
     "kimiExtraUsageEnabled": "已開啟",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "延遲最佳化",
     "poolMembersLabel": "池成員（{count}）",
     "poolNoMembers": "此池中尚無代理。",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "移除",
     "poolRemoveFailed": "從池中移除代理失敗",
     "poolAddLabel": "新增代理",
@@ -11327,11 +11351,11 @@
       "copy": "複製",
       "autoscrollOn": "自動滾動：開啟",
       "autoscrollOff": "自動滾動：關閉",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "全部摺疊",
+      "collapseOneLevel": "摺疊一層",
+      "currentExpandLevel": "目前展開層級",
+      "expandOneLevel": "展開一層",
+      "expandAllLevels": "全部展開",
       "payload": {
         "clientRawRequest": "客戶原始請求",
         "clientRequest": "客戶請求",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "允許串流復原在位元組已到達用戶端後再次請求回應並將其拼接。"
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "當串流在送出任何有用訊框之前關閉，且同一連線上的有限重試已用盡時，容錯移轉一次到同級連線。若沒有可用的同級連線，則回傳原始的 early-EOF 錯誤。關閉：重試後 early-EOF 仍為終止結果。"
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "在 /v1/models 回應中包含顯示友善的名稱欄位。對於僅接受模型 ID 的用戶端請停用此項。"
       },
@@ -12982,7 +13012,7 @@
         "description": "在提供者-模型同步後，從即時目錄重新產生 ~/.codex/*.config.toml 設定檔。這絕不會更改作用中或預設的 Codex 配置，且預設為關閉。"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "在提供者-模型同步後，從即時目錄重新產生 ~/.claude/profiles/<name>/settings.json 設定檔。這絕不會更改作用中或預設的 Claude 配置，且預設為關閉。"
+        "description": "在提供者-模型同步後，從即時目錄重新產生 ~/.claude/profiles/'<name>'/settings.json 設定檔。這絕不會更改作用中或預設的 Claude 配置，且預設為關閉。"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "停用本機執行個體的健康檢查端點。"
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "在技能沙盒中啟用網路存取。"
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "排序方式",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "手動",
+        "provider": "提供者",
+        "score": "評分（免費模型）",
+        "name": "名稱"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "依評分排序只對免費提供者生效，其餘維持原位。"
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "每個區段 = 一個免費池 · 池間去重、誠實計數（無膨脹的速率限制上限）。",
     "boost": "一次性 $10 OpenRouter 充值即可解鎖約 {tokens}/月（50 → 1000 請求/天）",
     "uncapped": "永久免費，無公佈上限（有速率限制）——真實存取，不計入標題數字：",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# model} other {# models}} flagged as ToS-restricted — you decide",
     "provider": "提供者",
     "model": "模型",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "新的",
     "setupGuide": "設置指南",
     "disabledByFeed": "被雷達數據源禁用",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "在目標模型缺乏所需功能（視覺、工具、結構化輸出、上下文窗口）時，拒絕發送前的請求。保護繞過組合層兼容性過濾器的直接單一提供者請求。",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "找不到頁面",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 小時",
     "historyRange7d": "7 天",
     "historyRange30d": "30 天",
+    "compareMode": "比較執行",
+    "compareExit": "結束比較模式",
+    "compareHint": "選擇兩個執行進行比較",
+    "compareTitle": "比較",
+    "compareDetailFailed": "無法載入此執行的詳細資料",
+    "compareDifferentIdentity": "來源或技能不同 — 差異僅供參考",
+    "compareDuration": "持續時間",
+    "compareCost": "成本",
+    "compareEvents": "活動",
+    "compareDeltaLegend": "Δ 右 − 左",
     "showCompleted": "顯示已完成",
     "searchPlaceholder": "搜尋任務…",
     "filterStates": "狀態",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "已取消",
     "overflowMore": "還有 {count} 個",
     "emptyTitle": "目前沒有正在執行的內容",
+    "noMatches": "沒有任務符合這些篩選條件",
     "emptyCloudAgentCta": "設定雲端代理",
     "emptyA2ACta": "開啟 A2A",
     "emptyConductorCta": "開啟導體",

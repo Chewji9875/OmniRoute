@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Futa makundi yote yaliyokamilishwa",
     "batchListBatchesTable": "Makundi",
     "changelogViewerLoading": "Inapakia logi ya mabadiliko kutoka kwa GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Wasifu",
     "profileLoading": "Inapakia wasifu...",
     "profileHowToEarn": "Jinsi ya kupata",
     "bootstrapBannerDismiss": "Ondoa",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Tangaza claude/&lt;provider&gt;/&lt;model&gt; vitambulisho vya kioo kwenye /v1/models ili orodha ya kugundua modeli za Claude Code iwe na modeli zisizo za Claude. Onyo: inafanya kuingia mara mbili kwenye katalogi kwa wateja wote inapowekwa kuwa ya ulimwengu mzima.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Washa njia za uandikishaji pepe zinazobadilika kwa kila mpangaji (tenant) kwa utumaji wa watoa huduma (#9654): mlipuko wa mpangaji mmoja hautoi tena 503 kwa mwingine. Kigezo cha mazingira cha OMNIROUTE_CHAT_VIRTUAL_LANES kinashinda mpangilio huu wa dashibodi; mabadiliko yanatumika wakati seva inapoanzishwa upya.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Health Monitor",
     "reportIssue": "Report issue",
     "activeError": "{active} active · {errors} error",
+    "topologyLegendActive": "__MISSING__:Active",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "__MISSING__:Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} reqs",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Update started...",
     "reloadingPageAutomatically": "Inapakia upya ukurasa kiotomatiki...",
     "providerTopology": "Topolojia ya mtoaji",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "Pakua DMG (macOS)",
     "downloadDmgDescription": "Toleo jipya la programu ya desktop ya OmniRoute linapatikana. Tafadhali pakua na sakinisha msanidi wa DMG wa macOS ili kusasisha (sasa: v{version}).",
     "downloadExe": "Pakua EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json kwa ugunduzi wa mfano wa lango",
     "ccOnboardingCopy": "Nakili",
     "ccOnboardingCopied": "Imepigwa nakala",
-    "ccOnboardingKeyPlaceholder": "<funguo yako ya OmniRoute API>",
+    "ccOnboardingKeyPlaceholder": "'<funguo yako ya OmniRoute API>'",
     "ccOnboardingWindowNote": "Claude Code inadhania dirisha la muktadha la 200K kwa kitambulisho chochote cha mfano ambacho hakitambui. Kwa mfano wenye dirisha halisi tofauti, ongeza CLAUDE_CODE_AUTO_COMPACT_WINDOW chini yake ili auto-compaction isifanye kazi mapema sana.",
     "failedSave": "Imeshindwa kuhifadhi",
     "profileSyncTitle": "Ulandanishaji wa kiotomatiki wa wasifu wa CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Weka Upya-Aware RR",
     "resetAwareDesc": "Husawazisha mgawo uliosalia dhidi ya saa 5 na uwekaji upya wa kila wiki, kisha uwekaji alama sawa",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusion",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Proksi ya API yenye punguzo kwa miundo 40+ ikijumuisha GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Pata ufunguo wako wa API kwenye https://freeaiapikey.com/dashboard. URL ya Msingi: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Pata salio la bure la API la $300 kwenye https://freemodel.dev — hakuna maelezo ya malipo yanayohitajika. Endpoint inayoendana na OpenAI. Miundo ya GPT-5.4 na GPT-5.5 inapatikana.",
       "friendliai": "Kiwango cha bure cha makisio yasiyo na seva — hakuna kadi ya mkopo inayohitajika",
-      "gemini": "Bure milele: maombi 1,500/siku kwa Gemini 2.5 Flash — hakuna kadi ya mkopo, pata ufunguo kwenye aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Unganisha GigaChat (Sber) kwa kutumia ufunguo wa API.",
       "gitlab": "Tokeni ya ufikiaji wa kibinafsi ya GitLab kwa ajili ya API ya umma ya Code Suggestions. Sanidi URL ya msingi ya self-hosted wakati hutumii gitlab.com.",
       "gitlawb-gmi": "Pata ufunguo wako wa API kutoka kwenye dashibodi ya Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Unganisha GLM Coding (China) kwa kutumia ufunguo wa API.",
       "glmt": "Wasifu uliowekwa awali wa GLM wenye bajeti ya juu ya tokeni, kufikiri kumewashwa, na muda mrefu zaidi wa kuisha.",
       "getgoapi": "Unganisha GoAPI kwa kutumia ufunguo wa API.",
-      "groq": "Kiwango cha bure: 30 RPM / 14.4K RPD — hakuna kadi ya mkopo",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Pata ufunguo wa API kwenye haiper.ai/haiper-api",
       "heroku": "Unganisha Heroku AI kwa kutumia ufunguo wa API.",
       "hcnsec": "Pata ufunguo wa API kwenye api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Imeshindikana kuanzisha Command Code auth",
     "connectionDeleted": "Muunganisho umefutwa",
     "connectionFallback": "muunganisho",
-    "coolingConnectionsDescription": "Mawasiliano haya yalirudisha 429 (kikomo cha kiwango) kwenye ombi lao la mwisho. OmniRoute itayaepuka hadi kipima muda kikamilike — hakuna kuzima kwa mikono kunahitajika.",
+    "coolingConnectionsDescription": "Miunganisho hii inapoa baada ya ombi la mwisho. OmniRoute itayaruka hadi kipima muda kiishe — hakuna haja ya kuzima kwa mkono.",
     "coolingConnectionsTitle": "Sasa inapoa ({count})",
     "failedDeleteAlias": "Imeshindikana kufuta jina la utambulisho",
     "failedDeleteConnection": "Imeshindikana kufuta muunganisho",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Prefer cheapest available account",
     "resetAware": "Weka Upya-Aware RR",
     "resetAwareDesc": "Pendelea akaunti zilizo na kiasi kilichosalia cha afya na uwekaji upya wa karibu zaidi",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Ikiwashwa, watoa huduma walioshindwa hufuatiliwa kwa jumla na kupitwa kwa kipindi cha cooldown.",
     "resilienceProviderCooldownMin": "Cooldown ya chini zaidi",
     "resilienceProviderCooldownMax": "Cooldown ya juu zaidi",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Ukaguzi wa afya ya kitambulisho",
+    "resilienceCredentialHealthScope": "Miunganisho yote hai ya ufunguo wa API na OAuth",
+    "resilienceCredentialHealthTrigger": "Kila mara, kwa mdundo thabiti",
+    "resilienceCredentialHealthEffect": "Hukagua kitambulisho cha kila muunganisho na kukitia hai/kosa; miunganisho iliyoshindwa huingia backoff ya kielelezo",
+    "resilienceCredentialHealthDesc": "Uchunguzi wa nyuma unaothibitisha kitambulisho cha kila muunganisho hai kwa kumpigia mtoa huduma wake. Weka 0 ili kuzima kabisa. Thamani za Ukaguzi wa Afya kwa kila muunganisho (katika kidirisha cha kuhariri) daima zinabatilisha chaguo-msingi hili la kimataifa.",
+    "resilienceCredentialHealthInterval": "Muda wa ukaguzi wa kimataifa",
+    "resilienceCredentialHealthEveryMinutes": "Kila dakika {minutes}",
+    "resilienceCredentialHealthHint": "0 inazima uchunguzi wa nyuma (kiwango cha juu dakika 1440 = saa 24). Miunganisho yenye thamani yake ya Ukaguzi wa Afya hupuuzia chaguo-msingi hili la kimataifa; 0 kwenye muunganisho inautoa hata uchunguzi wa kimataifa ukiwa umewashwa.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Session affinity",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Vifurushi vya lugha: {packs}",
     "dragToReorder": "Buruta ili kupanga upya hatua",
     "engine": "Injini",
-    "intensity": "Ukali"
+    "intensity": "Ukali",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Hakuna uendeshaji wa mbano unaopatikana.",
@@ -8692,6 +8705,7 @@
     "run": "Endesha",
     "laneRejected": "imekataliwa: {reason}",
     "error": "hitilafu",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Mtiririko uliounganishwa",
     "eachLayer": "Kila safu kando",
     "diff": "Tofauti",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "max",
     "grokAutoTopUpMonth": "mwezi",
     "grokAdditionalCredits": "Mikopo Ya Ziada",
+    "kiloAccountBalance": "Salio la Akaunti",
+    "kiloPassBonus": "Bonasi inayopatikana",
+    "kiloPassMeterLabel": "Kipimo cha matumizi ya Kilo Pass",
+    "kiloPassPaid": "Imelipwa",
+    "kiloPassRemaining": "Iliyobaki",
+    "kiloPassRenews": "Inasasishwa baada ya siku {count}",
+    "kiloPassUsageLabel": "Matumizi ya mwezi huu",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Iliyoboreshwa kwa ucheleweshaji",
     "poolMembersLabel": "Wanachama wa dimbwi ({count})",
     "poolNoMembers": "Hakuna proksi katika dimbwi hili bado.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Ondoa",
     "poolRemoveFailed": "Imeshindwa kuondoa proksi kwenye dimbwi",
     "poolAddLabel": "Ongeza proksi",
@@ -11327,11 +11351,11 @@
       "copy": "Nakili",
       "autoscrollOn": "Autoscroll: on",
       "autoscrollOff": "Autoscroll: off",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Kunja zote",
+      "collapseOneLevel": "Kunja kiwango kimoja",
+      "currentExpandLevel": "Kiwango cha sasa cha kupanua",
+      "expandOneLevel": "Panua kiwango kimoja",
+      "expandAllLevels": "Panua zote",
       "payload": {
         "clientRawRequest": "Omba Mbichi ya Mteja",
         "clientRequest": "Omba Mteja",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Ruhusu urejesho wa mkondo kuomba jibu tena na kuliunganisha baada ya baiti kuwa tayari zimefikia mteja."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Hamia mara moja kwenye muunganisho ndugu wakati mkondo unafungwa kabla ya kutuma fremu yoyote yenye manufaa na jaribio la marudio lenye kikomo kwenye muunganisho uleule limekwisha. Bila muunganisho ndugu unaoweza kutumika, hitilafu asili ya early-EOF hurejeshwa. Imezimwa: early-EOF inabaki ya mwisho baada ya jaribio la marudio."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Jumuisha sehemu za majina rahisi kuonyeshwa katika majibu ya /v1/models. Zima hii kwa wateja wanaokubali vitambulisho vya mfano pekee."
       },
@@ -12982,7 +13012,7 @@
         "description": "Baada ya ulandanishi wa mtoa huduma na mfano, zalisha upya wasifu wa ~/.codex/*.config.toml kutoka kwenye katalogi hai. Hii haibadilishi kamwe usanidi amilifu au wa chaguomsingi wa Codex na imezimwa kwa chaguomsingi."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Zima kituo cha mwisho cha ukaguzi wa afya wa mfano wa ndani."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Wezesha ufikiaji wa mtandao katika sandbox ya ujuzi."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Panga kwa",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Mkono",
+        "provider": "Mtoa huduma",
+        "score": "Alama (modeli za bure)",
+        "name": "Jina"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Mpangilio wa alama unahusu watoa huduma wa bure tu; wengine wanabaki mahali pao."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Kila sehemu = pool moja ya bure · pool isiyo na marudio, hesabu ya uaminifu (hakuna dari zilizoongezwa za kikomo cha kasi).",
     "boost": "Fungua takriban ~{tokens} zaidi/mwezi kwa kuongeza salio la mara moja la $10 la OpenRouter (maombi 50 → 1000/siku)",
     "uncapped": "Bure kabisa, hakuna kikomo kilichochapishwa (kasi imedhibitiwa) — ufikiaji halisi, haujahesabiwa kwenye kichwa cha habari:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# mfano} other {# mifano}} imewekewa alama kama iliyozuiliwa na ToS — unaamua",
     "provider": "Mtoa huduma",
     "model": "Mfano",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "ny",
     "setupGuide": "Installationsguide",
     "disabledByFeed": "Inaktiverad av Radar-flödet",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "kataa maombi kabla ya kutuma wakati mfano wa lengo hauna uwezo unaohitajika (maono, zana, matokeo yaliyoandikwa, dirisha la muktadha). Inalinda maombi ya moja kwa moja kutoka kwa mtoa huduma mmoja ambayo yanapita chujio cha ulinganifu wa safu ya mchanganyiko.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Ukurasa haukupatikana",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "Saa 24",
     "historyRange7d": "Siku 7",
     "historyRange30d": "Siku 30",
+    "compareMode": "Linganisha uendeshaji",
+    "compareExit": "Toka katika hali ya kulinganisha",
+    "compareHint": "Chagua uendeshaji mbili za kulinganisha",
+    "compareTitle": "Ulinganisho",
+    "compareDetailFailed": "Maelezo ya uendeshaji huu hayakuweza kupakiwa",
+    "compareDifferentIdentity": "Vyanzo au ujuzi tofauti — tofauti hizi ni kwa taarifa tu",
+    "compareDuration": "Muda",
+    "compareCost": "Gharama",
+    "compareEvents": "Matukio",
+    "compareDeltaLegend": "Δ kulia − kushoto",
     "showCompleted": "Onyesha vilivyokamilika",
     "searchPlaceholder": "Tafuta kazi…",
     "filterStates": "Hali",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Imeghairiwa",
     "overflowMore": "+{count} zaidi",
     "emptyTitle": "Hakuna kinachoendesha bado",
+    "noMatches": "Hakuna kazi zinazolingana na vichujio hivi",
     "emptyCloudAgentCta": "Sanidi Mawakala wa Wingu",
     "emptyA2ACta": "Fungua A2A",
     "emptyConductorCta": "Fungua Msimamizi",

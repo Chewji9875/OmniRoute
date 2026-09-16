@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "ลบแบทช์ที่เสร็จสมบูรณ์ทั้งหมด",
     "batchListBatchesTable": "แบตช์",
     "changelogViewerLoading": "กำลังโหลดบันทึกการเปลี่ยนแปลงจาก GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "โปรไฟล์",
     "profileLoading": "กำลังโหลดโปรไฟล์...",
     "profileHowToEarn": "วิธีการได้รับ",
     "bootstrapBannerDismiss": "ยกเลิก",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "โฆษณา claude/&lt;provider&gt;/&lt;model&gt; mirror ids บน /v1/models เพื่อให้รายการการค้นหาโมเดลของ Claude Code แสดงโมเดลที่ไม่ใช่ Claude เตือน: จะทำให้มีรายการในแคตตาล็อกซ้ำสำหรับลูกค้าทุกคนเมื่อเปิดใช้งานทั่วโลก.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "เปิดใช้เลนรับเข้าเสมือนแบบปรับตัวต่อเทนแนนต์สำหรับการส่งไปยังผู้ให้บริการ (#9654): การพุ่งสูงของเทนแนนต์หนึ่งจะไม่ทำให้อีกเทนแนนต์ได้รับ 503 อีกต่อไป ตัวแปรสภาพแวดล้อม OMNIROUTE_CHAT_VIRTUAL_LANES มีผลเหนือการตั้งค่าแดชบอร์ดนี้ การเปลี่ยนแปลงมีผลเมื่อรีสตาร์ทเซิร์ฟเวอร์",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "บ้าน",
     "dashboard": "แดชบอร์ด",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "การตรวจสุขภาพ",
     "reportIssue": "รายงานปัญหา",
     "activeError": "{active} ใช้งานอยู่ · ข้อผิดพลาด {errors}",
+    "topologyLegendActive": "ใช้งานอยู่",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "เกิดข้อผิดพลาด",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "คีย์ API",
     "requestsShort": "{count} ความต้องการ",
@@ -1819,11 +1826,11 @@
     "updateStarted": "เริ่มการอัพเดต...",
     "reloadingPageAutomatically": "กำลังโหลดหน้าซ้ำโดยอัตโนมัติ...",
     "providerTopology": "โทโพโลยีของผู้ให้บริการ",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "ดาวน์โหลด DMG (macOS)",
     "downloadDmgDescription": "มีเวอร์ชันใหม่ของแอปเดสก์ท็อป OmniRoute พร้อมใช้งาน กรุณาดาวน์โหลดและติดตั้งตัวติดตั้ง macOS DMG เพื่อทำการอัปเดต (ปัจจุบัน: v{version}).",
     "downloadExe": "ดาวน์โหลด EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json สำหรับการค้นพบโมเดลเกตเวย์",
     "ccOnboardingCopy": "คัดลอก",
     "ccOnboardingCopied": "คัดลอกแล้ว",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Claude Code สมมติว่ามีหน้าต่างบริบท 200K สำหรับรหัสโมเดลใด ๆ ที่มันไม่รู้จัก สำหรับโมเดลที่มีหน้าต่างจริงที่แตกต่างกัน ให้เพิ่ม CLAUDE_CODE_AUTO_COMPACT_WINDOW ลงไปใต้โมเดลนั้นเพื่อไม่ให้การบีบอัดอัตโนมัติทำงานเร็วเกินไป",
     "failedSave": "บันทึกไม่สำเร็จ",
     "profileSyncTitle": "การซิงค์โปรไฟล์ CLI อัตโนมัติ",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "รีเซ็ต-Aware RR",
     "resetAwareDesc": "ปรับโควต้าที่เหลือให้สมดุลกับการรีเซ็ต 5 ชม. และการรีเซ็ตรายสัปดาห์ จากนั้นจึงทำคะแนนแบบ Round-Robins ที่คล้ายกัน",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "การผสาน",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "พร็อกซี API ราคาพิเศษสำหรับโมเดลมากกว่า 40 โมเดล รวมถึง GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5 รับคีย์ API ของคุณได้ที่ https://freeaiapikey.com/dashboard URL ฐาน: https://freeaiapikey.com/v1",
       "freemodel-dev": "รับเครดิต API ฟรี $300 ที่ https://freemodel.dev — ไม่ต้องใช้ข้อมูลการชำระเงิน ปลายทางที่เข้ากันได้กับ OpenAI มีโมเดล GPT-5.4 และ GPT-5.5 ให้บริการ",
       "friendliai": "ระดับการใช้งานฟรีสำหรับการอนุมานแบบ Serverless — ไม่ต้องใช้บัตรเครดิต",
-      "gemini": "ฟรีตลอดชีพ: 1,500 คำขอ/วันสำหรับ Gemini 2.5 Flash — ไม่ต้องใช้บัตรเครดิต รับคีย์ได้ที่ aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "เชื่อมต่อ GigaChat (Sber) ด้วยคีย์ API",
       "gitlab": "โทเค็นการเข้าถึงส่วนตัวของ GitLab สำหรับ Code Suggestions API สาธารณะ กำหนดค่า URL ฐานแบบโฮสต์เองเมื่อไม่ได้ใช้งาน gitlab.com",
       "gitlawb-gmi": "รับคีย์ API ของคุณจากแดชบอร์ด Gitlawb Opengateway",
@@ -6175,7 +6184,7 @@
       "glm-cn": "เชื่อมต่อ GLM Coding (China) ด้วยคีย์ API",
       "glmt": "โปรไฟล์ GLM ที่ตั้งค่าไว้ล่วงหน้าพร้อมงบประมาณโทเค็นที่สูงขึ้น เปิดใช้งานการคิด และหมดเวลาการทำงานที่นานขึ้น",
       "getgoapi": "เชื่อมต่อ GoAPI ด้วยคีย์ API",
-      "groq": "ระดับการใช้งานฟรี: 30 RPM / 14.4K RPD — ไม่ต้องใช้บัตรเครดิต",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "รับคีย์ API ได้ที่ haiper.ai/haiper-api",
       "heroku": "เชื่อมต่อ Heroku AI ด้วยคีย์ API",
       "hcnsec": "รับ API key ได้ที่ api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "ไม่สามารถเริ่มคำสั่ง Code auth ได้",
     "connectionDeleted": "การเชื่อมต่อถูกลบแล้ว",
     "connectionFallback": "การเชื่อมต่อ",
-    "coolingConnectionsDescription": "การเชื่อมต่อเหล่านี้ส่งคืน 429 (อัตราการจำกัด) ในคำขอครั้งสุดท้ายของพวกเขา OmniRoute จะข้ามพวกเขาจนกว่าจะหมดเวลา — ไม่ต้องปิดการใช้งานด้วยตนเอง",
+    "coolingConnectionsDescription": "การเชื่อมต่อเหล่านี้กำลังพักหลังคำขอล่าสุด OmniRoute จะข้ามไปจนกว่าตัวจับเวลาจะหมด — ไม่ต้องปิดด้วยมือ",
     "coolingConnectionsTitle": "กำลังทำความเย็นอยู่ ({count})",
     "failedDeleteAlias": "ไม่สามารถลบชื่อเล่นได้",
     "failedDeleteConnection": "ไม่สามารถลบการเชื่อมต่อได้",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "ต้องการบัญชีที่ถูกที่สุด",
     "resetAware": "รีเซ็ต-Aware RR",
     "resetAwareDesc": "ต้องการบัญชีที่มีโควต้าคงเหลือที่ดีและมีการรีเซ็ตที่ใกล้กว่า",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "ขีด จำกัด เหนียว",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "เมื่อเปิดใช้งาน ผู้ให้บริการที่ล้มเหลวจะถูกติดตามทั่วทั้งระบบและถูกข้ามเป็นระยะเวลาคูลดาวน์",
     "resilienceProviderCooldownMin": "คูลดาวน์ขั้นต่ำ",
     "resilienceProviderCooldownMax": "คูลดาวน์สูงสุด",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "การตรวจสุขภาพข้อมูลรับรอง",
+    "resilienceCredentialHealthScope": "การเชื่อมต่อ API-key และ OAuth ที่ใช้งานทั้งหมด",
+    "resilienceCredentialHealthTrigger": "เป็นระยะ ตามจังหวะคงที่",
+    "resilienceCredentialHealthEffect": "ตรวจข้อมูลรับรองของการเชื่อมต่อแต่ละรายการแล้วทำเครื่องหมายว่าใช้งาน/ข้อผิดพลาด การเชื่อมต่อที่ล้มเหลวเข้าสู่การถอยแบบเอ็กซ์โพเนนเชียล",
+    "resilienceCredentialHealthDesc": "การกวาดพื้นหลังที่ตรวจสอบข้อมูลรับรองของการเชื่อมต่อที่ใช้งานแต่ละรายการโดยเรียกผู้ให้บริการ ตั้งเป็น 0 เพื่อปิดทั้งหมด ค่าการตรวจสุขภาพต่อรายการเชื่อมต่อ (ในกล่องแก้ไข) จะทับค่าเริ่มต้นส่วนกลางนี้เสมอ",
+    "resilienceCredentialHealthInterval": "ช่วงตรวจส่วนกลาง",
+    "resilienceCredentialHealthEveryMinutes": "ทุก {minutes} นาที",
+    "resilienceCredentialHealthHint": "0 ปิดการกวาดพื้นหลัง (สูงสุด 1440 นาที = 24 ชม.) การเชื่อมต่อที่มีค่าการตรวจสุขภาพของตัวเองจะไม่ใช้ค่าเริ่มต้นส่วนกลางนี้ ค่า 0 บนการเชื่อมต่อหนึ่งรายการจะตัดออกแม้การกวาดส่วนกลางเปิดอยู่",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Session affinity",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "แพ็กภาษา: {packs}",
     "dragToReorder": "ลากเพื่อจัดลำดับขั้นตอนใหม่",
     "engine": "เอนจิน",
-    "intensity": "ความเข้ม"
+    "intensity": "ความเข้ม",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "ไม่มีการรันการบีบอัดที่พร้อมใช้งาน",
@@ -8692,6 +8705,7 @@
     "run": "รัน",
     "laneRejected": "ถูกปฏิเสธ: {reason}",
     "error": "ข้อผิดพลาด",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "โฟลว์รวม",
     "eachLayer": "แต่ละเลเยอร์แยกกัน",
     "diff": "ความต่าง",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "สูงสุด",
     "grokAutoTopUpMonth": "เดือน",
     "grokAdditionalCredits": "เครดิตเพิ่มเติม",
+    "kiloAccountBalance": "ยอดเงินในบัญชี",
+    "kiloPassBonus": "โบนัสที่มีอยู่",
+    "kiloPassMeterLabel": "มาตรวัดการใช้งาน Kilo Pass",
+    "kiloPassPaid": "ชำระแล้ว",
+    "kiloPassRemaining": "คงเหลือ",
+    "kiloPassRenews": "ต่ออายุในอีก {count} วัน",
+    "kiloPassUsageLabel": "การใช้งานเดือนนี้",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "ปรับตามเวลาแฝงให้เหมาะสม",
     "poolMembersLabel": "สมาชิกในพูล ({count})",
     "poolNoMembers": "ยังไม่มีพร็อกซีในพูลนี้",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "ลบออก",
     "poolRemoveFailed": "ลบพร็อกซีออกจากพูลไม่สำเร็จ",
     "poolAddLabel": "เพิ่มพร็อกซี",
@@ -11327,11 +11351,11 @@
       "copy": "คัดลอก",
       "autoscrollOn": "เลื่อนอัตโนมัติ: เปิดใช้งาน",
       "autoscrollOff": "เลื่อนอัตโนมัติ: ปิด",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "ยุบทั้งหมด",
+      "collapseOneLevel": "ยุบหนึ่งระดับ",
+      "currentExpandLevel": "ระดับการขยายปัจจุบัน",
+      "expandOneLevel": "ขยายหนึ่งระดับ",
+      "expandAllLevels": "ขยายทั้งหมด",
       "payload": {
         "clientRawRequest": "คำขอดิบของลูกค้า",
         "clientRequest": "คำขอของลูกค้า",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "อนุญาตให้การกู้คืนสตรีมขอรับการตอบกลับอีกครั้งและต่อข้อมูลเข้าด้วยกันหลังจากที่ไบต์ไปถึงไคลเอนต์แล้ว"
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "สลับไปยังการเชื่อมต่อพี่น้องหนึ่งครั้งเมื่อสตรีมปิดก่อนส่งเฟรมที่มีประโยชน์ใด ๆ และการลองใหม่แบบจำกัดบนการเชื่อมต่อเดิมถูกใช้ไปแล้ว หากไม่มีการเชื่อมต่อพี่น้องที่ใช้งานได้ ระบบจะส่งคืนข้อผิดพลาด early-EOF เดิม ปิด: early-EOF ยังคงเป็นผลสิ้นสุดหลังการลองใหม่"
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "รวมฟิลด์ชื่อที่แสดงผลได้ง่ายในการตอบกลับ /v1/models ปิดใช้งานตัวเลือกนี้สำหรับไคลเอนต์ที่ยอมรับเฉพาะ ID โมเดลเท่านั้น"
       },
@@ -12982,7 +13012,7 @@
         "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.codex/*.config.toml ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Codex ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.claude/profiles/<name>/settings.json ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Claude ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
+        "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.claude/profiles/'<name>'/settings.json ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Claude ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "ปิดใช้งานปลายทาง health-check ของอินสแตนซ์ในเครื่อง"
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "เปิดใช้งานการเข้าถึงเครือข่ายใน skills sandbox"
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "เรียงตาม",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "ด้วยตนเอง",
+        "provider": "ผู้ให้บริการ",
+        "score": "คะแนน (โมเดลฟรี)",
+        "name": "ชื่อ"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "การเรียงตามคะแนนใช้กับผู้ให้บริการฟรีเท่านั้น ที่เหลืออยู่ที่เดิม"
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "แต่ละส่วน = หนึ่งพูลฟรี · ลดข้อมูลซ้ำในพูล, นับตามจริง (ไม่มีการเพิ่มเพดานจำกัดอัตราการใช้งานเกินจริง)",
     "boost": "ปลดล็อกเพิ่มอีกประมาณ ~{tokens}/เดือน ด้วยการเติมเงิน OpenRouter $10 ครั้งเดียว (50 → 1000 คำขอ/วัน)",
     "uncapped": "ฟรีถาวร ไม่มีขีดจำกัดที่เผยแพร่ (จำกัดอัตราการใช้งาน) — เข้าถึงได้จริง ไม่นับรวมในหัวข้อหลัก:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# โมเดล} other {# โมเดล}} ถูกทำเครื่องหมายว่าจำกัดตามข้อกำหนดการให้บริการ — คุณเป็นผู้ตัดสินใจ",
     "provider": "ผู้ให้บริการ",
     "model": "โมเดล",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "ใหม่",
     "setupGuide": "คู่มือการตั้งค่า",
     "disabledByFeed": "ถูกปิดใช้งานโดยฟีดเรดาร์",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "ปฏิเสธคำขอก่อนการส่งเมื่อโมเดลเป้าหมายขาดความสามารถที่จำเป็น (วิสัยทัศน์, เครื่องมือ, ผลลัพธ์ที่มีโครงสร้าง, หน้าต่างบริบท) ป้องกันคำขอจากผู้ให้บริการเดียวที่ข้ามตัวกรองความเข้ากันได้ของเลเยอร์รวม",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "ไม่พบหน้า",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 ชม.",
     "historyRange7d": "7 วัน",
     "historyRange30d": "30 วัน",
+    "compareMode": "เปรียบเทียบการรัน",
+    "compareExit": "ออกจากโหมดเปรียบเทียบ",
+    "compareHint": "เลือกการรันสองรายการเพื่อเปรียบเทียบ",
+    "compareTitle": "การเปรียบเทียบ",
+    "compareDetailFailed": "โหลดรายละเอียดของการรันนี้ไม่สำเร็จ",
+    "compareDifferentIdentity": "แหล่งที่มาหรือสกิลต่างกัน — ส่วนต่างนี้เป็นข้อมูลอ้างอิงเท่านั้น",
+    "compareDuration": "ระยะเวลา",
+    "compareCost": "ราคา",
+    "compareEvents": "กิจกรรม",
+    "compareDeltaLegend": "Δ ขวา − ซ้าย",
     "showCompleted": "แสดงที่เสร็จสิ้นแล้ว",
     "searchPlaceholder": "ค้นหางาน…",
     "filterStates": "สถานะ",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "ยกเลิกแล้ว",
     "overflowMore": "อีก {count} รายการ",
     "emptyTitle": "ยังไม่มีอะไรทำงานอยู่",
+    "noMatches": "ไม่มีงานที่ตรงกับตัวกรองเหล่านี้",
     "emptyCloudAgentCta": "ตั้งค่าเอเจนต์คลาวด์",
     "emptyA2ACta": "เปิด A2A",
     "emptyConductorCta": "เปิดตัวนำ",

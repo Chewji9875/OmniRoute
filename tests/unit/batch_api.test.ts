@@ -815,7 +815,7 @@ test("Files and batches routes expose explicit CORS preflight handlers", async (
   }
 });
 
-test("Batch by-id route exposes ownerless records to anonymous requests", async () => {
+test("Batch by-id route hides ownerless records from anonymous requests (GHSA-2jm2-mpx8-6523)", async () => {
   const file = createFile({
     bytes: 2,
     filename: "ownerless.jsonl",
@@ -830,15 +830,18 @@ test("Batch by-id route exposes ownerless records to anonymous requests", async 
     apiKeyId: null,
   });
 
+  // A null owner is unattributable: only the operator's dashboard session may
+  // read it. An anonymous caller (no key, no session) gets the same 404 a
+  // foreign key gets — never the record.
   const response = await batchByIdRoute.GET(
     new Request(`http://localhost/api/v1/batches/${batch.id}`),
     { params: Promise.resolve({ id: batch.id }) }
   );
   const body = await response.json();
 
-  assert.strictEqual(response.status, 200);
-  assert.strictEqual(body.id, batch.id);
-  assert.strictEqual(body.status, "validating");
+  assert.strictEqual(response.status, 404);
+  assert.strictEqual(body.error?.message, "Batch not found");
+  assert.strictEqual(body.id, undefined, "the ownerless record must not be returned");
 });
 
 test("Batch Cancel API", async () => {

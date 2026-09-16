@@ -7,6 +7,7 @@
  * Pattern follows callLogs.js (T-15 decomposition).
  */
 import { v4 as uuidv4 } from "uuid";
+import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/errorSanitization.ts";
 import { getDbInstance, isCloud, isBuildPhase } from "./db/core";
 import { ensureProxyLogsColumns } from "./db/schemaColumns";
 
@@ -40,6 +41,8 @@ interface ProxyLogEntry {
   comboId: string | null;
   account: string | null;
   tlsFingerprint: boolean;
+  /** HTTP status the provider actually returned; null when no response was received. */
+  upstreamStatus: number | null;
 }
 
 type ProxyLogInput = Partial<ProxyLogEntry> & {
@@ -92,6 +95,7 @@ function loadFromDb() {
         comboId: row.combo_id || null,
         account: row.account || null,
         tlsFingerprint: row.tls_fingerprint === 1,
+        upstreamStatus: typeof row.upstream_status === "number" ? row.upstream_status : null,
       });
     }
 
@@ -99,7 +103,10 @@ function loadFromDb() {
       console.log(`[proxyLogger] Loaded ${proxyLogs.length} proxy logs from SQLite`);
     }
   } catch (err: any) {
-    console.warn("[proxyLogger] Failed to load from DB:", err.message);
+    console.warn(
+      "[proxyLogger] Failed to load from DB:",
+      sanitizeErrorMessage(err) || "Proxy log hydration failed"
+    );
   }
 }
 
@@ -113,10 +120,7 @@ loadFromDb();
 
 /** Read at call time so tests can toggle it between imports. */
 export function isProxyLogIncludeIps(): boolean {
-  return (
-    process.env.PROXY_LOG_INCLUDE_IPS === "true" ||
-    process.env.PROXY_LOG_INCLUDE_IPS === "1"
-  );
+  return process.env.PROXY_LOG_INCLUDE_IPS === "true" || process.env.PROXY_LOG_INCLUDE_IPS === "1";
 }
 
 /**
@@ -152,6 +156,10 @@ export function formatProxyEgressConsoleLine(params: {
 // ──────────────── Log a proxy event ────────────────
 
 export function logProxyEvent(entry: ProxyLogInput) {
+  const safeError =
+    entry.error === null || entry.error === undefined || entry.error === ""
+      ? null
+      : sanitizeErrorMessage(entry.error) || "Proxy request failed";
   const log: ProxyLogEntry = {
     id: uuidv4(),
     timestamp: new Date().toISOString(),
@@ -164,11 +172,12 @@ export function logProxyEvent(entry: ProxyLogInput) {
     clientIp: entry.clientIp ?? entry.publicIp ?? null,
     egressIp: entry.egressIp ?? null,
     latencyMs: entry.latencyMs || 0,
-    error: entry.error || null,
+    error: safeError,
     connectionId: entry.connectionId || null,
     comboId: entry.comboId || null,
     account: entry.account || null,
     tlsFingerprint: entry.tlsFingerprint || false,
+    upstreamStatus: entry.upstreamStatus ?? null,
   };
 
   // Structured egress line so the operator can confirm, in the proxy logs, which
@@ -236,15 +245,17 @@ export function flushProxyLogsSync() {
   // 1. If Redis driver is active, asynchronously publish batch to Redis Stream/Channel
   if (process.env.QUOTA_STORE_DRIVER === "redis" || process.env.QUOTA_STORE_REDIS_URL) {
     try {
-      import("@/lib/quota/redisQuotaStore").then(({ getRedisQuotaStore }) => {
-        const store = getRedisQuotaStore(process.env.QUOTA_STORE_REDIS_URL || "");
-        const client = (store as any)?.client;
-        if (client && typeof client.publish === "function") {
-          for (const entry of batch) {
-            client.publish("omniroute:proxy_logs", JSON.stringify(entry)).catch(() => {});
+      import("@/lib/quota/redisQuotaStore")
+        .then(({ getRedisQuotaStore }) => {
+          const store = getRedisQuotaStore(process.env.QUOTA_STORE_REDIS_URL || "");
+          const client = (store as any)?.client;
+          if (client && typeof client.publish === "function") {
+            for (const entry of batch) {
+              client.publish("omniroute:proxy_logs", JSON.stringify(entry)).catch(() => {});
+            }
           }
-        }
-      }).catch(() => {});
+        })
+        .catch(() => {});
     } catch {
       /* ignore redis pub errors */
     }
@@ -256,10 +267,10 @@ export function flushProxyLogsSync() {
     const insertStmt = db.prepare(
       `INSERT INTO proxy_logs (id, timestamp, status, proxy_type, proxy_host, proxy_port,
         level, level_id, provider, target_url, public_ip, egress_ip, latency_ms, error,
-        connection_id, combo_id, account, tls_fingerprint)
+        connection_id, combo_id, account, tls_fingerprint, upstream_status)
       VALUES (@id, @timestamp, @status, @proxyType, @proxyHost, @proxyPort,
         @level, @levelId, @provider, @targetUrl, @clientIp, @egressIp, @latencyMs, @error,
-        @connectionId, @comboId, @account, @tlsFingerprint)`
+        @connectionId, @comboId, @account, @tlsFingerprint, @upstreamStatus)`
     );
 
     const transaction = db.transaction((entries: ProxyLogEntry[]) => {
@@ -283,13 +294,17 @@ export function flushProxyLogsSync() {
           comboId: item.comboId,
           account: item.account,
           tlsFingerprint: item.tlsFingerprint ? 1 : 0,
+          upstreamStatus: item.upstreamStatus,
         });
       }
     });
 
     transaction(batch);
   } catch (err: any) {
-    console.warn("[proxyLogger] Failed to write proxy log batch to disk:", err?.message || err);
+    console.warn(
+      "[proxyLogger] Failed to write proxy log batch to disk:",
+      sanitizeErrorMessage(err) || "Proxy log persistence failed"
+    );
   }
 }
 
@@ -351,7 +366,10 @@ export function clearProxyLogs() {
       const db = getDbInstance();
       db.prepare("DELETE FROM proxy_logs").run();
     } catch (err: any) {
-      console.warn("[proxyLogger] Failed to clear DB:", err.message);
+      console.warn(
+        "[proxyLogger] Failed to clear DB:",
+        sanitizeErrorMessage(err) || "Proxy log cleanup failed"
+      );
     }
   }
 }

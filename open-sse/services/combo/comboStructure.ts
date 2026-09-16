@@ -15,13 +15,18 @@
 
 import { getModelContextLimit } from "../../../src/lib/modelCapabilities";
 import { getHiddenModelsByProvider } from "../../../src/lib/db/models";
-import { getComboModelString, normalizeComboStep } from "../../../src/lib/combos/steps.ts";
+import {
+  getComboModelString,
+  implicitPinAllowlist,
+  normalizeComboStep,
+} from "../../../src/lib/combos/steps.ts";
 import { getProviderByAlias, getProviderById } from "../../../src/shared/constants/providers.ts";
 import { estimateTokens } from "../contextManager.ts";
 import { containsMediaKind } from "../../utils/mediaParts.ts";
 import { getResolvedModelCapabilities } from "../modelCapabilities.ts";
 import { parseModel, stripContextWindowSuffix } from "../model.ts";
 import { dedupeTargetsByExecutionKey, isRecord } from "./comboData.ts";
+import { resolveComboTargetModelStr } from "./opencodeTargetAlias.ts";
 import { isComboModelVisible } from "./comboVisibility.ts";
 import { getTargetProvider, MAX_COMBO_DEPTH } from "./comboPredicates.ts";
 import { evaluateContextLimit } from "./contextOverrideGate.ts";
@@ -118,8 +123,16 @@ function normalizeRuntimeStep(
     };
   }
 
-  const modelStr = getComboModelString(step);
-  if (!modelStr) return null;
+  const declaredModelStr = getComboModelString(step);
+  if (!declaredModelStr) return null;
+  // #11912: rewrite an ambiguous "opencode/<model>" target to the "oc/" alias
+  // so it stays distinct from an explicit "opencode-zen/<model>" sibling
+  // instead of both collapsing onto the same provider — see
+  // opencodeTargetAlias.ts for the full rationale.
+  const modelStr = resolveComboTargetModelStr(declaredModelStr);
+
+  const connectionId = toTrimmedString(step.connectionId);
+  const allowedConnectionIds = implicitPinAllowlist(connectionId, step.allowedConnectionIds);
 
   return {
     kind: "model",
@@ -128,13 +141,13 @@ function normalizeRuntimeStep(
     modelStr,
     provider: getTargetProvider(modelStr, step.providerId),
     providerId: step.providerId || null,
-    connectionId: step.connectionId || null,
+    connectionId,
     // #3266: a per-step account allowlist scopes round-robin/weighted selection
     // to a subset of the provider's connections. This is the second writer of
     // `allowedConnectionIds` (tag routing is the first); both feed the existing
     // credential-selection filter in auth.ts.
-    ...(Array.isArray(step.allowedConnectionIds) && step.allowedConnectionIds.length > 0
-      ? { allowedConnectionIds: step.allowedConnectionIds }
+    ...(allowedConnectionIds && allowedConnectionIds.length > 0
+      ? { allowedConnectionIds }
       : {}),
     weight,
     label,

@@ -12,9 +12,8 @@ import assert from "node:assert/strict";
 // ─── resolveEndpointCategory: pure function tests ─────────────────────────
 // Import the pure resolver without DB dependencies
 
-const { resolveEndpointCategory } = await import(
-  "../../src/shared/constants/endpointCategories.ts"
-);
+const { resolveEndpointCategory } =
+  await import("../../src/shared/constants/endpointCategories.ts");
 
 test("resolveEndpointCategory: maps /v1/chat/completions to 'chat'", () => {
   assert.equal(resolveEndpointCategory("/v1/chat/completions"), "chat");
@@ -104,6 +103,18 @@ test("resolveEndpointCategory: maps /v1/agents/tasks to 'agents'", () => {
   assert.equal(resolveEndpointCategory("/v1/agents/tasks"), "agents");
 });
 
+test("resolveEndpointCategory: maps /v1/speech-to-text to 'elevenlabs'", () => {
+  assert.equal(resolveEndpointCategory("/v1/speech-to-text"), "elevenlabs");
+});
+
+test("resolveEndpointCategory: maps /v1/text-to-speech/voice_123 to 'elevenlabs'", () => {
+  assert.equal(resolveEndpointCategory("/v1/text-to-speech/voice_123"), "elevenlabs");
+});
+
+test("resolveEndpointCategory: maps /v1/voices to 'elevenlabs'", () => {
+  assert.equal(resolveEndpointCategory("/v1/voices"), "elevenlabs");
+});
+
 test("resolveEndpointCategory: returns null for unknown path", () => {
   assert.equal(resolveEndpointCategory("/v1/unknown"), null);
 });
@@ -120,4 +131,8 @@ test("resolveEndpointCategory: handles sub-paths under category", () => {
   assert.equal(resolveEndpointCategory("/v1/files/some-file-id"), "files");
   assert.equal(resolveEndpointCategory("/v1/batches/batch-123"), "batches");
   assert.equal(resolveEndpointCategory("/v1/responses/some/path"), "chat");
+});
+
+test("resolveEndpointCategory: maps /v1/batches/delete-completed to 'batches' (bulk sweep is policy-gated)", () => {
+  assert.equal(resolveEndpointCategory("/v1/batches/delete-completed"), "batches");
 });

@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Hapus semua batch yang sudah selesai",
     "batchListBatchesTable": "kumpulan",
     "changelogViewerLoading": "Memuat log perubahan dari GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Memuat profil...",
     "profileHowToEarn": "Bagaimana cara mendapatkan penghasilan",
     "bootstrapBannerDismiss": "Singkirkan",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Iklankan claude/&lt;provider&gt;/&lt;model&gt; mirror ids di /v1/models sehingga daftar penemuan model gateway Claude Code mencantumkan model non-Claude. Peringatan: menggandakan entri katalog untuk semua klien saat diaktifkan secara global.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Aktifkan jalur penerimaan virtual adaptif per-tenant untuk pengiriman penyedia (#9654): lonjakan satu tenant tidak lagi mengembalikan 503 ke tenant lain. Variabel lingkungan OMNIROUTE_CHAT_VIRTUAL_LANES menang atas pengaturan dasbor ini; perubahan berlaku setelah server dimulai ulang.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Rumah",
     "dashboard": "Dasbor",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Pemantau Kesehatan",
     "reportIssue": "Laporkan masalah",
     "activeError": "{active} aktif · kesalahan {errors}",
+    "topologyLegendActive": "Aktif",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "Kesalahan",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "Kunci API",
     "requestsShort": "{count} permintaan",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Pembaruan dimulai...",
     "reloadingPageAutomatically": "Memuat ulang halaman secara otomatis...",
     "providerTopology": "Topologi Penyedia",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "Unduh DMG (macOS)",
     "downloadDmgDescription": "Versi baru dari aplikasi desktop OmniRoute tersedia. Silakan unduh dan instal penginstal DMG macOS untuk memperbarui (sekarang: v{version}).",
     "downloadExe": "Unduh EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json untuk penemuan model gateway",
     "ccOnboardingCopy": "Salin",
     "ccOnboardingCopied": "Disalin",
-    "ccOnboardingKeyPlaceholder": "<kunci API OmniRoute Anda>",
+    "ccOnboardingKeyPlaceholder": "'<kunci API OmniRoute Anda>'",
     "ccOnboardingWindowNote": "Claude Code mengasumsikan jendela konteks 200K untuk setiap ID model yang tidak dikenalnya. Untuk model dengan jendela nyata yang berbeda, tambahkan CLAUDE_CODE_AUTO_COMPACT_WINDOW tepat di bawahnya agar kompak otomatis tidak aktif terlalu awal.",
     "failedSave": "Gagal menyimpan",
     "profileSyncTitle": "Sinkronisasi otomatis profil CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "RR Sadar Reset",
     "resetAwareDesc": "Menyeimbangkan sisa kuota dengan reset 5 jam dan mingguan, lalu menghitung skor serupa secara round-robin",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusi",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Proksi API berdiskon untuk 40+ model termasuk GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Dapatkan kunci API Anda di https://freeaiapikey.com/dashboard. URL Dasar: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Dapatkan kredit API gratis senilai $300 di https://freemodel.dev — tidak memerlukan informasi pembayaran. Endpoint yang kompatibel dengan OpenAI. Model GPT-5.4 dan GPT-5.5 tersedia.",
       "friendliai": "Tingkat gratis untuk inferensi serverless — tidak memerlukan kartu kredit",
-      "gemini": "Gratis selamanya: 1.500 req/hari untuk Gemini 2.5 Flash — tanpa kartu kredit, dapatkan kunci di aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Hubungkan GigaChat (Sber) dengan kunci API.",
       "gitlab": "Token akses pribadi GitLab untuk API Code Suggestions publik. Konfigurasikan URL dasar yang di-host sendiri saat tidak menggunakan gitlab.com.",
       "gitlawb-gmi": "Dapatkan kunci API Anda dari dasbor Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Hubungkan GLM Coding (China) dengan kunci API.",
       "glmt": "Profil GLM prasetel dengan anggaran token yang lebih tinggi, proses berpikir diaktifkan, dan batas waktu yang lebih lama.",
       "getgoapi": "Hubungkan GoAPI dengan kunci API.",
-      "groq": "Tingkat gratis: 30 RPM / 14,4K RPD — tanpa kartu kredit",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Dapatkan kunci API di haiper.ai/haiper-api",
       "heroku": "Hubungkan Heroku AI dengan kunci API.",
       "hcnsec": "Dapatkan kunci API di api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Gagal memulai Command Code auth",
     "connectionDeleted": "Koneksi dihapus",
     "connectionFallback": "koneksi",
-    "coolingConnectionsDescription": "Koneksi ini mengembalikan 429 (batas-kecepatan) pada permintaan terakhir mereka. OmniRoute akan melewatkan mereka sampai timer berakhir — tidak perlu menonaktifkan secara manual.",
+    "coolingConnectionsDescription": "Koneksi ini sedang mendingin setelah permintaan terakhir. OmniRoute akan melewatinya sampai timer habis — tidak perlu menonaktifkan secara manual.",
     "coolingConnectionsTitle": "Saat ini mendinginkan ({count})",
     "failedDeleteAlias": "Gagal menghapus alias",
     "failedDeleteConnection": "Gagal menghapus koneksi",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Lebih suka akun termurah yang tersedia",
     "resetAware": "RR Sadar Reset",
     "resetAwareDesc": "Lebih suka akun dengan sisa kuota yang sehat dan hampir disetel ulang",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Batas Lengket",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Jika diaktifkan, penyedia yang gagal akan dilacak secara global dan dilewati selama periode jeda.",
     "resilienceProviderCooldownMin": "Jeda minimum",
     "resilienceProviderCooldownMax": "Jeda maksimum",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Pemeriksaan kesehatan kredensial",
+    "resilienceCredentialHealthScope": "Semua koneksi API-key dan OAuth yang aktif",
+    "resilienceCredentialHealthTrigger": "Berkala, dengan irama tetap",
+    "resilienceCredentialHealthEffect": "Memeriksa kredensial setiap koneksi dan menandainya aktif/galat; koneksi gagal masuk backoff eksponensial",
+    "resilienceCredentialHealthDesc": "Pemindaian latar belakang yang memvalidasi kredensial setiap koneksi aktif dengan memanggil penyedianya. Setel 0 untuk menonaktifkannya sepenuhnya. Nilai Pemeriksaan Kesehatan per koneksi (di dialog sunting) selalu menimpa bawaan global ini.",
+    "resilienceCredentialHealthInterval": "Interval pemeriksaan global",
+    "resilienceCredentialHealthEveryMinutes": "Setiap {minutes} mnt",
+    "resilienceCredentialHealthHint": "0 menonaktifkan pemindaian latar belakang (maks. 1440 mnt = 24 jam). Koneksi dengan nilai Pemeriksaan Kesehatan sendiri mengabaikan bawaan global ini; 0 pada suatu koneksi mengeluarkannya meski pemindaian global menyala.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Afinitas sesi",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Paket bahasa: {packs}",
     "dragToReorder": "Seret untuk menyusun ulang langkah",
     "engine": "Mesin",
-    "intensity": "Intensitas"
+    "intensity": "Intensitas",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Tidak ada proses kompresi yang tersedia.",
@@ -8692,6 +8705,7 @@
     "run": "Jalankan",
     "laneRejected": "ditolak: {reason}",
     "error": "kesalahan",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Alur gabungan",
     "eachLayer": "Setiap lapisan secara terpisah",
     "diff": "Perbedaan",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "maksimum",
     "grokAutoTopUpMonth": "bulan",
     "grokAdditionalCredits": "Kredit Tambahan",
+    "kiloAccountBalance": "Saldo Akun",
+    "kiloPassBonus": "Bonus tersedia",
+    "kiloPassMeterLabel": "Meteran penggunaan Kilo Pass",
+    "kiloPassPaid": "Dibayar",
+    "kiloPassRemaining": "Tersisa",
+    "kiloPassRenews": "Diperbarui dalam {count} hari",
+    "kiloPassUsageLabel": "Penggunaan bulan ini",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Dioptimalkan untuk latensi",
     "poolMembersLabel": "Anggota pool ({count})",
     "poolNoMembers": "Belum ada proksi di pool ini.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Hapus",
     "poolRemoveFailed": "Gagal menghapus proksi dari pool",
     "poolAddLabel": "Tambahkan proksi",
@@ -11327,11 +11351,11 @@
       "copy": "Salin",
       "autoscrollOn": "Autoscroll: aktif",
       "autoscrollOff": "Autoscroll: mati",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Ciutkan semua",
+      "collapseOneLevel": "Ciutkan satu tingkat",
+      "currentExpandLevel": "Tingkat perluasan saat ini",
+      "expandOneLevel": "Perluas satu tingkat",
+      "expandAllLevels": "Perluas semua",
       "payload": {
         "clientRawRequest": "Permintaan Mentah Klien",
         "clientRequest": "Permintaan Klien",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Izinkan pemulihan streaming untuk meminta respons kembali dan menggabungkannya setelah byte telah mencapai klien."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Alihkan sekali ke koneksi saudara ketika stream tertutup sebelum mengirim frame yang berguna dan percobaan ulang terbatas pada koneksi yang sama sudah habis. Jika tidak ada koneksi saudara yang dapat digunakan, error early-EOF asli dikembalikan. Nonaktif: early-EOF tetap final setelah percobaan ulang."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Sertakan bidang nama yang mudah dibaca dalam respons /v1/models. Nonaktifkan ini untuk klien yang hanya menerima ID model."
       },
@@ -12982,7 +13012,7 @@
         "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.codex/*.config.toml dari katalog langsung. Ini tidak pernah mengubah konfigurasi Codex yang aktif atau default dan nonaktif secara default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.claude/profiles/<name>/settings.json dari katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau default dan nonaktif secara default."
+        "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.claude/profiles/'<name>'/settings.json dari katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau default dan nonaktif secara default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Nonaktifkan titik akhir health-check instans lokal."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Aktifkan akses jaringan di sandbox keterampilan."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Urutkan berdasarkan",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Manual",
+        "provider": "Penyedia",
+        "score": "Skor (model gratis)",
+        "name": "Nama"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Peringkat skor hanya berlaku untuk penyedia gratis; yang lain tetap di tempatnya."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Setiap segmen = satu pool gratis · deduplikasi pool, penghitungan jujur (tanpa batas rate-limit yang digelembungkan).",
     "boost": "Buka ~{tokens} tambahan/bln dengan top-up OpenRouter $10 satu kali (50 → 1000 req/hari)",
     "uncapped": "Gratis permanen, tanpa batas yang dipublikasikan (dibatasi rate-limit) — akses nyata, tidak dihitung dalam tajuk utama:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# model} other {# model}} ditandai sebagai dibatasi ToS — Anda yang menentukan",
     "provider": "Penyedia",
     "model": "Model",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "baru",
     "setupGuide": "Panduan pengaturan",
     "disabledByFeed": "Dinonaktifkan oleh umpan Radar",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tolak permintaan sebelum pengiriman ketika model target tidak memiliki kemampuan yang diperlukan (visi, alat, output terstruktur, jendela konteks). Melindungi permintaan penyedia tunggal langsung yang melewati filter kompatibilitas lapisan kombinasi.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Halaman tidak ditemukan",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 jam",
     "historyRange7d": "7 hari",
     "historyRange30d": "30 hari",
+    "compareMode": "Bandingkan eksekusi",
+    "compareExit": "Keluar dari mode perbandingan",
+    "compareHint": "Pilih dua eksekusi untuk dibandingkan",
+    "compareTitle": "Perbandingan",
+    "compareDetailFailed": "Detail eksekusi ini tidak dapat dimuat",
+    "compareDifferentIdentity": "Sumber atau skill berbeda — selisih hanya bersifat informasi",
+    "compareDuration": "Durasi",
+    "compareCost": "Biaya",
+    "compareEvents": "Acara",
+    "compareDeltaLegend": "Δ kanan − kiri",
     "showCompleted": "Tampilkan yang selesai",
     "searchPlaceholder": "Cari tugas…",
     "filterStates": "Status",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Dibatalkan",
     "overflowMore": "+{count} lainnya",
     "emptyTitle": "Belum ada yang berjalan",
+    "noMatches": "Tidak ada tugas yang cocok dengan filter ini",
     "emptyCloudAgentCta": "Siapkan Agen Cloud",
     "emptyA2ACta": "Buka A2A",
     "emptyConductorCta": "Buka Konduktor",

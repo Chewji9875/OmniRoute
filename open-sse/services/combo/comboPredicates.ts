@@ -11,8 +11,16 @@ import { remainingPercentFromQuotaWindows } from "../antigravityQuotaFamily.ts";
 import { errorResponse } from "../../utils/error.ts";
 import { parseModel } from "../model.ts";
 import { isSelfInflictedUpstreamTimeout } from "../../handlers/chatCore/cooldownClassification.ts";
-import { isLocalStreamLifecycleError, isLocalExecutionError } from "@/shared/utils/circuitBreaker";
-import { CONTEXT_OVERFLOW_PATTERNS, MODEL_ACCESS_DENIED_PATTERNS } from "../accountFallback.ts";
+import {
+  isLocalStreamLifecycleError,
+  isLocalExecutionError,
+  isModelCapacityOverloadError,
+} from "@/shared/utils/circuitBreaker";
+import {
+  CONTEXT_OVERFLOW_PATTERNS,
+  MODEL_ACCESS_DENIED_PATTERNS,
+  cooldownUntilMs,
+} from "../accountFallback.ts";
 import { isResourceNotFoundResponse } from "../errorClassifier.ts";
 import { getTrustedLocalRateLimitResponse } from "../rateLimitManager/errors.ts";
 import type { ResolvedComboTarget } from "./types.ts";
@@ -213,6 +221,12 @@ export function shouldRecordProviderBreakerFailure(args: {
 }): boolean {
   return (
     (!args.isStreamReadinessFailure || args.isStreamEarlyEof === true) &&
+    // Overloaded 502 (STREAM_EARLY_EOF wrapping "Overloaded") must not trip
+    // the whole-provider breaker. The status=529 check is defense in depth:
+    // 529 is not in PROVIDER_BREAKER_FAILURE_STATUSES today, but a later
+    // addition of 529 to that set must still stay off the breaker.
+    !isModelCapacityOverloadError(args.error) &&
+    !isModelCapacityOverloadError(args.status) &&
     PROVIDER_BREAKER_FAILURE_STATUSES.has(args.status) &&
     (!args.sameProviderNext || args.isProxyUnreachable === true) &&
     !args.skipProviderBreaker &&
@@ -232,6 +246,7 @@ const REQUEST_SCOPED_UPSTREAM_ERROR_CODES: Record<string, true> = {
   rate_limit_queue_timeout: true,
   rate_limit_queue_full: true,
   rate_limit_queue_wedged: true,
+  token_limit_exceeded: true,
   // #10360: our own executor-result contract violation. An internal defect, not
   // a provider/account fault — it must never cool a connection or trip a breaker.
   [EXECUTOR_CONTRACT_VIOLATION_CODE]: true,
@@ -441,10 +456,7 @@ export function quotaRemainingPercentFromQuota(
 
   const windows = record.windows;
   if (windows && typeof windows === "object" && !Array.isArray(windows)) {
-    const fromWindows = remainingPercentFromQuotaWindows(
-      windows as Record<string, unknown>,
-      scope
-    );
+    const fromWindows = remainingPercentFromQuotaWindows(windows as Record<string, unknown>, scope);
     if (fromWindows !== null) return fromWindows;
   }
 
@@ -469,7 +481,9 @@ export function normalizeConnectionStatus(value: unknown): string {
 
 export function hasFutureRateLimitUntil(value: unknown): boolean {
   if (value == null || value === "") return false;
-  const time = new Date(String(value)).getTime();
+  if (typeof value !== "string" && typeof value !== "number" && !(value instanceof Date))
+    return false;
+  const time = cooldownUntilMs(value);
   return Number.isFinite(time) && time > Date.now();
 }
 

@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Advertise claude/&lt;provider&gt;/&lt;model&gt; mirror ids on /v1/models so Claude Code gateway model discovery lists non-Claude models. Warning: doubles catalog entries for all clients when enabled globally.",
   "featureFlagNoThinkingAliasEnabledDescription": "Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Enable per-tenant adaptive virtual admission lanes for provider dispatch (#9654): one tenant's burst no longer 503s another. The OMNIROUTE_CHAT_VIRTUAL_LANES env var wins over this dashboard override; changes take effect at server restart.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Health Monitor",
     "reportIssue": "Report issue",
     "activeError": "{active} active · {errors} error",
+    "topologyLegendActive": "Active",
+    "topologyLegendRecent": "Recent",
+    "topologyLegendError": "Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} reqs",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json for gateway model discovery",
     "ccOnboardingCopy": "Copy",
     "ccOnboardingCopied": "Copied",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Claude Code assumes a 200K context window for any model id it does not recognize. For a model with a different real window, add CLAUDE_CODE_AUTO_COMPACT_WINDOW just under it so auto-compaction does not fire too early.",
     "failedSave": "Failed to save",
     "profileSyncTitle": "CLI profile auto-sync",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Balances remaining quota against 5h and weekly resets, then round-robins similar scores",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to leftover, divided by in-flight load. Existing conversations stay pinned.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusion",
@@ -6139,7 +6148,7 @@
       "bluesminds": "Get your API key at https://www.bluesminds.com — OpenAI-compatible endpoint at https://api.bluesminds.com/v1 with free daily credits. VIP models (Claude Opus 4.5, Gemini 2.5 Pro) consume pi credits.",
       "byteplus": "Connect BytePlus ModelArk with an API key.",
       "bytez": "$1 free credits, refreshes every 4 weeks",
-      "cerebras": "Free Trial: 1M tokens/day, 30K TPM, 5 RPM — no credit card.",
+      "cerebras": "One-time $5 signup credit (30-day validity); a payment method is required. Not a recurring free tier.",
       "charm-hyper": "Create an API key at https://hyper.charm.land, then paste it here as a Bearer token.",
       "chutes": "Bearer API key for the Chutes OpenAI-compatible gateway.",
       "clarifai": "Clarifai exposes OpenAI-compatible chat, responses and /models on /v2/ext/openai/v1. Public/community models typically require a PAT; app-scoped keys only work for resources inside that app.",
@@ -6169,7 +6178,7 @@
       "freeaiapikey": "Discounted API proxy for 40+ models including GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Get your API key at https://freeaiapikey.com/dashboard. Base URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Get $300 free API credits at https://freemodel.dev — no payment info required. OpenAI-compatible endpoint. GPT-5.4 and GPT-5.5 models available.",
       "friendliai": "Free tier for serverless inference — no credit card required",
-      "gemini": "Free forever: 1,500 req/day for Gemini 2.5 Flash — no credit card, get key at aistudio.google.com",
+      "gemini": "Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Connect GigaChat (Sber) with an API key.",
       "gitlab": "GitLab personal access token for the public Code Suggestions API. Configure a self-hosted base URL when not using gitlab.com.",
       "gitlawb-gmi": "Get your API key from Gitlawb Opengateway dashboard.",
@@ -6178,7 +6187,7 @@
       "glm-cn": "Connect GLM Coding (China) with an API key.",
       "glmt": "Preset GLM profile with higher token budget, thinking enabled, and longer timeout.",
       "getgoapi": "Connect GoAPI with an API key.",
-      "groq": "Free tier: 30 RPM / 14.4K RPD — no credit card",
+      "groq": "Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Get API key at haiper.ai/haiper-api",
       "heroku": "Connect Heroku AI with an API key.",
       "hcnsec": "Get API key at api.hcnsec.cn",
@@ -6433,7 +6442,7 @@
     "connectionDeleted": "Connection deleted",
     "connectionFallback": "connection",
     "connectionCooldownCleared": "Cooldown cleared — connection rejoined routing",
-    "coolingConnectionsDescription": "These connections returned a 429 (rate-limit) on their last request. OmniRoute will skip them until the timer expires — no manual disable required.",
+    "coolingConnectionsDescription": "These connections are cooling after their last request. OmniRoute will skip them until the timer expires — no manual disable required.",
     "coolingConnectionsTitle": "Currently cooling ({count})",
     "failedClearConnectionCooldown": "Failed to clear cooldown",
     "failedDeleteAlias": "Failed to delete alias",
@@ -7061,6 +7070,8 @@
     "costOptDesc": "Prefer cheapest available account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Prefer accounts with healthy remaining quota and nearer resets",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to leftover, divided by in-flight load. Existing conversations stay pinned.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -7737,6 +7748,10 @@
     "legacyJsonImportSuccess": "Legacy JSON imported successfully!",
     "jsonImportFailed": "Failed to import JSON",
     "jsonImportError": "Error during JSON import",
+    "jsonImportAuthRequired": "Authentication required to import a legacy JSON configuration. Please sign in or complete setup first.",
+    "databaseSettingsAuthRequiredTitle": "Authentication required",
+    "databaseSettingsAuthRequiredBody": "Database settings and JSON import are only available to an authenticated admin. Sign in or complete setup to view and edit them.",
+    "databaseSettingsAuthRequiredCta": "Sign in",
     "storagePurgeData": "Purge Data",
     "storagePurgeDataDesc": "Immediately delete all records without applying retention checks. Use with caution.",
     "storageRetentionCleanup": "Retention Settings",
@@ -8653,6 +8668,8 @@
     "contextEditingNote": "Currently available for Claude (Anthropic) only. It is a delegated mode: the provider clears old tool-use blocks server-side — we do not rewrite the message. It does not affect other providers.",
     "namedCombos": "Named combos",
     "namedCombosDescription": "Save different pipelines and assign them to specific routing combos.",
+    "activeProfileMasterSwitchOffWarning": "The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "Turn it on in Settings",
     "comboNamePlaceholder": "Combo name",
     "descriptionPlaceholder": "Description",
     "nameRequired": "Enter a combo name before saving.",
@@ -8695,6 +8712,7 @@
     "run": "Run",
     "laneRejected": "rejected: {reason}",
     "error": "error",
+    "combinedError": "Combined pipeline preview failed: {reason}",
     "combinedFlow": "Combined flow",
     "eachLayer": "Each layer separately",
     "diff": "Difference",
@@ -10950,6 +10968,9 @@
     "strategyLatency": "Latency-optimized",
     "poolMembersLabel": "Pool members ({count})",
     "poolNoMembers": "No proxies in this pool yet.",
+    "poolEgressObservation": "{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Remove",
     "poolRemoveFailed": "Failed to remove the proxy from the pool",
     "poolAddLabel": "Add a proxy",
@@ -12970,6 +12991,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Allow stream recovery to request the response again and stitch it after bytes have already reached the client."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Fail over once to a sibling connection when a stream closes before emitting any useful frame and the bounded same-connection retry is spent. With no usable sibling, the original early-EOF error is returned. Off: early-EOF stays terminal after the retry."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Include display-friendly name fields in /v1/models responses. Disable this for clients that accept model IDs only."
       },
@@ -12992,7 +13019,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -13002,6 +13029,18 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Enable network access in the skills sandbox."
+      },
+      "SERVER_OWNED_TOOL_LOOP_ENABLED": {
+        "label": "Server-Owned Tool Loop",
+        "description": "Continue non-streaming server-owned tool calls until the model returns a client-usable response."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "Retry-After Provenance",
+        "description": "On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "Protected-Priority Infra Stops as 502",
+        "description": "Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
@@ -13143,6 +13182,7 @@
     "segmentHint": "Each segment = one free pool · pool-deduped, honest counting (no inflated rate-limit ceilings).",
     "boost": "Unlock ~{tokens} more/mo with a one-time $10 OpenRouter top-up (50 → 1000 req/day)",
     "uncapped": "Permanently free, no published cap (rate-limited) — real access, not counted in the headline:",
+    "gated": "~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# model} other {# models}} flagged as ToS-restricted — you decide",
     "provider": "Provider",
     "model": "Model",
@@ -13427,6 +13467,9 @@
     "colLimits": "Limits",
     "trainsOnPrompts": "Trains on prompts",
     "trainsOnPromptsHelp": "This provider discloses that it may use your prompts to train models",
+    "limitsUnknownHelp": "Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "Context window unknown for this entry",
+    "capabilityUnknownHelp": "Capability not reported by the feed",
     "colContext": "Context",
     "colCapabilities": "Capabilities",
     "colTos": "ToS Risk",
@@ -13611,6 +13654,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Reject requests before dispatch when the target model lacks required capabilities (vision, tools, structured output, context window). Protects direct single-provider requests that bypass the combo-layer compatibility filter.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Page not found",
@@ -13991,6 +14035,16 @@
     "historyRange1d": "24h",
     "historyRange7d": "7 days",
     "historyRange30d": "30 days",
+    "compareMode": "Compare runs",
+    "compareExit": "Exit compare mode",
+    "compareHint": "Select two runs to compare",
+    "compareTitle": "Comparison",
+    "compareDetailFailed": "Could not load this run's detail",
+    "compareDifferentIdentity": "Different sources or skills — deltas are informational",
+    "compareDuration": "Duration",
+    "compareCost": "Cost",
+    "compareEvents": "Events",
+    "compareDeltaLegend": "Δ right − left",
     "showCompleted": "Show completed",
     "searchPlaceholder": "Search tasks…",
     "filterStates": "States",
@@ -14012,6 +14066,7 @@
     "stateCancelled": "Cancelled",
     "overflowMore": "+{count} more",
     "emptyTitle": "Nothing running yet",
+    "noMatches": "No runs match these filters",
     "emptyCloudAgentCta": "Set up Cloud Agents",
     "emptyA2ACta": "Open A2A",
     "emptyConductorCta": "Open Conductor",

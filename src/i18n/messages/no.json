@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Slett alle fullførte batcher",
     "batchListBatchesTable": "Batcher",
     "changelogViewerLoading": "Laster inn endringslogg fra GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Laster profil...",
     "profileHowToEarn": "Hvordan tjene",
     "bootstrapBannerDismiss": "Avvis",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Reklamer claude/&lt;provider&gt;/&lt;model&gt; speil-id-er på /v1/models slik at Claude Code gateway-modelloppdagelse viser ikke-Claude-modeller. Advarsel: dobler katalogoppføringer for alle klienter når det er aktivert globalt.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Aktiver adaptive virtuelle tilgangsfelt per tenant for leverandørdistribusjon (#9654): et utbrudd fra én tenant gir ikke lenger en annen 503. Miljøvariabelen OMNIROUTE_CHAT_VIRTUAL_LANES overstyrer denne innstillingen i dashbordet; endringer trer i kraft ved omstart av serveren.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Hjem",
     "dashboard": "Dashbord",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Helsemonitor",
     "reportIssue": "Rapporter problem",
     "activeError": "{active} aktiv · {errors} feil",
+    "topologyLegendActive": "Aktiv",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "Feil",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API-nøkkel",
     "requestsShort": "{count} req",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Oppdatering startet...",
     "reloadingPageAutomatically": "Laster siden automatisk på nytt...",
     "providerTopology": "Leverandørtopologi",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "Last ned DMG (macOS)",
     "downloadDmgDescription": "En ny versjon av OmniRoute skrivebordsappen er tilgjengelig. Vennligst last ned og installer macOS DMG-installasjonsprogrammet for å oppdatere (nåværende: v{version}).",
     "downloadExe": "Last ned EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json for gateway modelloppdagelse",
     "ccOnboardingCopy": "Kopier",
     "ccOnboardingCopied": "Kopiert",
-    "ccOnboardingKeyPlaceholder": "<din OmniRoute API-nøkkel>",
+    "ccOnboardingKeyPlaceholder": "'<din OmniRoute API-nøkkel>'",
     "ccOnboardingWindowNote": "Claude Code antar et 200K kontekstvindu for enhver modell-ID den ikke gjenkjenner. For en modell med et annet reelt vindu, legg til CLAUDE_CODE_AUTO_COMPACT_WINDOW rett under den, slik at automatisk komprimering ikke aktiveres for tidlig.",
     "failedSave": "Kunne ikke lagre",
     "profileSyncTitle": "Automatisk synkronisering av CLI-profiler",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Balanserer gjenværende kvote mot 5 timer og ukentlige tilbakestillinger, og runder deretter lignende resultater",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusjon",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Rabattert API-proxy for 40+ modeller inkludert GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Hent API-nøkkelen din på https://freeaiapikey.com/dashboard. Base-URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Få $300 i gratis API-kreditter på https://freemodel.dev — ingen betalingsinformasjon påkrevd. OpenAI-kompatibelt endepunkt. GPT-5.4- og GPT-5.5-modeller tilgjengelig.",
       "friendliai": "Gratisnivå for serverløs inferens — ingen kredittkort påkrevd",
-      "gemini": "Gratis for alltid: 1,500 req/dag for Gemini 2.5 Flash — ingen kredittkort, hent nøkkel på aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Koble til GigaChat (Sber) med en API-nøkkel.",
       "gitlab": "GitLab personlig adgangstoken for det offentlige Code Suggestions-API-et. Konfigurer en selvvertet base-URL når du ikke bruker gitlab.com.",
       "gitlawb-gmi": "Hent API-nøkkelen din fra Gitlawb Opengateway-dashbordet.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Koble til GLM Coding (Kina) med en API-nøkkel.",
       "glmt": "Forhåndsinnstilt GLM-profil med høyere token-budsjett, tenkning aktivert og lengre tidsavbrudd.",
       "getgoapi": "Koble til GoAPI med en API-nøkkel.",
-      "groq": "Gratisnivå: 30 RPM / 14,4K RPD — uten kredittkort",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Hent API-nøkkel på haiper.ai/haiper-api",
       "heroku": "Koble til Heroku AI med en API-nøkkel.",
       "hcnsec": "Hent API-nøkkel på api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Kunne ikke starte Command Code auth",
     "connectionDeleted": "Tilkobling slettet",
     "connectionFallback": "tilkobling",
-    "coolingConnectionsDescription": "Disse tilkoblingene returnerte en 429 (rate-limit) på sin siste forespørsel. OmniRoute vil hoppe over dem til timeren utløper — ingen manuell deaktivering nødvendig.",
+    "coolingConnectionsDescription": "Disse tilkoblingene kjøler ned etter siste forespørsel. OmniRoute hopper over dem til timeren utløper — ingen manuell deaktivering nødvendig.",
     "coolingConnectionsTitle": "For øyeblikket kjøler ({count})",
     "failedDeleteAlias": "Kunne ikke slette aliaset",
     "failedDeleteConnection": "Kunne ikke slette tilkoblingen",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Foretrekker den billigste tilgjengelige kontoen",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Foretrekk kontoer med sunn gjenværende kvote og nærmere tilbakestillinger",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Når aktivert, spores feilede leverandører globalt og hoppes over i en nedkjølingsperiode.",
     "resilienceProviderCooldownMin": "Minimum nedkjøling",
     "resilienceProviderCooldownMax": "Maksimum nedkjøling",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Helsessjekk av påloggingsinformasjon",
+    "resilienceCredentialHealthScope": "Alle aktive API-nøkkel- og OAuth-tilkoblinger",
+    "resilienceCredentialHealthTrigger": "Periodisk, i fast rytme",
+    "resilienceCredentialHealthEffect": "Sjekker påloggingsinformasjonen til hver tilkobling og merker den aktiv/feil; mislykkede tilkoblinger går i eksponentiell backoff",
+    "resilienceCredentialHealthDesc": "Bakgrunnsskanning som validerer påloggingsinformasjonen til hver aktiv tilkobling ved å kalle leverandøren. Sett 0 for å slå den helt av. Helsessjekkverdier per tilkobling (i redigeringsdialogen) overstyrer alltid denne globale standarden.",
+    "resilienceCredentialHealthInterval": "Globalt sjekkintervall",
+    "resilienceCredentialHealthEveryMinutes": "Hver {minutes} min",
+    "resilienceCredentialHealthHint": "0 slår av bakgrunnsskanningen (maks. 1440 min = 24 t). Tilkoblinger med egen helsessjekkverdi ignorerer denne globale standarden; 0 på en tilkobling utelater den selv når den globale skanningen er på.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Sesjonsaffinitet",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Språkpakker: {packs}",
     "dragToReorder": "Dra for å endre rekkefølge på trinn",
     "engine": "Motor",
-    "intensity": "Intensitet"
+    "intensity": "Intensitet",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Ingen komprimeringskjøring tilgjengelig.",
@@ -8692,6 +8705,7 @@
     "run": "Kjør",
     "laneRejected": "avvist: {reason}",
     "error": "feil",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Kombinert flyt",
     "eachLayer": "Hvert lag separat",
     "diff": "Differanse",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "maks",
     "grokAutoTopUpMonth": "måned",
     "grokAdditionalCredits": "Ytterligere Krediteringer",
+    "kiloAccountBalance": "Kontosaldo",
+    "kiloPassBonus": "Tilgjengelig bonus",
+    "kiloPassMeterLabel": "Kilo Pass bruksmåler",
+    "kiloPassPaid": "Betalt",
+    "kiloPassRemaining": "Gjenværende",
+    "kiloPassRenews": "Fornyes om {count} dager",
+    "kiloPassUsageLabel": "Denne månedens forbruk",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Latensoptimalisert",
     "poolMembersLabel": "Pool-medlemmer ({count})",
     "poolNoMembers": "Ingen proxyer i denne poolen ennå.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Fjern",
     "poolRemoveFailed": "Kunne ikke fjerne proxyen fra poolen",
     "poolAddLabel": "Legg til en proxy",
@@ -11327,11 +11351,11 @@
       "copy": "Kopier",
       "autoscrollOn": "Autoscroll: på",
       "autoscrollOff": "Autoscroll: av",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Skjul alle",
+      "collapseOneLevel": "Skjul ett nivå",
+      "currentExpandLevel": "Gjeldende utvidelsesnivå",
+      "expandOneLevel": "Utvid ett nivå",
+      "expandAllLevels": "Utvid alle",
       "payload": {
         "clientRawRequest": "Klient Rå Forespørsel",
         "clientRequest": "Klientforespørsel",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Tillat strømgjenoppretting å be om svaret på nytt og sy det sammen etter at bytes allerede har nådd klienten."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Bytt én gang over til en søskentilkobling når en strøm lukkes før den har sendt en nyttig ramme, og det begrensede nye forsøket på samme tilkobling er brukt opp. Uten en brukbar søskentilkobling returneres den opprinnelige early-EOF-feilen. Av: early-EOF forblir endelig etter det nye forsøket."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Inkluder visningsvennlige navnefelt i /v1/models-svar. Deaktiver dette for klienter som kun godtar modell-ID-er."
       },
@@ -12982,7 +13012,7 @@
         "description": "Etter synkronisering av leverandørmodell, regenerer ~/.codex/*.config.toml-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Codex-konfigurasjonen og er av som standard."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Etter synkronisering av leverandørmodell, regenerer ~/.claude/profiles/<name>/settings.json-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Claude-konfigurasjonen og er av som standard."
+        "description": "Etter synkronisering av leverandørmodell, regenerer ~/.claude/profiles/'<name>'/settings.json-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Claude-konfigurasjonen og er av som standard."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Deaktiver helsesjekk-endepunktet for den lokale instansen."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Aktiver nettverkstilgang i ferdighetssandkassen."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Sorter etter",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Manuell",
+        "provider": "Leverandør",
+        "score": "Poeng (gratis modeller)",
+        "name": "Navn"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Poengrekkefølge gjelder bare gratis leverandører; de andre blir stående."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Hvert segment = én gratis pool · pool-deduplisert, ærlig telling (ingen oppblåste tak for hastighetsbegrensning).",
     "boost": "Lås opp ~{tokens} mer/mnd med en engangs $10 OpenRouter-påfylling (50 → 1000 forespørsler/dag)",
     "uncapped": "Permanent gratis, ingen publisert grense (hastighetsbegrenset) — reell tilgang, ikke talt med i overskriften:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# modell} other {# modeller}} flagget som ToS-begrenset — du bestemmer",
     "provider": "Leverandør",
     "model": "Modell",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "ny",
     "setupGuide": "Oppsettsveiledning",
     "disabledByFeed": "Deaktivert av Radar-strøm",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Avvis forespørselene før utsendelse når målmodellen mangler nødvendige funksjoner (visjon, verktøy, strukturert utdata, kontekstvindu). Beskytter direkte forespørseler fra enkeltleverandører som omgår kombinasjonslagets kompatibilitetsfilter.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Siden ble ikke funnet",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 t",
     "historyRange7d": "7 dager",
     "historyRange30d": "30 dager",
+    "compareMode": "Sammenlign kjøringer",
+    "compareExit": "Avslutt sammenligningsmodus",
+    "compareHint": "Velg to kjøringer å sammenligne",
+    "compareTitle": "Sammenligning",
+    "compareDetailFailed": "Fikk ikke lastet inn detaljer for denne kjøringen",
+    "compareDifferentIdentity": "Forskjellige kilder eller ferdigheter — forskjellene er kun informative",
+    "compareDuration": "Varighet",
+    "compareCost": "Kostnad",
+    "compareEvents": "Hendelser",
+    "compareDeltaLegend": "Δ høyre − venstre",
     "showCompleted": "Vis fullførte",
     "searchPlaceholder": "Søk i oppgaver…",
     "filterStates": "Tilstander",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Kansellert",
     "overflowMore": "+{count} til",
     "emptyTitle": "Ingenting kjører ennå",
+    "noMatches": "Ingen oppgaver samsvarer med disse filtrene",
     "emptyCloudAgentCta": "Sett opp skyagenter",
     "emptyA2ACta": "Åpne A2A",
     "emptyConductorCta": "Åpne konduktør",

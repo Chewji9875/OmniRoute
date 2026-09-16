@@ -3,7 +3,12 @@ import {
   getComboForModel,
   getModelInfoOrRetirementResponse,
 } from "../services/model";
-import { clearAccountError, markAccountUnavailable } from "../services/auth";
+import {
+  clearAccountError,
+  markAccountUnavailable,
+  buildExhaustionOptions,
+} from "../services/auth";
+import { maybeReactivateAfterExplicitProbe } from "../services/explicitInactiveProbe";
 import { connectionHasExtraKeys } from "@omniroute/open-sse/services/apiKeyRotator.ts";
 import { createBuiltinAutoCombo } from "@omniroute/open-sse/services/autoCombo/builtinCatalog.ts";
 import * as log from "../utils/logger";
@@ -41,8 +46,10 @@ import {
 } from "../../shared/utils/circuitBreaker";
 import { classify429FromError, type FailureKind } from "../../shared/utils/classify429";
 import { resolveUseUpstream429BreakerHints } from "../../shared/utils/providerHints";
+import { isFeatureFlagEnabled } from "../../shared/utils/featureFlags";
 
 import { logProxyEvent } from "../../lib/proxyLogger";
+import { noteProxyOutcome } from "./proxyOutcomeMemory";
 import { logTranslationEvent } from "../../lib/translatorEvents";
 import { getRuntimeProviderProfile } from "@omniroute/open-sse/services/accountFallback.ts";
 
@@ -334,7 +341,15 @@ export async function resolveModelOrError(
     log.info("ROUTING", `Provider: ${provider}, Model: ${model}${ctxTag}`);
   }
 
-  return { provider, model, sourceFormat, targetFormat, extendedContext, apiFormat };
+  return {
+    provider,
+    model,
+    sourceFormat,
+    targetFormat,
+    customModelTargetFormat,
+    extendedContext,
+    apiFormat,
+  };
 }
 
 export async function checkPipelineGates(
@@ -443,6 +458,7 @@ export async function executeChatWithBreaker({
   // for every non-video request. Passed straight through to handleChatCore;
   // see its own destructure default for the shape and consumers.
   videoBridgeLog = undefined,
+  fallbackAttempts = undefined,
 }: ExecuteChatWithBreakerOptions): Promise<ExecuteChatWithBreakerResult> {
   let tlsFingerprintUsed = false;
   const normalizedTrafficType: TrafficType =
@@ -503,6 +519,7 @@ export async function executeChatWithBreaker({
             reasoningTransportFallback,
             managedLease,
             videoBridgeLog,
+            fallbackAttempts,
             skipResourcePressureGuard: true,
             onCredentialsRefreshed: async (newCreds: any) => {
               await updateProviderCredentials(credentials.connectionId, {
@@ -521,6 +538,13 @@ export async function executeChatWithBreaker({
             onRequestSuccess: async () => {
               if (isShadowTraffic) return;
               await clearAccountError(credentials.connectionId, credentials);
+              await maybeReactivateAfterExplicitProbe({
+                connectionId: credentials.connectionId,
+                reactivatedFromInactive: credentials.reactivatedFromInactive,
+                isShadowTraffic,
+                requestedModel: model,
+                provider,
+              });
             },
             onStreamFailure: async (failure: any) => {
               if (isShadowTraffic) return;
@@ -555,7 +579,7 @@ export async function executeChatWithBreaker({
                 provider,
                 model,
                 providerProfile,
-                { isCombo }
+                buildExhaustionOptions(correlationId ?? null, { isCombo })
               );
             },
           })
@@ -731,7 +755,8 @@ export function handleNoCredentials(
   lastStatus: number | null,
   candidateAliases?: readonly string[],
   isCombo: boolean = false,
-  shadowedNode: ShadowedProviderNode | null = null
+  shadowedNode: ShadowedProviderNode | null = null,
+  correlationId?: string | null
 ) {
   if (credentials?.allRateLimited) {
     const errorMsg = lastError || credentials.lastError || "Unavailable";
@@ -772,14 +797,17 @@ export function handleNoCredentials(
       provider,
       model,
       lastStatus,
+      ...(correlationId ? { correlationId } : {}),
     });
     return errorResponse(lastStatus, lastError);
   }
   if (credentials?.allExpired) {
     // Every connection for this provider is in a terminal state (expired,
-    // banned, or credits_exhausted). Surface as 401 with a re-auth hint
-    // instead of the generic 400 "No credentials", so dashboards/CLIs can
-    // distinguish "never configured" from "needs to reconnect".
+    // banned, or credits_exhausted). Surface expired/banned as 401 with a
+    // re-auth hint instead of the generic 400 "No credentials", so
+    // dashboards/CLIs can distinguish "never configured" from "needs to
+    // reconnect". credits_exhausted is quota (HTTP 402), not invalid
+    // credentials — see #12441.
     const status = credentials.expiredStatus || "expired";
     const count = credentials.expiredCount || 1;
     const reason =
@@ -790,7 +818,12 @@ export function handleNoCredentials(
           : "authentication expired";
     const message = `[${provider}] All ${count} connection(s) ${reason} — please reconnect in the dashboard`;
     log.warn("CHAT", message);
-    return errorResponse(HTTP_STATUS.UNAUTHORIZED, message);
+    // #12441: credits_exhausted is quota, not invalid credentials. Combo
+    // dispatch treats 401 as AUTH_LEVEL skip (#8133). Surface 402 so quota
+    // exhaustion follows the #1731 path instead of "authentication expired".
+    const httpStatus =
+      status === "credits_exhausted" ? HTTP_STATUS.PAYMENT_REQUIRED : HTTP_STATUS.UNAUTHORIZED;
+    return errorResponse(httpStatus, message);
   }
   if (!excludeConnectionId) {
     // Ported from upstream decolua/9router#336 (Ibrahim Ryan): surface as 404
@@ -894,6 +927,20 @@ export function shouldRetryStreamEarlyEof(
   return errorCode === "STREAM_EARLY_EOF" && attempt < STREAM_EARLY_EOF_MAX_RETRIES;
 }
 
+// The sibling hop widens the terminal/failover boundary, so it ships off
+// behind STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED until observed live.
+export function isEarlyEofSiblingFailoverOn(): boolean {
+  try {
+    return isFeatureFlagEnabled("STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED");
+  } catch (error) {
+    console.error(
+      "[featureFlags] Failed to resolve STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED, defaulting to disabled:",
+      error instanceof Error ? error.message : error
+    );
+    return false;
+  }
+}
+
 export function decideProxyResolutionFailure(
   err: unknown,
   env: { PROXY_FAIL_OPEN?: string } = process.env
@@ -960,6 +1007,27 @@ export function applyExecutorProxyToInfo(
   };
 }
 
+/**
+ * Carry the HTTP status the provider actually returned (captured on the applied-proxy
+ * sink around the patched fetch) into proxyInfo. Nothing received -> info unchanged.
+ * Pure + unit-testable.
+ */
+export function withUpstreamStatus<T extends object>(
+  info: T | null | undefined,
+  sink: { upstreamStatus?: number }
+) {
+  if (typeof sink.upstreamStatus !== "number") return info;
+  return { ...(info || {}), upstreamStatus: sink.upstreamStatus };
+}
+
+/** Merge both things the applied-proxy sink captured: the executor proxy, then the status. */
+export function mergeAppliedProxySink(
+  proxyInfo: { proxy?: unknown; level?: string; levelId?: string | null } | null | undefined,
+  sink: { proxy: unknown; upstreamStatus?: number }
+) {
+  return withUpstreamStatus(applyExecutorProxyToInfo(proxyInfo, sink.proxy), sink);
+}
+
 // Async because the egress-IP lookup lazy-imports proxyEgress; callers treat
 // this as fire-and-forget logging (the internal try/catch swallows everything).
 export async function safeLogEvents({
@@ -975,6 +1043,17 @@ export async function safeLogEvents({
   clientRawRequest,
   tlsFingerprintUsed = false,
 }) {
+  // Feed the provider's real answer back to proxy selection (never result.status: some 429s
+  // are generated locally; proxyInfo carries the status captured around fetch). Must stay
+  // BEFORE the first await: callers fire-and-forget this function, and only the code ahead
+  // of that await runs synchronously at the call site, so a request picking from the same
+  // pool right after already sees a refused member set aside (#13602).
+  try {
+    noteProxyOutcome(provider, proxyInfo);
+  } catch {
+    // proxy selection feedback is best-effort; never break the request path
+  }
+
   try {
     const rawIp =
       clientRawRequest?.headers?.["x-forwarded-for"] ||
@@ -1017,6 +1096,7 @@ export async function safeLogEvents({
       comboId: comboName || null,
       account: credentials.connectionId?.slice(0, 8) || null,
       tlsFingerprint: tlsFingerprintUsed,
+      upstreamStatus: proxyInfo?.upstreamStatus ?? null,
     });
   } catch {}
 

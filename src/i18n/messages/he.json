@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "מחק את כל האצוות שהושלמו",
     "batchListBatchesTable": "אצוות",
     "changelogViewerLoading": "טוען יומן שינויים מ-GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "פרופיל",
     "profileLoading": "טוען פרופיל...",
     "profileHowToEarn": "איך להרוויח",
     "bootstrapBannerDismiss": "לבטל",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "פרסם את מזהי המראה של claude/&lt;provider&gt;/&lt;model&gt; ב-/v1/models כך שרשימות גילוי המודלים של Claude Code יכללו מודלים שאינם של Claude. אזהרה: מכפיל את רשומות הקטלוג עבור כל הלקוחות כאשר זה מופעל באופן גלובלי.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "הפעל נתיבי קבלה וירטואליים אדפטיביים לכל דייר (tenant) עבור שליחת ספקים (#9654): פרץ עומס של דייר אחד כבר לא מחזיר 503 לדייר אחר. משתנה הסביבה OMNIROUTE_CHAT_VIRTUAL_LANES גובר על הגדרה זו בלוח הבקרה; השינויים נכנסים לתוקף לאחר הפעלת השרת מחדש.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "בית",
     "dashboard": "לוח מחוונים",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "מוניטור בריאות",
     "reportIssue": "דווח על בעיה",
     "activeError": "{active} פעיל · שגיאה {errors}",
+    "topologyLegendActive": "פעיל",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "שגיאה",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "מפתח API",
     "requestsShort": "{count} בקשות",
@@ -1819,11 +1826,11 @@
     "updateStarted": "העדכון התחיל...",
     "reloadingPageAutomatically": "טוען מחדש את הדף באופן אוטומטי...",
     "providerTopology": "טופולוגיה של ספק",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "הורד DMG (macOS)",
     "downloadDmgDescription": "גרסה חדשה של אפליקציית OmniRoute למחשב שולחני זמינה. אנא הורד והתקן את מתקין ה-DMG של macOS כדי לעדכן (נוכחי: v{version}).",
     "downloadExe": "הורד EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json עבור גילוי מודל שער",
     "ccOnboardingCopy": "העתק",
     "ccOnboardingCopied": "הועתק",
-    "ccOnboardingKeyPlaceholder": "<מפתח ה-API של OmniRoute שלך>",
+    "ccOnboardingKeyPlaceholder": "'<מפתח ה-API של OmniRoute שלך>'",
     "ccOnboardingWindowNote": "Claude Code מניח חלון הקשר של 200K עבור כל מזהה מודל שהוא לא מזהה. עבור מודל עם חלון אמיתי שונה, הוסף CLAUDE_CODE_AUTO_COMPACT_WINDOW מיד מתחתיו כך שהדחיסה האוטומטית לא תתבצע מוקדם מדי.",
     "failedSave": "השמירה נכשלה",
     "profileSyncTitle": "סנכרון אוטומטי של פרופילי CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "מאזן את המכסה שנותרה מול 5 שעות ואיפוסים שבועיים, ולאחר מכן מעביר ציונים דומים",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "היתוך",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "פרוקסי API מוזל עבור יותר מ-40 מודלים כולל GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. קבל את מפתח ה-API שלך ב-https://freeaiapikey.com/dashboard. כתובת URL בסיסית: https://freeaiapikey.com/v1.",
       "freemodel-dev": "קבל קרדיט API חינם בסך $300 ב-https://freemodel.dev — ללא צורך בפרטי תשלום. נקודת קצה תואמת OpenAI. מודלים של GPT-5.4 ו-GPT-5.5 זמינים.",
       "friendliai": "מסלול חינמי להסקה ללא שרת — ללא צורך בכרטיס אשראי",
-      "gemini": "חינם לתמיד: 1,500 בקשות/יום עבור Gemini 2.5 Flash — ללא כרטיס אשראי, קבל מפתח ב-aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "חבר את GigaChat (Sber) באמצעות מפתח API.",
       "gitlab": "טוקן גישה אישי של GitLab עבור ה-API הציבורי של Code Suggestions. הגדר כתובת URL בסיסית באירוח עצמי כאשר אינך משתמש ב-gitlab.com.",
       "gitlawb-gmi": "קבל את מפתח ה-API שלך מלוח הבקרה של Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "חבר את GLM Coding (China) באמצעות מפתח API.",
       "glmt": "פרופיל GLM מוגדר מראש עם תקציב טוקנים גבוה יותר, חשיבה מופעלת ופסק זמן ארוך יותר.",
       "getgoapi": "חבר את GoAPI באמצעות מפתח API.",
-      "groq": "מסלול חינמי: 30 RPM / 14.4K RPD — ללא כרטיס אשראי",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "קבל מפתח API ב-haiper.ai/haiper-api",
       "heroku": "חבר את Heroku AI באמצעות מפתח API.",
       "hcnsec": "קבל מפתח API ב-api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "נכשל בהפעלה של Command Code auth",
     "connectionDeleted": "החיבור נמחק",
     "connectionFallback": "חיבור",
-    "coolingConnectionsDescription": "חיבורים אלה החזירו 429 (מגבלת קצב) בבקשה האחרונה שלהם. OmniRoute ידלג עליהם עד שהטיימר יפוג — אין צורך להשבית ידנית.",
+    "coolingConnectionsDescription": "החיבורים האלה מתקררים אחרי הבקשה האחרונה. OmniRoute ידלג עליהם עד שיפוג הטיימר — אין צורך לבטל ידנית.",
     "coolingConnectionsTitle": "כרגע מקרר ({count})",
     "failedDeleteAlias": "כישלון במחיקת הכינוי",
     "failedDeleteConnection": "כישלון במחקת החיבור",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "העדיפו את החשבון הזול ביותר הזמין",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "העדיפו חשבונות עם מכסה תקינה שנותרה ואיפוסים קרובים יותר",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "גבול דביק",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "כאשר מופעל, ספקים שנכשלו מנוטרים באופן גלובלי ומדולגים למשך תקופת צינון.",
     "resilienceProviderCooldownMin": "תקופת צינון מינימלית",
     "resilienceProviderCooldownMax": "תקופת צינון מרבית",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "בדיקת תקינות אישורים",
+    "resilienceCredentialHealthScope": "כל חיבורי מפתח API ו-OAuth הפעילים",
+    "resilienceCredentialHealthTrigger": "מעת לעת, בקצב קבוע",
+    "resilienceCredentialHealthEffect": "בודק את האישור של כל חיבור ומסמן אותו פעיל/שגיאה; חיבורים שנכשלו נכנסים להמתנה מעריכית",
+    "resilienceCredentialHealthDesc": "סריקת רקע שמוודאת את האישור של כל חיבור פעיל בקריאה לספק שלו. הגדר 0 כדי לכבות לגמרי. ערכי בדיקת תקינות לכל חיבור (בחלון העריכה) תמיד גוברים על ברירת המחדל הגלובלית הזו.",
+    "resilienceCredentialHealthInterval": "מרווח בדיקה גלובלי",
+    "resilienceCredentialHealthEveryMinutes": "כל {minutes} דק׳",
+    "resilienceCredentialHealthHint": "0 מכבה את סריקת הרקע (מקסימום 1440 דק׳ = 24 שע׳). חיבורים עם ערך בדיקת תקינות משלהם מתעלמים מברירת המחדל הגלובלית; 0 בחיבור מסוים מוציא אותו גם כשהסריקה הגלובלית פועלת.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "שיוך הפעלה (Session affinity)",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "חבילות שפה: {packs}",
     "dragToReorder": "גרור כדי לשנות את סדר השלבים",
     "engine": "מנוע",
-    "intensity": "עוצמה"
+    "intensity": "עוצמה",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "אין הרצת דחיסה זמינה.",
@@ -8692,6 +8705,7 @@
     "run": "הרץ",
     "laneRejected": "נדחה: {reason}",
     "error": "שגיאה",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "זרימה משולבת",
     "eachLayer": "כל שכבה בנפרד",
     "diff": "הבדל",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "מקסימום",
     "grokAutoTopUpMonth": "חודש",
     "grokAdditionalCredits": "קרדיטים נוספים",
+    "kiloAccountBalance": "יתרת חשבון",
+    "kiloPassBonus": "בונוס זמין",
+    "kiloPassMeterLabel": "מד שימוש ב-Kilo Pass",
+    "kiloPassPaid": "שולם",
+    "kiloPassRemaining": "נותר",
+    "kiloPassRenews": "מתחדש בעוד {count} ימים",
+    "kiloPassUsageLabel": "השימוש החודש",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "מותאם השהיה",
     "poolMembersLabel": "חברי המאגר ({count})",
     "poolNoMembers": "אין עדיין שרתי פרוקסי במאגר זה.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "הסר",
     "poolRemoveFailed": "הסרת הפרוקסי מהמאגר נכשלה",
     "poolAddLabel": "הוסף פרוקסי",
@@ -11327,11 +11351,11 @@
       "copy": "העתק",
       "autoscrollOn": "גלילה אוטומטית: מופעלת",
       "autoscrollOff": "גלילה אוטומטית: כבוי",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "כווץ הכול",
+      "collapseOneLevel": "כווץ רמה אחת",
+      "currentExpandLevel": "רמת ההרחבה הנוכחית",
+      "expandOneLevel": "הרחב רמה אחת",
+      "expandAllLevels": "הרחב הכול",
       "payload": {
         "clientRawRequest": "בקשת גולש גולמית",
         "clientRequest": "בקשת לקוח",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "התרת שחזור זרם כדי לבקש את התגובה מחדש ולחבר אותה לאחר שביתים כבר הגיעו ללקוח."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "מעבר חד-פעמי לחיבור אח כאשר זרם נסגר לפני ששלח מסגרת שימושית כלשהי והניסיון החוזר המוגבל באותו חיבור מוצה. אם אין חיבור אח שמיש, מוחזרת שגיאת early-EOF המקורית. כבוי: early-EOF נשאר סופי לאחר הניסיון החוזר."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "הכללת שדות שם ידידותיים לתצוגה בתגובות של /v1/models. השבת זאת עבור לקוחות המקבלים מזהי מודל בלבד."
       },
@@ -12982,7 +13012,7 @@
         "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.codex/*.config.toml מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Codex הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.claude/profiles/<name>/settings.json מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Claude הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
+        "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.claude/profiles/'<name>'/settings.json מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Claude הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "השבתת נקודת הקצה לבדיקת תקינות של המופע המקומי."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "הפעלת גישה לרשת בארגז החול של המיומנויות."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "מיין לפי",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "ידני",
+        "provider": "ספק",
+        "score": "ציון (מודלים חינמיים)",
+        "name": "שם"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "דירוג לפי ציון חל רק על ספקים חינמיים; האחרים נשארים במקומם."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "כל מקטע = מאגר חינמי אחד · מניעת כפילויות במאגר, ספירה הוגנת (ללא תקרות מגבלת קצב מנופחות).",
     "boost": "פתחו עוד כ-{tokens}/חודש עם טעינה חד-פעמית של $10 ב-OpenRouter ‏(50 → 1000 בקשות/יום)",
     "uncapped": "חינם לצמיתות, ללא מגבלה מפורסמת (מוגבל בקצב) — גישה אמיתית, לא נספר בכותרת הראשית:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {מודל #} other {# מודלים}} מסומנים כחסומים לפי תנאי השימוש — ההחלטה בידיך",
     "provider": "ספק",
     "model": "מודל",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "חדש",
     "setupGuide": "מדריך התקנה",
     "disabledByFeed": "מושבת על ידי פיד רדאר",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "דחה בקשות לפני שליחה כאשר המודל המטרה חסר יכולות נדרשות (חזון, כלים, פלט מובנה, חלון הקשר). מגן על בקשות ישירות מספק אחד שעוקפות את מסנן ההתאמה של שכבת הקומבו.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "העמוד לא נמצא",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 שעות",
     "historyRange7d": "7 ימים",
     "historyRange30d": "30 ימים",
+    "compareMode": "השווה הרצות",
+    "compareExit": "צא ממצב השוואה",
+    "compareHint": "בחר שתי הרצות להשוואה",
+    "compareTitle": "השוואה",
+    "compareDetailFailed": "לא ניתן היה לטעון את פרטי ההרצה הזו",
+    "compareDifferentIdentity": "מקורות או מיומנויות שונים — ההפרשים הם למידע בלבד",
+    "compareDuration": "משך זמן",
+    "compareCost": "עלות",
+    "compareEvents": "אירועים",
+    "compareDeltaLegend": "Δ ימין − שמאל",
     "showCompleted": "הצג הושלמו",
     "searchPlaceholder": "חיפוש משימות…",
     "filterStates": "מצבים",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "בוטל",
     "overflowMore": "+{count} נוספים",
     "emptyTitle": "שום דבר לא פועל עדיין",
+    "noMatches": "אין משימות התואמות למסננים אלה",
     "emptyCloudAgentCta": "הגדר סוכני ענן",
     "emptyA2ACta": "פתח A2A",
     "emptyConductorCta": "פתח מנחה",

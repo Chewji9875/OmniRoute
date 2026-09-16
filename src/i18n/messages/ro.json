@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Ștergeți toate loturile finalizate",
     "batchListBatchesTable": "Loturi",
     "changelogViewerLoading": "Se încarcă jurnalul de modificări din GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Se încarcă profilul...",
     "profileHowToEarn": "Cum să câștigi",
     "bootstrapBannerDismiss": "Respingeți",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Publica id-urile mirror claude/&lt;provider&gt;/&lt;model&gt; pe /v1/models astfel încât lista de descoperire a modelului Claude Code să includă modele non-Claude. Atenție: dublează intrările din catalog pentru toți clienții când este activat global.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Activați benzile de admitere virtuale adaptive per-tenant pentru expedierea către furnizori (#9654): un vârf de trafic al unui tenant nu mai returnează 503 altui tenant. Variabila de mediu OMNIROUTE_CHAT_VIRTUAL_LANES are prioritate față de această setare din panou; modificările intră în vigoare la repornirea serverului.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Acasă",
     "dashboard": "Tabloul de bord",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Monitor de sănătate",
     "reportIssue": "Raportați problema",
     "activeError": "{active} activ · {errors} eroare",
+    "topologyLegendActive": "Activ",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "Eroare",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "Cheia API",
     "requestsShort": "{count} solicită",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Actualizarea a început...",
     "reloadingPageAutomatically": "Se reîncarcă pagina automat...",
     "providerTopology": "Topologia furnizorului",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "Descarcă DMG (macOS)",
     "downloadDmgDescription": "O nouă versiune a aplicației desktop OmniRoute este disponibilă. Vă rugăm să descărcați și să instalați programul de instalare DMG pentru macOS pentru a actualiza (curent: v{version}).",
     "downloadExe": "Descarcă EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json pentru descoperirea modelului gateway",
     "ccOnboardingCopy": "Copiază",
     "ccOnboardingCopied": "Copiat",
-    "ccOnboardingKeyPlaceholder": "<cheia ta API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<cheia ta API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code presupune o fereastră de context de 200K pentru orice ID de model pe care nu îl recunoaște. Pentru un model cu o fereastră reală diferită, adăugați CLAUDE_CODE_AUTO_COMPACT_WINDOW imediat sub acesta, astfel încât auto-compacția să nu se activeze prea devreme.",
     "failedSave": "Eroare la salvare",
     "profileSyncTitle": "Sincronizare automată profil CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Echilibrează cota rămasă față de 5 ore și resetări săptămânale, apoi scoruri similare la round-robin",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fuziune",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Proxy API cu reducere pentru peste 40 de modele, inclusiv GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Obțineți cheia API la https://freeaiapikey.com/dashboard. URL de bază: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Obțineți $300 credite API gratuite la https://freemodel.dev — nu sunt necesare informații de plată. Endpoint compatibil cu OpenAI. Modele GPT-5.4 și GPT-5.5 disponibile.",
       "friendliai": "Nivel gratuit pentru inferență serverless — nu este necesar card de credit",
-      "gemini": "Gratuit pentru totdeauna: 1.500 req/zi pentru Gemini 2.5 Flash — fără card de credit, obțineți cheia la aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Conectați GigaChat (Sber) cu o cheie API.",
       "gitlab": "Token de acces personal GitLab pentru API-ul public Code Suggestions. Configurați un URL de bază self-hosted când nu utilizați gitlab.com.",
       "gitlawb-gmi": "Obțineți cheia API din tabloul de bord Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Conectați GLM Coding (China) cu o cheie API.",
       "glmt": "Profil GLM prestabilit cu un buget de tokenuri mai mare, gândire activată și timeout mai lung.",
       "getgoapi": "Conectați GoAPI cu o cheie API.",
-      "groq": "Nivel gratuit: 30 RPM / 14.4K RPD — fără card de credit",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Obțineți cheia API la haiper.ai/haiper-api",
       "heroku": "Conectați Heroku AI cu o cheie API.",
       "hcnsec": "Obțineți cheia API la api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Nu s-a reușit să se pornească Command Code auth",
     "connectionDeleted": "Conexiune ștearsă",
     "connectionFallback": "conexiune",
-    "coolingConnectionsDescription": "Aceste conexiuni au returnat un 429 (limită de rată) la ultima lor solicitare. OmniRoute le va sări peste până când temporizatorul expiră — nu este necesară dezactivarea manuală.",
+    "coolingConnectionsDescription": "Aceste conexiuni se răcesc după ultima solicitare. OmniRoute le va sări până expiră temporizatorul — nu e nevoie de dezactivare manuală.",
     "coolingConnectionsTitle": "În prezent răcire ({count})",
     "failedDeleteAlias": "Nu s-a reușit ștergerea aliasului",
     "failedDeleteConnection": "Nu s-a putut șterge conexiunea",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Prefer cel mai ieftin cont disponibil",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Preferați conturile cu cotă rămasă sănătoasă și resetări mai apropiate",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Limită lipicioasă",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Când este activat, furnizorii eșuați sunt urmăriți la nivel global și omiși pentru o perioadă de cooldown.",
     "resilienceProviderCooldownMin": "Cooldown minim",
     "resilienceProviderCooldownMax": "Cooldown maxim",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Verificare a stării acreditărilor",
+    "resilienceCredentialHealthScope": "Toate conexiunile active cu cheie API și OAuth",
+    "resilienceCredentialHealthTrigger": "Periodic, la un ritm fix",
+    "resilienceCredentialHealthEffect": "Verifică acreditarea fiecărei conexiuni și o marchează activă/eroare; conexiunile eșuate intră în backoff exponențial",
+    "resilienceCredentialHealthDesc": "Scanare în fundal care validează acreditarea fiecărei conexiuni active apelând furnizorul. Setați 0 pentru a o dezactiva complet. Valorile de verificare a stării per conexiune (în dialogul de editare) înlocuiesc întotdeauna această valoare globală.",
+    "resilienceCredentialHealthInterval": "Interval global de verificare",
+    "resilienceCredentialHealthEveryMinutes": "La fiecare {minutes} min",
+    "resilienceCredentialHealthHint": "0 dezactivează scanarea în fundal (max. 1440 min = 24 h). Conexiunile cu propria valoare de verificare a stării ignoră această valoare globală; 0 pe o conexiune o exclude chiar dacă scanarea globală e pornită.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Afinitate de sesiune",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Pachete de limbi: {packs}",
     "dragToReorder": "Trageți pentru a reordona pasul",
     "engine": "Motor",
-    "intensity": "Intensitate"
+    "intensity": "Intensitate",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Nicio rulare de compresie disponibilă.",
@@ -8692,6 +8705,7 @@
     "run": "Rulează",
     "laneRejected": "respins: {reason}",
     "error": "eroare",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Flux combinat",
     "eachLayer": "Fiecare strat separat",
     "diff": "Diferență",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "max",
     "grokAutoTopUpMonth": "luna",
     "grokAdditionalCredits": "Credite Suplimentare",
+    "kiloAccountBalance": "Soldul contului",
+    "kiloPassBonus": "Bonus disponibil",
+    "kiloPassMeterLabel": "Contor de utilizare Kilo Pass",
+    "kiloPassPaid": "Plătit",
+    "kiloPassRemaining": "Rămas",
+    "kiloPassRenews": "Se reînnoiește în {count} zile",
+    "kiloPassUsageLabel": "Utilizarea din această lună",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Optimizat pentru latență",
     "poolMembersLabel": "Membrii pool-ului ({count})",
     "poolNoMembers": "Nu există încă proxy-uri în acest pool.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Elimină",
     "poolRemoveFailed": "Nu s-a putut elimina proxy-ul din pool",
     "poolAddLabel": "Adaugă un proxy",
@@ -11327,11 +11351,11 @@
       "copy": "Copiază",
       "autoscrollOn": "Derulare automată: activată",
       "autoscrollOff": "Derulare automată: oprită",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Restrânge tot",
+      "collapseOneLevel": "Restrânge un nivel",
+      "currentExpandLevel": "Nivelul actual de extindere",
+      "expandOneLevel": "Extinde un nivel",
+      "expandAllLevels": "Extinde tot",
       "payload": {
         "clientRawRequest": "Cerere Brută Client",
         "clientRequest": "Cerere Client",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Permite recuperării fluxului să solicite din nou răspunsul și să îl îmbine după ce octeții au ajuns deja la client."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Comută o singură dată pe o conexiune soră când un flux se închide înainte de a emite vreun cadru util și reîncercarea limitată pe aceeași conexiune a fost consumată. Fără o conexiune soră utilizabilă, se returnează eroarea early-EOF originală. Dezactivat: early-EOF rămâne final după reîncercare."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Include câmpuri de nume ușor de afișat în răspunsurile /v1/models. Dezactivează această opțiune pentru clienții care acceptă doar ID-uri de model."
       },
@@ -12982,7 +13012,7 @@
         "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.codex/*.config.toml din catalogul live. Acest lucru nu modifică niciodată configurația Codex activă sau implicită și este dezactivat în mod implicit."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.claude/profiles/<name>/settings.json din catalogul live. Acest lucru nu modifică niciodată configurația Claude activă sau implicită și este dezactivat în mod implicit."
+        "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.claude/profiles/'<name>'/settings.json din catalogul live. Acest lucru nu modifică niciodată configurația Claude activă sau implicită și este dezactivat în mod implicit."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Dezactivează endpoint-ul de health-check al instanței locale."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Activează accesul la rețea în sandbox-ul de abilități."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Sortează după",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Manual",
+        "provider": "Furnizor",
+        "score": "Scor (modele gratuite)",
+        "name": "Nume"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Clasarea după scor se aplică doar furnizorilor gratuți; restul rămân pe loc."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Fiecare segment = un pool gratuit · pool deduplicat, contorizare corectă (fără plafoane de limită de rată umflate).",
     "boost": "Deblochează încă ~{tokens}/lună cu o reîncărcare unică de 10 $ pe OpenRouter (50 → 1000 cereri/zi)",
     "uncapped": "Permanent gratuit, fără limită publicată (limitat ca rată) — acces real, necontorizat în titlu:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# model marcat ca restricționat prin ToS — tu decizi} few {# modele marcate ca restricționate prin ToS — tu decizi} other {# de modele marcate ca restricționate prin ToS — tu decizi}}",
     "provider": "Furnizor",
     "model": "Model",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "nou",
     "setupGuide": "Ghid de configurare",
     "disabledByFeed": "Dezactivat de feed-ul Radar",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Respinge cererile înainte de expediere atunci când modelul țintă nu are capabilitățile necesare (viziune, instrumente, ieșire structurată, fereastră de context). Protejează cererile directe de un singur furnizor care ocolesc filtrul de compatibilitate al stratului combinat.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Pagina nu a fost găsită",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 h",
     "historyRange7d": "7 zile",
     "historyRange30d": "30 de zile",
+    "compareMode": "Compară execuțiile",
+    "compareExit": "Ieși din modul de comparare",
+    "compareHint": "Selectează două execuții de comparat",
+    "compareTitle": "Comparație",
+    "compareDetailFailed": "Detaliile acestei execuții nu au putut fi încărcate",
+    "compareDifferentIdentity": "Surse sau abilități diferite — diferențele au doar scop informativ",
+    "compareDuration": "Durata",
+    "compareCost": "Cost",
+    "compareEvents": "Evenimente",
+    "compareDeltaLegend": "Δ dreapta − stânga",
     "showCompleted": "Afișează cele finalizate",
     "searchPlaceholder": "Caută sarcini…",
     "filterStates": "Stări",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Anulat",
     "overflowMore": "+{count} în plus",
     "emptyTitle": "Nimic nu rulează încă",
+    "noMatches": "Nicio sarcină nu corespunde acestor filtre",
     "emptyCloudAgentCta": "Configurează Agenți Cloud",
     "emptyA2ACta": "Deschide A2A",
     "emptyConductorCta": "Deschide Conductor",

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 import {
   APP_STAGING_ALLOWED_EXACT_PATHS,
@@ -318,4 +318,19 @@ test("findMissingArtifactPaths flags missing root runtime files in the tarball",
     "scripts/packs/optionalPackManifest.mjs",
     "src/shared/utils/nodeRuntimeSupport.ts",
   ]);
+});
+
+test("every shipped @omniroute workspace package is covered by an artifact prefix", () => {
+  const packageJson = JSON.parse(readFileSync("package.json", "utf8")) as { files: string[] };
+  assert.ok(packageJson.files.includes("@omniroute/"));
+
+  const workspacePackages = readdirSync("@omniroute", { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(`@omniroute/${entry.name}/package.json`))
+    .map((entry) => `@omniroute/${entry.name}/`);
+
+  assert.ok(workspacePackages.includes("@omniroute/opencode-plugin-v2/"));
+  const uncovered = workspacePackages.filter(
+    (prefix) => !PACK_ARTIFACT_ALLOWED_PATH_PREFIXES.includes(prefix)
+  );
+  assert.deepEqual(uncovered, []);
 });

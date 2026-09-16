@@ -215,11 +215,6 @@
       "count": 1
     }
   },
-  "open-sse/handlers/chatCore.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 26
-    }
-  },
   "open-sse/handlers/chatCore/executorHelpers.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -401,11 +396,6 @@
       "count": 1
     }
   },
-  "open-sse/services/antigravityIdentity.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "open-sse/services/antigravityProjectBootstrap.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -414,11 +404,6 @@
   "open-sse/services/antigravityQuotaFamily.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    }
-  },
-  "open-sse/services/autoCombo/__tests__/autoCombo.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "open-sse/services/autoCombo/chaosEngine.ts": {
@@ -484,7 +469,7 @@
   },
   "open-sse/services/combo.ts": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 21
+      "count": 1
     }
   },
   "open-sse/services/combo/providerWildcard.ts": {
@@ -578,11 +563,6 @@
       "count": 1
     }
   },
-  "open-sse/services/imageCombo.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "open-sse/services/inAppLoginService.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 2
@@ -605,7 +585,7 @@
   },
   "open-sse/services/rateLimitManager.ts": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 2
+      "count": 1
     }
   },
   "open-sse/services/routing/index.ts": {
@@ -1304,11 +1284,6 @@
       "count": 10
     }
   },
-  "src/app/api/v1/models/catalogCache.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/app/api/v1/models/catalogOpenrouter.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -1365,11 +1340,6 @@
     }
   },
   "src/app/api/v1/vscode/raw/[token]/combos/route.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/api/webhooks/[id]/test/route.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
@@ -2095,7 +2065,7 @@
   },
   "src/sse/handlers/chat.ts": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 9
+      "count": 8
     }
   },
   "src/sse/handlers/chatHelpers.ts": {
@@ -2816,11 +2786,6 @@
       "count": 10
     }
   },
-  "tests/unit/chat-helpers.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 13
-    }
-  },
   "tests/unit/chat-rate-limit-body-lock.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 2
@@ -3368,11 +3333,6 @@
       "count": 17
     }
   },
-  "tests/unit/combo-strategies.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "tests/unit/combo-strategy-fallbacks.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 33
@@ -3386,11 +3346,6 @@
   "tests/unit/combo-task-aware.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
-    }
-  },
-  "tests/unit/combo-test-route.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 10
     }
   },
   "tests/unit/combos-duplicate-resolution-audit.test.ts": {

@@ -67,3 +67,49 @@ export function getRecentEgressIpForConnection(
   if (!row) return null;
   return { egressIp: row.egress_ip, at: row.timestamp };
 }
+
+export type PoolEgressObservationCounts = {
+  connections: number;
+  distinctExits: number;
+  maxConnectionsOnOneExit: number;
+};
+
+/**
+ * How many distinct observed egress IPs served a proxy pool's members since `since`, how
+ * many OmniRoute connections went through them, and the most connections seen behind one
+ * egress IP over that window. Members are matched to log rows by host and port, so two
+ * registry rows sharing one entry point count together. Only numbers leave this function.
+ * `scope` and `scopeId` must already be normalized (normalizeScope and
+ * normalizeAssignmentScopeId); an empty pool simply matches no rows.
+ */
+export function getPoolEgressObservation(
+  scope: string,
+  scopeId: string | null,
+  since: string
+): PoolEgressObservationCounts {
+  const db = getDbInstance();
+  const perExit = db
+    .prepare(
+      `SELECT COUNT(DISTINCT l.connection_id) AS n
+       FROM proxy_logs l
+       JOIN proxy_registry r ON l.proxy_host = r.host AND l.proxy_port = r.port
+       WHERE r.id IN (SELECT proxy_id FROM proxy_assignments WHERE scope = ? AND scope_id IS ?)
+         AND l.timestamp >= ? AND l.egress_ip IS NOT NULL AND l.connection_id IS NOT NULL
+       GROUP BY l.egress_ip`
+    )
+    .all(scope, scopeId, since) as Array<{ n: number }>;
+  const total = db
+    .prepare(
+      `SELECT COUNT(DISTINCT l.connection_id) AS n
+       FROM proxy_logs l
+       JOIN proxy_registry r ON l.proxy_host = r.host AND l.proxy_port = r.port
+       WHERE r.id IN (SELECT proxy_id FROM proxy_assignments WHERE scope = ? AND scope_id IS ?)
+         AND l.timestamp >= ? AND l.egress_ip IS NOT NULL AND l.connection_id IS NOT NULL`
+    )
+    .get(scope, scopeId, since) as { n: number };
+  return {
+    connections: total.n,
+    distinctExits: perExit.length,
+    maxConnectionsOnOneExit: perExit.reduce((max, row) => Math.max(max, row.n), 0),
+  };
+}

@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "تمام مکمل شدہ بیچز کو حذف کریں۔",
     "batchListBatchesTable": "بیچز",
     "changelogViewerLoading": "GitHub سے چینج لاگ لوڈ ہو رہا ہے...",
-    "profile": "__MISSING__:Profile",
+    "profile": "پروفائل",
     "profileLoading": "پروفائل لوڈ ہو رہا ہے...",
     "profileHowToEarn": "کیسے کمایا جائے۔",
     "bootstrapBannerDismiss": "برطرف کرنا",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "/v1/models پر claude/&lt;provider&gt;/&lt;model&gt; آئینہ شناختوں کا اشتہار دیں تاکہ Claude Code گیٹ وے ماڈل کی دریافت غیر-Claude ماڈلز کی فہرست بنائے۔ انتباہ: جب عالمی طور پر فعال ہو تو تمام کلائنٹس کے لیے کیٹلاگ کی اندراجات دوگنا کرتا ہے۔",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "پرووائیڈر بھیجنے کے لیے فی ٹیننٹ انکولی ورچوئل ایڈمیشن لین فعال کریں (#9654): ایک ٹیننٹ کا اچانک بوجھ اب دوسرے ٹیننٹ کو 503 نہیں دیتا۔ OMNIROUTE_CHAT_VIRTUAL_LANES ماحولیاتی متغیر اس ڈیش بورڈ سیٹنگ پر فوقیت رکھتا ہے؛ تبدیلیاں سرور دوبارہ شروع ہونے پر اثر انداز ہوتی ہیں۔",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Health Monitor",
     "reportIssue": "Report issue",
     "activeError": "{active} active · {errors} error",
+    "topologyLegendActive": "__MISSING__:Active",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "__MISSING__:Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} reqs",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Update started...",
     "reloadingPageAutomatically": "صفحہ خودکار طور پر دوبارہ لوڈ ہو رہا ہے...",
     "providerTopology": "فراہم کنندہ ٹوپولوجی",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMG ڈاؤن لوڈ کریں (macOS)",
     "downloadDmgDescription": "OmniRoute ڈیسک ٹاپ ایپ کا نیا ورژن دستیاب ہے۔ براہ کرم اپ ڈیٹ کرنے کے لیے macOS DMG انسٹالر ڈاؤن لوڈ اور انسٹال کریں (موجودہ: v{version})۔",
     "downloadExe": "EXE ڈاؤن لوڈ کریں (ونڈوز)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gateway ماڈل کی دریافت کے لیے settings.json",
     "ccOnboardingCopy": "کاپی",
     "ccOnboardingCopied": "نقل کیا گیا",
-    "ccOnboardingKeyPlaceholder": "<آپ کا OmniRoute API کلید>",
+    "ccOnboardingKeyPlaceholder": "'<آپ کا OmniRoute API کلید>'",
     "ccOnboardingWindowNote": "Claude Code کسی بھی ماڈل ID کے لیے 200K سیاق و سباق کی ونڈو فرض کرتا ہے جسے یہ نہیں پہچانتا۔ اگر کسی ماڈل کی حقیقی ونڈو مختلف ہو تو اس کے نیچے CLAUDE_CODE_AUTO_COMPACT_WINDOW شامل کریں تاکہ خودکار کمپیکشن بہت جلد نہ ہو۔",
     "failedSave": "محفوظ کرنے میں ناکامی",
     "profileSyncTitle": "CLI پروفائل کی خودکار مطابقت پذیری",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "بقیہ کوٹہ کو 5h اور ہفتہ وار ری سیٹ کے مقابلے میں بیلنس کریں، پھر راؤنڈ روبنز ملتے جلتے اسکورز",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "فیوژن",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "GPT-5، Claude Opus 4.6، Claude Sonnet 4.6، Qwen 3.5 سمیت 40+ ماڈلز کے لیے رعایتی API پراکسی۔ اپنی API کی https://freeaiapikey.com/dashboard پر حاصل کریں۔ بیس URL: https://freeaiapikey.com/v1۔",
       "freemodel-dev": "https://freemodel.dev پر $300 کے مفت API کریڈٹس حاصل کریں — ادائیگی کی معلومات درکار نہیں۔ OpenAI-compatible اینڈ پوائنٹ۔ GPT-5.4 اور GPT-5.5 ماڈلز دستیاب ہیں۔",
       "friendliai": "سرور لیس انفیرنس کے لیے مفت ٹیر — کسی کریڈٹ کارڈ کی ضرورت نہیں",
-      "gemini": "ہمیشہ کے لیے مفت: Gemini 2.5 Flash کے لیے 1,500 درخواستیں/دن — کوئی کریڈٹ کارڈ نہیں، aistudio.google.com پر کی حاصل کریں",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "GigaChat (Sber) کو ایک API کی کے ساتھ منسلک کریں۔",
       "gitlab": "عوامی Code Suggestions API کے لیے GitLab پرسنل ایکسیس ٹوکن۔ جب gitlab.com استعمال نہ کر رہے ہوں تو ایک سیلف ہوسٹڈ بیس URL کنفیگر کریں۔",
       "gitlawb-gmi": "Gitlawb Opengateway ڈیش بورڈ سے اپنی API کی حاصل کریں۔",
@@ -6175,7 +6184,7 @@
       "glm-cn": "GLM Coding (China) کو ایک API کی کے ساتھ منسلک کریں۔",
       "glmt": "زیادہ ٹوکن بجٹ، تھنکنگ فعال، اور طویل ٹائم آؤٹ کے ساتھ پہلے سے سیٹ کردہ GLM پروفائل۔",
       "getgoapi": "GoAPI کو ایک API کی کے ساتھ منسلک کریں۔",
-      "groq": "مفت ٹیر: 30 RPM / 14.4K RPD — کوئی کریڈٹ کارڈ نہیں",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "haiper.ai/haiper-api پر API کی حاصل کریں",
       "heroku": "Heroku AI کو ایک API کی کے ساتھ منسلک کریں۔",
       "hcnsec": "api.hcnsec.cn پر API کی حاصل کریں",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "کمانڈ کوڈ کی توثیق شروع کرنے میں ناکامی",
     "connectionDeleted": "کنکشن حذف کر دیا گیا",
     "connectionFallback": "کنکشن",
-    "coolingConnectionsDescription": "یہ کنکشنز نے اپنی آخری درخواست پر 429 (ریٹ-لیمٹ) واپس کیا۔ OmniRoute انہیں اس وقت تک چھوڑ دے گا جب تک کہ ٹائمر ختم نہ ہو جائے — کوئی دستی غیر فعال کرنے کی ضرورت نہیں۔",
+    "coolingConnectionsDescription": "یہ کنکشن آخری درخواست کے بعد ٹھنڈے ہو رہے ہیں۔ ٹائمر ختم ہونے تک OmniRoute انہیں چھوڑ دے گا — ہاتھ سے بند کرنے کی ضرورت نہیں۔",
     "coolingConnectionsTitle": "فی الحال ٹھنڈا کر رہا ہے ({count})",
     "failedDeleteAlias": "ایلیاس کو حذف کرنے میں ناکامی",
     "failedDeleteConnection": "کنکشن کو حذف کرنے میں ناکامی",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Prefer cheapest available account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "صحت مند بقایا کوٹہ اور قریب تر ری سیٹ والے اکاؤنٹس کو ترجیح دیں۔",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "فعال ہونے پر، ناکام پرووائیڈرز کو عالمی سطح پر ٹریک کیا جاتا ہے اور کول ڈاؤن کی مدت کے لیے چھوڑ دیا جاتا ہے۔",
     "resilienceProviderCooldownMin": "کم از کم کول ڈاؤن",
     "resilienceProviderCooldownMax": "زیادہ سے زیادہ کول ڈاؤن",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "کریڈینشل صحت کی جانچ",
+    "resilienceCredentialHealthScope": "تمام فعال API-کی اور OAuth کنکشن",
+    "resilienceCredentialHealthTrigger": "مقررہ تال پر وقفے وقفے سے",
+    "resilienceCredentialHealthEffect": "ہر کنکشن کی کریڈینشل جانچتا ہے اور اسے فعال/خرابی نشان زد کرتا ہے؛ ناکام کنکشن نمایی بیک آف میں جاتے ہیں",
+    "resilienceCredentialHealthDesc": "پس منظر اسکین جو ہر فعال کنکشن کی کریڈینشل اس کے فراہم کنندہ کو کال کر کے تصدیق کرتا ہے۔ مکمل بند کرنے کے لیے 0 سیٹ کریں۔ فی کنکشن صحت کی جانچ کی قدریں (ترمیم مکالمے میں) ہمیشہ اس عالمی ڈیفالٹ کو اوور رائیڈ کرتی ہیں۔",
+    "resilienceCredentialHealthInterval": "عالمی جانچ وقفہ",
+    "resilienceCredentialHealthEveryMinutes": "ہر {minutes} منٹ",
+    "resilienceCredentialHealthHint": "0 پس منظر اسکین بند کرتا ہے (زیادہ سے زیادہ 1440 منٹ = 24 گھنٹے)۔ اپنی صحت کی جانچ کی قدر والے کنکشن اس عالمی ڈیفالٹ کو نظر انداز کرتے ہیں؛ کسی کنکشن پر 0 اسے عالمی اسکین چالو ہونے پر بھی باہر رکھتا ہے۔",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "سیشن افینیٹی",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "زبان کے پیک: {packs}",
     "dragToReorder": "مرحلے کو دوبارہ ترتیب دینے کے لیے گھسیٹیں",
     "engine": "انجن",
-    "intensity": "شدت"
+    "intensity": "شدت",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "کوئی کمپریشن رن دستیاب نہیں ہے۔",
@@ -8692,6 +8705,7 @@
     "run": "چلائیں",
     "laneRejected": "مسترد شدہ: {reason}",
     "error": "خرابی",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "مشترکہ بہاؤ",
     "eachLayer": "ہر تہہ الگ سے",
     "diff": "فرق",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "زیادہ سے زیادہ",
     "grokAutoTopUpMonth": "مہینہ",
     "grokAdditionalCredits": "اضافی کریڈٹس",
+    "kiloAccountBalance": "اکاؤنٹ بیلنس",
+    "kiloPassBonus": "دستیاب بونس",
+    "kiloPassMeterLabel": "Kilo Pass کے استعمال کا میٹر",
+    "kiloPassPaid": "ادا شدہ",
+    "kiloPassRemaining": "باقی",
+    "kiloPassRenews": "{count} دنوں میں تجدید ہوگی",
+    "kiloPassUsageLabel": "اس مہینے کا استعمال",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "لیٹنسی-آپٹمائزڈ",
     "poolMembersLabel": "پول کے ارکان ({count})",
     "poolNoMembers": "اس پول میں ابھی تک کوئی پروکسی نہیں ہے۔",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "ہٹائیں",
     "poolRemoveFailed": "پول سے پروکسی کو ہٹانے میں ناکامی",
     "poolAddLabel": "ایک پروکسی شامل کریں",
@@ -11327,11 +11351,11 @@
       "copy": "نقل کریں",
       "autoscrollOn": "خودکار اسکرول: آن",
       "autoscrollOff": "آٹو اسکرول: بند",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "سب سکیڑیں",
+      "collapseOneLevel": "ایک سطح سکیڑیں",
+      "currentExpandLevel": "موجودہ پھیلاؤ کی سطح",
+      "expandOneLevel": "ایک سطح پھیلائیں",
+      "expandAllLevels": "سب پھیلائیں",
       "payload": {
         "clientRawRequest": "کلائنٹ خام درخواست",
         "clientRequest": "کلائنٹ کی درخواست",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "اسٹریم ریکوری کو دوبارہ جواب کی درخواست کرنے اور بائٹس کے پہلے ہی کلائنٹ تک پہنچنے کے بعد اسے جوڑنے کی اجازت دیں۔"
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "جب اسٹریم کوئی مفید فریم بھیجنے سے پہلے بند ہو جائے اور اسی کنکشن پر محدود دوبارہ کوشش ختم ہو چکی ہو تو ایک بار کسی ہم رشتہ کنکشن پر فیل اوور کریں۔ قابلِ استعمال ہم رشتہ کنکشن نہ ہونے پر اصل early-EOF خرابی واپس کی جاتی ہے۔ بند: دوبارہ کوشش کے بعد early-EOF حتمی رہتا ہے۔"
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "/v1/models کے جوابات میں ڈسپلے کے لیے موزوں نام کے فیلڈز شامل کریں۔ ان کلائنٹس کے لیے اسے غیر فعال کریں جو صرف ماڈل IDs قبول کرتے ہیں۔"
       },
@@ -12982,7 +13012,7 @@
         "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.codex/*.config.toml پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Codex کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.claude/profiles/<name>/settings.json پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Claude کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
+        "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.claude/profiles/'<name>'/settings.json پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Claude کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "مقامی انسٹنس ہیلتھ چیک اینڈ پوائنٹ کو غیر فعال کریں۔"
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "اسکلز سینڈ باکس میں نیٹ ورک تک رسائی کو فعال کریں۔"
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "ترتیب دیں",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "دستی",
+        "provider": "فراہم کنندہ",
+        "score": "اسکور (مفت ماڈل)",
+        "name": "نام"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "اسکور کی ترتیب صرف مفت فراہم کنندگان پر لاگو ہوتی ہے؛ باقی اپنی جگہ رہتے ہیں۔"
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "ہر حصہ = ایک مفت پول · پول ڈی ڈپلیکیٹڈ، ایماندارانہ گنتی (بغیر کسی بڑھی ہوئی ریٹ لمٹ کی حد کے)۔",
     "boost": "ایک بار $10 OpenRouter ٹاپ اپ کے ساتھ مزید ~{tokens}/ماہ ان لاک کریں (50 → 1000 req/day)",
     "uncapped": "مستقل طور پر مفت، کوئی شائع شدہ حد نہیں (ریٹ لمیٹڈ) — حقیقی رسائی، ہیڈ لائن میں شمار نہیں:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# ماڈل} other {# ماڈلز}} ToS-محدود کے طور پر نشان زد — آپ فیصلہ کریں",
     "provider": "فراہم کنندہ",
     "model": "ماڈل",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "نیا",
     "setupGuide": "سیٹ اپ گائیڈ",
     "disabledByFeed": "ریڈار فیڈ کی وجہ سے غیر فعال",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "جب ہدف ماڈل میں ضروری صلاحیتیں (نظریات، ٹولز، منظم آؤٹ پٹ، سیاق و سباق کی کھڑکی) نہیں ہوتیں تو بھیجنے سے پہلے درخواستوں کو مسترد کریں۔ یہ براہ راست واحد فراہم کنندہ کی درخواستوں کی حفاظت کرتا ہے جو کمبو-لیئر کی ہم آہنگی کے فلٹر کو نظر انداز کرتی ہیں۔",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "صفحہ نہیں ملا",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 گھنٹے",
     "historyRange7d": "7 دن",
     "historyRange30d": "30 دن",
+    "compareMode": "رنز کا موازنہ کریں",
+    "compareExit": "موازنہ موڈ سے باہر نکلیں",
+    "compareHint": "موازنے کے لیے دو رنز منتخب کریں",
+    "compareTitle": "موازنہ",
+    "compareDetailFailed": "اس رن کی تفصیلات لوڈ نہیں ہو سکیں",
+    "compareDifferentIdentity": "مختلف ذرائع یا صلاحیتیں — فرق صرف معلوماتی ہیں",
+    "compareDuration": "دورانیہ",
+    "compareCost": "لاگت",
+    "compareEvents": "واقعات",
+    "compareDeltaLegend": "Δ دائیں − بائیں",
     "showCompleted": "مکمل شدہ دکھائیں",
     "searchPlaceholder": "کاموں کو تلاش کریں…",
     "filterStates": "حالتیں",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "منسوخ شدہ",
     "overflowMore": "+{count} مزید",
     "emptyTitle": "ابھی کچھ نہیں چل رہا",
+    "noMatches": "ان فلٹرز سے مماثل کوئی کام نہیں ہے",
     "emptyCloudAgentCta": "کلاؤڈ ایجنٹس ترتیب دیں",
     "emptyA2ACta": "A2A کھولیں",
     "emptyConductorCta": "کنڈکٹر کھولیں",

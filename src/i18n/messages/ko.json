@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "완료된 모든 배치 삭제",
     "batchListBatchesTable": "배치",
     "changelogViewerLoading": "GitHub에서 변경 로그를 로드하는 중...",
-    "profile": "__MISSING__:Profile",
+    "profile": "프로필",
     "profileLoading": "프로필 로드 중...",
     "profileHowToEarn": "적립 방법",
     "bootstrapBannerDismiss": "닫기",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "/v1/models에서 Claude Code 게이트웨이 모델 검색 목록에 비Claude 모델이 포함되도록 claude/&lt;provider&gt;/&lt;model&gt; 미러 ID를 광고합니다. 경고: 전역적으로 활성화하면 모든 클라이언트에 대해 카탈로그 항목이 두 배로 증가합니다.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "공급자 디스패치를 위해 테넌트별 적응형 가상 승인 레인을 활성화합니다(#9654): 한 테넌트의 폭증이 더 이상 다른 테넌트에 503을 반환하지 않습니다. OMNIROUTE_CHAT_VIRTUAL_LANES 환경 변수가 이 대시보드 설정보다 우선하며, 변경 사항은 서버 재시작 시 적용됩니다.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "홈",
     "dashboard": "대시보드",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "상태 모니터",
     "reportIssue": "문제 신고",
     "activeError": "{active} 활성 · {errors} 오류",
+    "topologyLegendActive": "활성",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "오류",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API 키",
     "requestsShort": "{count} 요청",
@@ -1819,11 +1826,11 @@
     "updateStarted": "업데이트 시작됨...",
     "reloadingPageAutomatically": "페이지를 자동으로 새로고침하는 중...",
     "providerTopology": "공급자 토폴로지",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMG 다운로드 (macOS)",
     "downloadDmgDescription": "OmniRoute 데스크탑 앱의 새 버전이 출시되었습니다. 업데이트를 위해 macOS DMG 설치 프로그램을 다운로드하고 설치해 주십시오(현재: v{version}).",
     "downloadExe": "EXE 다운로드 (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gateway 모델 발견을 위한 settings.json",
     "ccOnboardingCopy": "복사",
     "ccOnboardingCopied": "복사됨",
-    "ccOnboardingKeyPlaceholder": "<귀하의 OmniRoute API 키>",
+    "ccOnboardingKeyPlaceholder": "'<귀하의 OmniRoute API 키>'",
     "ccOnboardingWindowNote": "Claude Code는 인식하지 못하는 모델 ID에 대해 200K 컨텍스트 창을 가정합니다. 다른 실제 창을 가진 모델의 경우, 자동 압축이 너무 일찍 발생하지 않도록 그 아래에 CLAUDE_CODE_AUTO_COMPACT_WINDOW를 추가하세요.",
     "failedSave": "저장하지 못했습니다",
     "profileSyncTitle": "CLI 프로필 자동 동기화",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "재설정 인식 RR",
     "resetAwareDesc": "5시간 및 주간 재설정을 기준으로 남은 할당량의 균형을 맞추고 비슷한 점수를 라운드 로빈 방식으로 진행합니다.",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "퓨전",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5를 포함한 40개 이상의 모델을 위한 할인된 API 프록시. https://freeaiapikey.com/dashboard 에서 API 키를 가져오세요. 베이스 URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "https://freemodel.dev 에서 $300 무료 API 크레딧을 받으세요 — 결제 정보 불필요. OpenAI 호환 엔드포인트. GPT-5.4 및 GPT-5.5 모델 사용 가능.",
       "friendliai": "서버리스 추론을 위한 무료 티어 — 신용카드 불필요",
-      "gemini": "평생 무료: Gemini 2.5 Flash 기준 1,500회 요청/일 — 신용카드 불필요, aistudio.google.com 에서 키 발급",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "API 키로 GigaChat (Sber) 연결.",
       "gitlab": "공개 Code Suggestions API용 GitLab 개인 액세스 토큰. gitlab.com을 사용하지 않는 경우 자체 호스팅 베이스 URL을 구성하세요.",
       "gitlawb-gmi": "Gitlawb Opengateway 대시보드에서 API 키를 가져오세요.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "API 키로 GLM Coding (China) 연결.",
       "glmt": "더 높은 토큰 예산, 생각하기(thinking) 활성화 및 더 긴 타임아웃이 설정된 프리셋 GLM 프로필.",
       "getgoapi": "API 키로 GoAPI 연결.",
-      "groq": "무료 티어: 30 RPM / 14.4K RPD — 신용카드 불필요",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "haiper.ai/haiper-api 에서 API 키를 가져오세요.",
       "heroku": "API 키로 Heroku AI 연결.",
       "hcnsec": "api.hcnsec.cn 에서 API 키를 가져오세요.",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Command Code auth를 시작하지 못했습니다.",
     "connectionDeleted": "연결이 삭제되었습니다",
     "connectionFallback": "연결",
-    "coolingConnectionsDescription": "이 연결은 마지막 요청에서 429(요청 한도 초과)를 반환했습니다. OmniRoute는 타이머가 만료될 때까지 이들을 건너뜁니다 — 수동으로 비활성화할 필요가 없습니다.",
+    "coolingConnectionsDescription": "이 연결은 마지막 요청 이후 냉각 중입니다. OmniRoute는 타이머가 끝날 때까지 건너뜁니다 — 수동으로 끌 필요 없습니다.",
     "coolingConnectionsTitle": "현재 냉각 중 ({count})",
     "failedDeleteAlias": "별칭을 삭제하지 못했습니다.",
     "failedDeleteConnection": "연결 삭제에 실패했습니다.",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "가장 저렴한 계정을 선호합니다",
     "resetAware": "재설정 인식 RR",
     "resetAwareDesc": "남은 할당량이 양호하고 재설정이 가까운 계정을 선호합니다.",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "고정 한도",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "활성화하면 실패한 제공자를 전역적으로 추적하고 쿨다운 기간 동안 건너뜁니다.",
     "resilienceProviderCooldownMin": "최소 쿨다운",
     "resilienceProviderCooldownMax": "최대 쿨다운",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "자격 증명 상태 검사",
+    "resilienceCredentialHealthScope": "모든 활성 API 키 및 OAuth 연결",
+    "resilienceCredentialHealthTrigger": "고정 주기로 정기적으로",
+    "resilienceCredentialHealthEffect": "각 연결의 자격 증명을 검사하고 활성/오류로 표시합니다. 실패한 연결은 지수 백오프합니다",
+    "resilienceCredentialHealthDesc": "각 활성 연결의 자격 증명을 제공자를 호출해 검증하는 백그라운드 스윕입니다. 완전히 끄려면 0으로 설정하세요. 연결별 상태 검사 값(편집 대화상자)은 항상 이 전역 기본값을 덮어씁니다.",
+    "resilienceCredentialHealthInterval": "전역 검사 간격",
+    "resilienceCredentialHealthEveryMinutes": "{minutes}분마다",
+    "resilienceCredentialHealthHint": "0은 백그라운드 스윕을 끕니다(최대 1440분 = 24시간). 자체 상태 검사 값이 있는 연결은 이 전역 기본값을 무시합니다. 연결을 0으로 두면 전역 스윕이 켜져 있어도 제외됩니다.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "세션 어피니티",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "언어 팩: {packs}",
     "dragToReorder": "드래그하여 단계 순서 변경",
     "engine": "엔진",
-    "intensity": "강도"
+    "intensity": "강도",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "사용 가능한 압축 실행이 없습니다.",
@@ -8692,6 +8705,7 @@
     "run": "실행",
     "laneRejected": "거부됨: {reason}",
     "error": "오류",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "결합된 흐름",
     "eachLayer": "각 레이어 개별",
     "diff": "차이",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "최대",
     "grokAutoTopUpMonth": "월",
     "grokAdditionalCredits": "추가 크레딧",
+    "kiloAccountBalance": "계정 잔액",
+    "kiloPassBonus": "사용 가능한 보너스",
+    "kiloPassMeterLabel": "Kilo Pass 사용량 측정기",
+    "kiloPassPaid": "결제됨",
+    "kiloPassRemaining": "남음",
+    "kiloPassRenews": "{count}일 후 갱신",
+    "kiloPassUsageLabel": "이번 달 사용량",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "지연 시간 최적화",
     "poolMembersLabel": "풀 멤버 ({count})",
     "poolNoMembers": "이 풀에 아직 프록시가 없습니다.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "제거",
     "poolRemoveFailed": "풀에서 프록시를 제거하지 못했습니다",
     "poolAddLabel": "프록시 추가",
@@ -11327,11 +11351,11 @@
       "copy": "복사",
       "autoscrollOn": "자동 스크롤: 켜짐",
       "autoscrollOff": "자동 스크롤: 꺼짐",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "모두 접기",
+      "collapseOneLevel": "한 단계 접기",
+      "currentExpandLevel": "현재 펼침 단계",
+      "expandOneLevel": "한 단계 펼치기",
+      "expandAllLevels": "모두 펼치기",
       "payload": {
         "clientRawRequest": "클라이언트 원시 요청",
         "clientRequest": "클라이언트 요청",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "바이트가 이미 클라이언트에 도달한 후에도 스트림 복구가 응답을 다시 요청하고 이어 붙일 수 있도록 허용합니다."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "스트림이 유용한 프레임을 보내기 전에 닫히고 같은 연결에서의 제한된 재시도도 소진되면 형제 연결로 한 번만 페일오버합니다. 사용할 수 있는 형제 연결이 없으면 원래의 early-EOF 오류를 반환합니다. 끄기: 재시도 후 early-EOF는 그대로 종료로 처리됩니다."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "/v1/models 응답에 표시용 이름 필드를 포함합니다. 모델 ID만 허용하는 클라이언트의 경우 이 설정을 비활성화하세요."
       },
@@ -12982,7 +13012,7 @@
         "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.codex/*.config.toml 프로필을 재생성합니다. 이는 활성 또는 기본 Codex 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.claude/profiles/<name>/settings.json 프로필을 재생성합니다. 이는 활성 또는 기본 Claude 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
+        "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.claude/profiles/'<name>'/settings.json 프로필을 재생성합니다. 이는 활성 또는 기본 Claude 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "로컬 인스턴스 상태 확인 엔드포인트를 비활성화합니다."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "스킬 샌드박스에서 네트워크 액세스를 활성화합니다."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "정렬 기준",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "수동",
+        "provider": "제공자",
+        "score": "점수(무료 모델)",
+        "name": "이름"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "점수 순위는 무료 제공자에만 적용됩니다. 나머지는 그대로 둡니다."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "각 세그먼트 = 하나의 무료 풀 · 풀 중복 제거, 정직한 집계 (부풀려진 요율 제한 한도 없음).",
     "boost": "일회성 $10 OpenRouter 충전으로 월 약 {tokens}개 추가 잠금 해제 (일일 50 → 1000회 요청)",
     "uncapped": "영구 무료, 공개된 제한 없음 (요율 제한됨) — 헤드라인에 집계되지 않는 실제 액세스:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {#개 모델} other {#개 모델}}이 이용약관(ToS) 제한으로 표시됨 — 귀하가 결정하세요",
     "provider": "제공업체",
     "model": "모델",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "새로 만들기",
     "setupGuide": "설정 가이드",
     "disabledByFeed": "레이더 피드에 의해 비활성화됨",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "대상 모델에 필수 기능(비전, 도구, 구조화된 출력, 컨텍스트 창)이 부족할 경우 요청을 발송 전에 거부합니다. 콤보 레이어 호환성 필터를 우회하는 직접 단일 공급자 요청을 보호합니다.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "페이지를 찾을 수 없습니다",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24시간",
     "historyRange7d": "7일",
     "historyRange30d": "30일",
+    "compareMode": "실행 비교",
+    "compareExit": "비교 모드 종료",
+    "compareHint": "비교할 실행 두 개를 선택하세요",
+    "compareTitle": "비교",
+    "compareDetailFailed": "이 실행의 세부정보를 불러오지 못했습니다",
+    "compareDifferentIdentity": "소스 또는 스킬이 다릅니다 — 차이는 참고용입니다",
+    "compareDuration": "기간",
+    "compareCost": "비용",
+    "compareEvents": "이벤트",
+    "compareDeltaLegend": "Δ 오른쪽 − 왼쪽",
     "showCompleted": "완료 항목 표시",
     "searchPlaceholder": "작업 검색…",
     "filterStates": "상태",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "취소됨",
     "overflowMore": "+{count}개 더보기",
     "emptyTitle": "아직 실행 중인 항목이 없습니다",
+    "noMatches": "이 필터와 일치하는 작업이 없습니다",
     "emptyCloudAgentCta": "클라우드 에이전트 설정",
     "emptyA2ACta": "A2A 열기",
     "emptyConductorCta": "지휘자 열기",

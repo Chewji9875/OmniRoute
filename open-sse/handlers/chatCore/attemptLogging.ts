@@ -19,6 +19,8 @@ import { saveCallLog } from "@/lib/usageDb";
 import type { VideoBridgeLogRedactionEntry } from "@/lib/guardrails/videoBridge";
 import { FORMATS } from "../../translator/formats.ts";
 import { takeEarlyKeepaliveBytes } from "../../utils/earlyKeepaliveByteBuffer.ts";
+import { sanitizeErrorMessage } from "../../utils/error.ts";
+import { isEstimatedUsage } from "../../utils/usageTracking.ts";
 import { cloneBoundedChatLogPayload, truncateForLog } from "./logTruncation.ts";
 import { attachLogMeta } from "./cacheUsageMeta.ts";
 
@@ -249,6 +251,15 @@ export type PersistAttemptLogsContext = {
    * path) is never touched. Omitted/empty for every non-video request.
    */
   videoBridgeLogRedaction?: VideoBridgeLogRedactionEntry[];
+  /**
+   * #12150 P2 surface 2: true when the video-bridge guardrail observed and
+   * rewrote video parts on this request, so the persisted client snapshot had
+   * its transcript cues structurally redacted (videoBridgeObserved in
+   * chatCore.ts). Written to the `call_logs.video_content_removed` marker so
+   * `resolvePreviousResponseState` refuses to rehydrate this row as continuation
+   * history. Omitted/false for every non-video request.
+   */
+  videoContentRemoved?: boolean;
 };
 
 function toConnectionId(value: unknown): string | null {
@@ -317,7 +328,9 @@ export function resolveRequestLifecycleEvent(input: {
     name: "request.failed",
     payload: {
       id: traceId,
-      error: error || `HTTP ${status}`,
+      // Dashboard listeners and event history cross a public WebSocket boundary. Keep the raw
+      // diagnostic in the call log/pipeline above, but expose only the canonical safe projection.
+      error: sanitizeErrorMessage(error || `HTTP ${status}`),
       statusCode: typeof status === "number" ? status : undefined,
       latencyMs,
       model: model || undefined,
@@ -347,7 +360,6 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     skillRequestId,
     detailedLoggingEnabled,
     reqLogger,
-    pendingRequestId,
     clientRawRequest,
     requestedModel,
     credentials,
@@ -365,6 +377,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     modelPinned,
     sessionTag,
     videoBridgeLogRedaction,
+    videoContentRemoved,
   } = ctx;
   const initialConnectionId = toConnectionId(connectionId);
   const finalConnectionId = toConnectionId(credentials?.connectionId) || initialConnectionId;
@@ -445,8 +458,11 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     }
   }
 
+  // #13481: each combo attempt needs its own row. Attempts share pendingRequestId, so
+  // keying the log on it made the successful member's insert hit the UNIQUE constraint
+  // and vanish from the dashboard; traceId is per attempt and pairs with request.started.
   saveCallLog({
-    id: pendingRequestId,
+    id: traceId,
     method: "POST",
     path: clientRawRequest?.endpoint || "/v1/chat/completions",
     status,
@@ -478,6 +494,9 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
             }
           : null,
         claudePromptCacheUsage: claudeCacheUsageMeta,
+        // Operators can tell estimated token counts (and the cost derived from them)
+        // apart from provider-reported ones. Log-only: billing is unchanged.
+        usageEstimated: isEstimatedUsage(tokens) ? true : null,
       })
     ),
     error: error || null,
@@ -496,6 +515,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     modelPinned: modelPinned || false,
     sessionTag: sessionTag || null,
     responseId: extractResponsesId(sourceFormat, clientResponse),
+    videoContentRemoved: videoContentRemoved || false,
   }).catch(() => {});
 
   // Emit the terminal request-lifecycle event to the live dashboard bus. `request.started`

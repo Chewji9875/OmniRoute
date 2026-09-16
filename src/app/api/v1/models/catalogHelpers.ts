@@ -91,6 +91,11 @@ export function intersectStringArrays(arrays: string[][]): string[] {
   });
 }
 
+/** LCD over known arrays only. Empty/unknown entries degrade instead of wiping. */
+export function intersectKnownStringArrays(arrays: string[][]): string[] {
+  return intersectStringArrays(arrays.filter((values) => values.length > 0));
+}
+
 export function minKnownNumber(values: Array<number | undefined>): number | undefined {
   const knownValues = values.filter(isPositiveFiniteNumber);
   if (knownValues.length === 0) return undefined;
@@ -216,4 +221,37 @@ export function mergeComboCapabilities(
     capabilities.effort_tiers = intersectStringArrays(effortTiers);
   }
   return capabilities;
+}
+
+/**
+ * Memoize per-target catalog metadata for one catalog build, yielding between misses.
+ * #12046 resolves metadata for every target of every built-in `auto/*` combo, and those
+ * ~40 combos draw on the same candidate pool: unmemoized, the build repeated the same
+ * lookups tens of thousands of times without yielding (#9147 — 720 synced models took the
+ * cold build from ~4s to ~18s, past the 8s cold-build bound). Metadata depends only on
+ * the target fields in the key, so each distinct target is resolved once per build.
+ */
+export function memoizeTargetMetadata<T>(
+  resolve: (target: ComboCatalogTarget) => T | null,
+  afterMiss: () => Promise<void>
+): (targets: ComboCatalogTarget[]) => Promise<Array<T | null>> {
+  const byKey = new Map<string, T | null>();
+  return async (targets) => {
+    const resolved: Array<T | null> = [];
+    for (const target of targets) {
+      const key = JSON.stringify([
+        target.providerId ?? null,
+        target.provider ?? null,
+        target.modelStr ?? null,
+        target.connectionId ?? null,
+        target.allowedConnectionIds ?? null,
+      ]);
+      if (!byKey.has(key)) {
+        byKey.set(key, resolve(target));
+        await afterMiss();
+      }
+      resolved.push(byKey.get(key) ?? null);
+    }
+    return resolved;
+  };
 }

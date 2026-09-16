@@ -157,9 +157,83 @@ export const opencode_goProvider: RegistryEntry = {
       supportsReasoning: true,
     },
     { id: "hy3-preview", name: "Hunyuan3 Preview" },
-    // Muse Spark 1.3 Contributor — base + effort-tier aliases from the OpenCode Go
+    // Muse Spark 1.2 Contributor — base + effort-tier aliases from the OpenCode Go
     // registry (`opencode models opencode-go --verbose`; exact suffix set:
     // minimal/low/medium/high/xhigh, no max).
+    {
+      id: "muse-spark-1.2-contributor",
+      name: "Muse Spark 1.2 Contributor",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "muse-spark-1.2-contributor-minimal",
+      name: "Muse Spark 1.2 Contributor (minimal effort)",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "muse-spark-1.2-contributor-low",
+      name: "Muse Spark 1.2 Contributor (low effort)",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "muse-spark-1.2-contributor-medium",
+      name: "Muse Spark 1.2 Contributor (medium effort)",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "muse-spark-1.2-contributor-high",
+      name: "Muse Spark 1.2 Contributor (high effort)",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "muse-spark-1.2-contributor-xhigh",
+      name: "Muse Spark 1.2 Contributor (xhigh effort)",
+      contextLength: 1048576,
+      maxOutputTokens: 131072,
+      supportsReasoning: true,
+      supportsVision: true,
+      supportsAudio: true,
+      supportsVideo: true,
+      targetFormat: "openai-responses",
+    },
+    // #12674: Muse Spark 1.3 Contributor — base + effort-tier aliases from the
+    // OpenCode Go registry (`opencode models opencode-go --refresh --verbose`;
+    // exact suffix set: minimal/low/medium/high/xhigh — same as 1.2). #12687 adds
+    // a `-max` variant: the executor sends `max` verbatim and retries once with
+    // `xhigh` only if upstream rejects it (dispatchWithMuseSparkMaxFallback).
+    // Upstream serves Muse Spark only on the Responses API; without
+    // targetFormat:"openai-responses" these fall through to /chat/completions
+    // and the upstream returns 500 (same class as #12196).
     {
       id: "muse-spark-1.3-contributor",
       name: "Muse Spark 1.3 Contributor",
@@ -237,75 +311,6 @@ export const opencode_goProvider: RegistryEntry = {
       supportsVideo: true,
       targetFormat: "openai-responses",
     },
-    // Muse Spark 1.2 Contributor — base + effort-tier aliases from the OpenCode Go
-    // registry (`opencode models opencode-go --verbose`; exact suffix set:
-    // minimal/low/medium/high/xhigh, no max).
-    {
-      id: "muse-spark-1.2-contributor",
-      name: "Muse Spark 1.2 Contributor",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
-    {
-      id: "muse-spark-1.2-contributor-minimal",
-      name: "Muse Spark 1.2 Contributor (minimal effort)",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
-    {
-      id: "muse-spark-1.2-contributor-low",
-      name: "Muse Spark 1.2 Contributor (low effort)",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
-    {
-      id: "muse-spark-1.2-contributor-medium",
-      name: "Muse Spark 1.2 Contributor (medium effort)",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
-    {
-      id: "muse-spark-1.2-contributor-high",
-      name: "Muse Spark 1.2 Contributor (high effort)",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
-    {
-      id: "muse-spark-1.2-contributor-xhigh",
-      name: "Muse Spark 1.2 Contributor (xhigh effort)",
-      contextLength: 1048576,
-      maxOutputTokens: 131072,
-      supportsReasoning: true,
-      supportsVision: true,
-      supportsAudio: true,
-      supportsVideo: true,
-      targetFormat: "openai-responses",
-    },
     // #8353: Grok 4.5 + effort tiers from the OpenCode Go registry.
     {
       id: "grok-4.5",
@@ -329,6 +334,16 @@ export const opencode_goProvider: RegistryEntry = {
       supportsReasoning: true,
       supportedThinkingEfforts: ["none", "low", "high", "max"],
       targetFormat: "openai-responses",
+    },
+    // #12196: the Go upstream serves this model only on /responses —
+    // /chat/completions 500s for it. github already declares the same model
+    // id with targetFormat:"openai-responses" (see github/index.ts).
+    {
+      id: "gpt-5.6-luna",
+      name: "GPT-5.6 Luna",
+      supportsReasoning: true,
+      targetFormat: "openai-responses",
+      maxOutputTokens: 128000,
     },
     // Console Go free GLM-tier model (live-verified 2026-08-23): the upstream
     // rejects every reasoning_effort outside {low, high, max} whenever tools

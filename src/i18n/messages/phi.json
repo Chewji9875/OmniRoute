@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Tanggalin ang lahat ng nakumpletong batch",
     "batchListBatchesTable": "Mga batch",
     "changelogViewerLoading": "Nilo-load ang changelog mula sa GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profile",
     "profileLoading": "Nilo-load ang profile...",
     "profileHowToEarn": "Paano kumita",
     "bootstrapBannerDismiss": "I-dismiss",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "I-anunsyo ang claude/&lt;provider&gt;/&lt;model&gt; mirror ids sa /v1/models upang ang Claude Code gateway model discovery ay maglista ng mga non-Claude models. Babala: nagdodoble ng catalog entries para sa lahat ng kliyente kapag pinagana nang globally.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Paganahin ang adaptive virtual admission lanes para sa bawat tenant sa pagpapadala ng provider (#9654): ang pag-akyat ng trapiko ng isang tenant ay hindi na nagbibigay ng 503 sa iba. Ang environment variable na OMNIROUTE_CHAT_VIRTUAL_LANES ay mas nangingibabaw sa setting na ito sa dashboard; magkakabisa ang mga pagbabago sa pag-restart ng server.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Bahay",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Monitor ng Kalusugan",
     "reportIssue": "Iulat ang isyu",
     "activeError": "{active} aktibo · {errors} error",
+    "topologyLegendActive": "Aktibo",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "__MISSING__:Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} mga kahilingan",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Nagsimula ang pag-update...",
     "reloadingPageAutomatically": "Awtomatikong nire-reload ang page...",
     "providerTopology": "Topology ng Provider",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "I-download ang DMG (macOS)",
     "downloadDmgDescription": "Isang bagong bersyon ng OmniRoute desktop app ang available. Mangyaring i-download at i-install ang macOS DMG installer upang mag-update (kasalukuyan: v{version}).",
     "downloadExe": "I-download ang EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json para sa pagtuklas ng modelo ng gateway",
     "ccOnboardingCopy": "Kopyahin",
     "ccOnboardingCopied": "Nakopya",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Ipinapalagay ng Claude Code ang 200K na konteksto para sa anumang model id na hindi nito nakikilala. Para sa isang modelo na may ibang tunay na bintana, idagdag ang CLAUDE_CODE_AUTO_COMPACT_WINDOW sa ilalim nito upang hindi masyadong maaga ang pag-activate ng auto-compaction.",
     "failedSave": "Nabigong i-save",
     "profileSyncTitle": "Auto-sync ng profile ng CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "I-reset-Aware RR",
     "resetAwareDesc": "Binabalanse ang natitirang quota laban sa 5h at lingguhang pag-reset, pagkatapos ay round-robins ang mga katulad na marka",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fusion",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "May diskwentong API proxy para sa 40+ na modelo kabilang ang GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5. Kumuha ng iyong API key sa https://freeaiapikey.com/dashboard. Base URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Kumuha ng $300 libreng API credits sa https://freemodel.dev — walang kinakailangang impormasyon sa pagbabayad. OpenAI-compatible na endpoint. Available ang mga modelong GPT-5.4 at GPT-5.5.",
       "friendliai": "Libreng tier para sa serverless inference — walang kinakailangang credit card",
-      "gemini": "Libre magpakailanman: 1,500 req/araw para sa Gemini 2.5 Flash — walang credit card, kumuha ng key sa aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Ikonekta ang GigaChat (Sber) gamit ang isang API key.",
       "gitlab": "GitLab personal access token para sa pampublikong Code Suggestions API. Mag-configure ng self-hosted na base URL kapag hindi gumagamit ng gitlab.com.",
       "gitlawb-gmi": "Kumuha ng iyong API key mula sa Gitlawb Opengateway dashboard.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Ikonekta ang GLM Coding (China) gamit ang isang API key.",
       "glmt": "Preset na GLM profile na may mas mataas na token budget, naka-enable ang thinking, at mas mahabang timeout.",
       "getgoapi": "Ikonekta ang GoAPI gamit ang isang API key.",
-      "groq": "Libreng tier: 30 RPM / 14.4K RPD — walang credit card",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Kumuha ng API key sa haiper.ai/haiper-api",
       "heroku": "Ikonekta ang Heroku AI gamit ang isang API key.",
       "hcnsec": "Kumuha ng API key sa api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Nabigong simulan ang Command Code auth",
     "connectionDeleted": "Nabura ang koneksyon",
     "connectionFallback": "koneksyon",
-    "coolingConnectionsDescription": "Ang mga koneksyong ito ay nagbalik ng 429 (rate-limit) sa kanilang huling kahilingan. Ang OmniRoute ay laktawan ang mga ito hanggang sa mag-expire ang timer — walang kinakailangang manu-manong pag-disable.",
+    "coolingConnectionsDescription": "Ang mga koneksyong ito ay nagpapalamig pagkatapos ng huling kahilingan. Lalaktawan sila ng OmniRoute hanggang mag-expire ang timer — hindi kailangang i-disable nang mano-mano.",
     "coolingConnectionsTitle": "Kasalukuyang nagpapalamig ({count})",
     "failedDeleteAlias": "Nabigong tanggalin ang alias",
     "failedDeleteConnection": "Nabigong tanggalin ang koneksyon",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Mas gusto ang pinakamurang available na account",
     "resetAware": "I-reset-Aware RR",
     "resetAwareDesc": "Mas gusto ang mga account na may malusog na natitirang quota at mas malapit na pag-reset",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Malagkit na Limitasyon",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Kapag pinagana, ang mga nabigong provider ay sinusubaybayan nang global at nilalaktawan para sa isang panahon ng cooldown.",
     "resilienceProviderCooldownMin": "Minimum na cooldown",
     "resilienceProviderCooldownMax": "Maximum na cooldown",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Pagsusuri sa kalusugan ng kredensyal",
+    "resilienceCredentialHealthScope": "Lahat ng aktibong API-key at OAuth na koneksyon",
+    "resilienceCredentialHealthTrigger": "Pana-panahon, sa nakatakdang bilis",
+    "resilienceCredentialHealthEffect": "Sinusuri ang kredensyal ng bawat koneksyon at minamarkahan itong aktibo/error; ang nabigong koneksyon ay pumapasok sa exponential backoff",
+    "resilienceCredentialHealthDesc": "Background sweep na nagpapatunay sa kredensyal ng bawat aktibong koneksyon sa pamamagitan ng pagtawag sa provider nito. Itakda sa 0 para i-disable nang buo. Ang mga Health Check value sa bawat koneksyon (sa edit dialog) ay palaging nangingibabaw sa global default na ito.",
+    "resilienceCredentialHealthInterval": "Pandaigdigang agwat ng pagsusuri",
+    "resilienceCredentialHealthEveryMinutes": "Bawat {minutes} min",
+    "resilienceCredentialHealthHint": "Ang 0 ay nagdi-disable ng background sweep (max 1440 min = 24 oras). Ang mga koneksyong may sariling Health Check value ay hindi tumitingin sa global default na ito; ang 0 sa isang koneksyon ay inaalis ito kahit naka-on ang global sweep.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Session affinity",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Mga language pack: {packs}",
     "dragToReorder": "I-drag upang muling isaayos ang hakbang",
     "engine": "Engine",
-    "intensity": "Intensity"
+    "intensity": "Intensity",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Walang available na compression run.",
@@ -8692,6 +8705,7 @@
     "run": "Patakbuhin",
     "laneRejected": "tinanggihan: {reason}",
     "error": "error",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Pinagsamang flow",
     "eachLayer": "Bawat layer nang hiwalay",
     "diff": "Pagkakaiba",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "max",
     "grokAutoTopUpMonth": "buwan",
     "grokAdditionalCredits": "Karagdagang Kredito",
+    "kiloAccountBalance": "Balanse ng Account",
+    "kiloPassBonus": "Magagamit na bonus",
+    "kiloPassMeterLabel": "Meter ng paggamit ng Kilo Pass",
+    "kiloPassPaid": "Bayad na",
+    "kiloPassRemaining": "Natitira",
+    "kiloPassRenews": "Magre-renew sa loob ng {count} araw",
+    "kiloPassUsageLabel": "Paggamit ngayong buwan",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Latency-optimized",
     "poolMembersLabel": "Mga miyembro ng pool ({count})",
     "poolNoMembers": "Wala pang mga proxy sa pool na ito.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Alisin",
     "poolRemoveFailed": "Hindi naalis ang proxy mula sa pool",
     "poolAddLabel": "Magdagdag ng proxy",
@@ -11327,11 +11351,11 @@
       "copy": "Kopyahin",
       "autoscrollOn": "Autoscroll: naka-on",
       "autoscrollOff": "Autoscroll: patay",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "I-collapse lahat",
+      "collapseOneLevel": "I-collapse ang isang antas",
+      "currentExpandLevel": "Kasalukuyang antas ng pagpapalawak",
+      "expandOneLevel": "I-expand ang isang antas",
+      "expandAllLevels": "I-expand lahat",
       "payload": {
         "clientRawRequest": "Kliyentong Hilaw na Kahilingan",
         "clientRequest": "Hiling ng Kliyente",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Payagan ang pagbawi ng stream na hilingin muli ang tugon at pagdugtungin ito pagkatapos makarating na ang mga byte sa client."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Lumipat nang minsan sa isang kapatid na koneksyon kapag nagsara ang stream bago magpadala ng anumang kapaki-pakinabang na frame at nagamit na ang limitadong muling pagsubok sa parehong koneksyon. Kung walang magagamit na kapatid na koneksyon, ibinabalik ang orihinal na error na early-EOF. Naka-off: nananatiling pinal ang early-EOF pagkatapos ng muling pagsubok."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Isama ang mga display-friendly na field ng pangalan sa mga tugon ng /v1/models. I-disable ito para sa mga client na tumatanggap lamang ng mga model ID."
       },
@@ -12982,7 +13012,7 @@
         "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.codex/*.config.toml mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Codex at naka-off bilang default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.claude/profiles/<name>/settings.json mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Claude at naka-off bilang default."
+        "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.claude/profiles/'<name>'/settings.json mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Claude at naka-off bilang default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "I-disable ang health-check endpoint ng lokal na instance."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "I-enable ang access sa network sa skills sandbox."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Ayusin ayon sa",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Manual",
+        "provider": "Provider",
+        "score": "Iskor (libreng modelo)",
+        "name": "Pangalan"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Ang pagkakasunod ayon sa iskor ay para lang sa libreng provider; ang iba ay nananatili sa lugar."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Bawat segment = isang libreng pool · pool-deduped, tapat na pagbibilang (walang pinalobong mga ceiling ng rate-limit).",
     "boost": "I-unlock ang ~{tokens} pa/buwan gamit ang isang beses na $10 OpenRouter top-up (50 → 1000 req/araw)",
     "uncapped": "Permanenteng libre, walang nai-publish na limitasyon (rate-limited) — totoong access, hindi binibilang sa headline:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# modelo} other {# na modelo}} ang na-flag bilang ToS-restricted — ikaw ang magpasya",
     "provider": "Provider",
     "model": "Modelo",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "new",
     "setupGuide": "Setup guide",
     "disabledByFeed": "Disabled by Radar feed",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tanggihan ang mga kahilingan bago ang pagpapadala kapag ang target na modelo ay kulang sa mga kinakailangang kakayahan (paningin, mga tool, nakabalangkas na output, bintana ng konteksto). Pinoprotektahan ang mga direktang kahilingan mula sa isang tagapagbigay na lumalampas sa filter ng pagiging tugma ng combo-layer.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Hindi matagpuan ang pahina",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 oras",
     "historyRange7d": "7 araw",
     "historyRange30d": "30 araw",
+    "compareMode": "Ihambing ang mga run",
+    "compareExit": "Lumabas sa compare mode",
+    "compareHint": "Pumili ng dalawang run na ihahambing",
+    "compareTitle": "Paghahambing",
+    "compareDetailFailed": "Hindi ma-load ang detalye ng run na ito",
+    "compareDifferentIdentity": "Magkaibang source o skill — impormasyon lang ang mga pagkakaiba",
+    "compareDuration": "Tagal",
+    "compareCost": "Gastos",
+    "compareEvents": "Mga Kaganapan",
+    "compareDeltaLegend": "Δ kanan − kaliwa",
     "showCompleted": "Ipakita ang mga natapos na",
     "searchPlaceholder": "Maghanap ng mga gawain…",
     "filterStates": "Mga Katayuan",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Kinansela",
     "overflowMore": "+{count} pa",
     "emptyTitle": "Wala pang tumatakbo",
+    "noMatches": "Walang gawain na tumutugma sa mga filter na ito",
     "emptyCloudAgentCta": "I-set up ang Cloud Agents",
     "emptyA2ACta": "Buksan ang A2A",
     "emptyConductorCta": "Buksan ang Konduktor",

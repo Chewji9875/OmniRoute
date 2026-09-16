@@ -7,6 +7,7 @@ import {
   getCachedRawProviderConnections,
   getCachedProviderNodes,
   getCachedSettings,
+  getCachedProviderConnectionById,
 } from "@/lib/db/readCache";
 import {
   getProviderConnections,
@@ -47,11 +48,15 @@ import {
   hydrateCodexQuotaCacheForRequest,
   isQuotaExhaustedForRequest,
 } from "@/domain/quotaCache";
+import { isClaudeExtraUsageAllowed } from "@/lib/providers/claudeExtraUsage";
 import {
   getQuotaScopeLabelForProvider,
   isAntigravityQuotaProvider,
 } from "@omniroute/open-sse/services/antigravityQuotaFamily.ts";
-import { rehydrateAntigravityFamilyLocksForConnections, persistAntigravityFamilyCooldownIfQuota } from "@omniroute/open-sse/services/antigravityFamilyCooldown.ts";
+import {
+  rehydrateAntigravityFamilyLocksForConnections,
+  persistAntigravityFamilyCooldownIfQuota,
+} from "@omniroute/open-sse/services/antigravityFamilyCooldown.ts";
 import { markQuotaPreflightAccountUnavailable } from "./quotaPreflightUnavailable.ts";
 import { getCreditsMode } from "@omniroute/open-sse/services/antigravityCredits.ts";
 import { preferAntigravityConnectionsWithStoredProject } from "@omniroute/open-sse/services/antigravityProjectPersistence.ts";
@@ -71,8 +76,10 @@ import {
   retryHintBypassesMaxCooldownMs,
   isProviderModelUnsupported400,
 } from "@omniroute/open-sse/services/accountFallback.ts";
+import { isSharedWalletCredits402 } from "@omniroute/open-sse/services/accountFallback/sharedWalletCredits.ts";
 import { isLocalProvider } from "@omniroute/open-sse/config/providerRegistry.ts";
 import { COOLDOWN_MS, RateLimitReason } from "@omniroute/open-sse/config/constants.ts";
+import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/errorSanitization.ts";
 import {
   honorsRuleLockScope,
   isEgressBucketedLockScope,
@@ -93,6 +100,7 @@ import {
   classifyProviderError,
   PROVIDER_ERROR_TYPES,
 } from "@omniroute/open-sse/services/errorClassifier.ts";
+import { resolveTerminalConnectionStatus } from "./authTerminalStatus.ts";
 import {
   ALIBABA_FREE_DRAINED_LOCK_MS,
   getAlibabaBillingMode,
@@ -109,6 +117,7 @@ import {
   toCodexBaseQuotaWindowName,
   toCodexScopedQuotaWindowName,
 } from "@omniroute/open-sse/config/codexQuotaScopes.ts";
+import { formatQuotaUsageReason } from "@omniroute/open-sse/services/quotaWindowLabel.ts";
 import {
   getCodexChildCooldown,
   isCodexChildUnavailable,
@@ -142,6 +151,12 @@ import {
   planSessionAffinityConnection,
   syncSessionAffinityRuntimeFields,
 } from "./sessionAffinityPin";
+import {
+  EXPLICIT_INACTIVE_PROBE_INTERVAL_MS,
+  lastExplicitProbeTime,
+  noteExplicitProbe,
+  selectExplicitInactiveProbe,
+} from "./explicitInactiveProbe";
 import {
   isAnonymousFallbackDisabledBySettings,
   isNoAuthProviderBlockedBySettings,
@@ -325,71 +340,6 @@ function isTerminalConnectionStatusForModel(
   return true;
 }
 
-// #8200: cookie-auth providers (perplexity-web, grok-web, ...) use a rotating browser
-// session, not a static API key — a 401 means "session needs a refresh", not "dead".
-function isRecoverableCookieAuth401(
-  provider: string | null,
-  providerErrorType: string | null
-): boolean {
-  return (
-    providerErrorType !== PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED &&
-    provider != null &&
-    resolveProviderId(provider) in WEB_COOKIE_PROVIDERS
-  );
-}
-// #12242 (402 variant of #3027): a bare 402 on a passthrough/gateway
-// provider that multiplexes many models behind one credential
-// (kilo-gateway, ollama-cloud, etc.) is a PER-MODEL billing signal, not
-// proof the credential itself is dead — free models on the same connection
-// remain perfectly usable. Only terminalize the whole connection for a 402
-// when the provider is NOT a per-model-quota provider; the caller lets it
-// fall through to the per-model lockout branch instead.
-// `result.creditsExhausted` is a provider's own explicit classification
-// (independent of HTTP status) and stays unconditionally terminal — it is
-// not scoped by this check.
-function isConnectionWideCreditsExhausted(
-  status: number,
-  result: { permanent?: boolean; creditsExhausted?: boolean },
-  isPerModelQuotaProvider: boolean
-): boolean {
-  return result.creditsExhausted || (status === 402 && !isPerModelQuotaProvider);
-}
-function resolveTerminalConnectionStatus(
-  status: number,
-  result: { permanent?: boolean; creditsExhausted?: boolean },
-  providerErrorType: string | null = null,
-  provider: string | null = null,
-  isPerModelQuotaProvider = false
-): string | null {
-  if (isConnectionWideCreditsExhausted(status, result, isPerModelQuotaProvider)) {
-    return "credits_exhausted";
-  }
-  if (
-    providerErrorType === PROVIDER_ERROR_TYPES.PROJECT_ROUTE_ERROR ||
-    providerErrorType === PROVIDER_ERROR_TYPES.GEO_BLOCKED ||
-    providerErrorType === PROVIDER_ERROR_TYPES.OAUTH_INVALID_TOKEN ||
-    // #1010: Cloudflare fingerprint rejection is the CDN refusing the CLIENT's
-    // signature, not the account's credentials — never a terminal account state.
-    // A different client on the same key succeeds (measured 2026-08-08: curl 200,
-    // urllib 403 on byte-identical body), so banning the account here would flip a
-    // healthy free pool to ALL_ACCOUNTS_INACTIVE after two such calls.
-    providerErrorType === PROVIDER_ERROR_TYPES.FINGERPRINT_REJECTION
-  ) {
-    return null;
-  }
-  if (result.permanent || providerErrorType === PROVIDER_ERROR_TYPES.FORBIDDEN) {
-    return "banned";
-  }
-  if (
-    (providerErrorType === PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED ||
-      providerErrorType === PROVIDER_ERROR_TYPES.UNAUTHORIZED ||
-      status === 401) &&
-    !isRecoverableCookieAuth401(provider, providerErrorType)
-  ) {
-    return "expired";
-  }
-  return null;
-}
 export function resolveQuotaLimitPolicy(
   provider: string,
   providerSpecificData: JsonRecord
@@ -420,6 +370,11 @@ export function evaluateQuotaLimitPolicy(
   connection: ProviderConnectionView,
   requestedModel: string | null = null
 ): { blocked: boolean; reasons: string[]; resetAt: string | null } {
+  // Extra-usage switch is opt-in billing, not a pre-dispatch skip. When the
+  // operator allows extra usage, 5h/weekly bars must not hide the account.
+  if (isClaudeExtraUsageAllowed(provider, connection.providerSpecificData)) {
+    return { blocked: false, reasons: [], resetAt: null };
+  }
   const policy = resolveQuotaLimitPolicy(provider, connection.providerSpecificData);
   if (!policy.enabled || policy.windows.length === 0) {
     return { blocked: false, reasons: [], resetAt: null };
@@ -437,7 +392,16 @@ export function evaluateQuotaLimitPolicy(
       policy.thresholdPercent
     );
     if (!status?.reachedThreshold) continue;
-    reasons.push(`${effectiveWindowName} usage ${Math.round(status.usedPercentage)}%`);
+    reasons.push(
+      formatQuotaUsageReason(
+        {
+          key: effectiveWindowName,
+          displayName: status.displayName,
+          windowSeconds: status.windowSeconds,
+        },
+        status.usedPercentage
+      )
+    );
     resetCandidates.push(status.resetAt);
   }
 
@@ -593,7 +557,12 @@ function getP2CConnectionScore(
     quotaExhausted = cached.exhausted;
   } else {
     quotaBlocked = evaluateQuotaLimitPolicy(provider, connection, requestedModel).blocked;
-    quotaExhausted = isQuotaExhaustedForRequest(connection.id, provider, requestedModel);
+    quotaExhausted = isQuotaExhaustedForRequest(
+      connection.id,
+      provider,
+      requestedModel,
+      connection.providerSpecificData
+    );
   }
 
   const quotaHeadroomPercent = getConnectionQuotaHeadroomPercent(
@@ -1100,7 +1069,10 @@ async function hydrateAccountProxyReferences(
 async function materializeConnection(
   connection: ProviderConnectionView,
   options: CredentialSelectionOptions,
-  extra: DeferredLeaseSelection & { exclusiveLease?: ExclusiveConnectionLease } = {}
+  extra: DeferredLeaseSelection & {
+    exclusiveLease?: ExclusiveConnectionLease;
+    reactivatedFromInactive?: boolean;
+  } = {}
 ) {
   const providerSpecificData = await hydrateAccountProxyReferences(connection.providerSpecificData);
   const apiKeyHealth = providerSpecificData.apiKeyHealth as Record<string, KeyHealth> | undefined;
@@ -1253,6 +1225,20 @@ export async function getProviderCredentials(
       // respected (the no-auth provider will be rejected if it has no real connections
       // matching the allowlist, or a real connection row will be selected if present).
       if (!allowedConnections || allowedConnections.length === 0) {
+        // #13483: check model-only lockout before handing back the synthetic
+        // connection. Without this, a locked model (e.g. 400 model_capacity)
+        // is retried on every request because the noauth path short-circuits
+        // before the per-connection status pass that classifies modelLocked.
+        const modelLockout = requestedModel
+          ? getModelLockoutInfo(resolvedId, SYNTHETIC_NOAUTH_CONNECTION_ID, requestedModel)
+          : null;
+        if (modelLockout && modelLockout.remainingMs > 0) {
+          log.debug(
+            "AUTH",
+            `${resolvedId} | noauth model-only lockout for ${requestedModel} — ${modelLockout.remainingMs}ms remaining, returning null`
+          );
+          return null;
+        }
         return await maybeSyntheticNoAuthFallback(resolvedId, excludedForNoAuth);
       }
     }
@@ -1299,6 +1285,29 @@ export async function getProviderCredentials(
     if (allowedConnections && allowedConnections.length > 0) {
       connections = connections.filter((conn) => allowedConnections.includes(conn.id));
     }
+    let explicitProbeKind: "probe" | "suppressed" | "skip" = "skip";
+    if (forcedConnectionId && !connections.some((c) => c.id === forcedConnectionId)) {
+      const pinnedRaw = await getCachedProviderConnectionById(forcedConnectionId);
+      const pinnedRow = pinnedRaw ? toProviderConnection(pinnedRaw) : null;
+      const nowMs = Date.now();
+      const decision = selectExplicitInactiveProbe({
+        forcedConnectionId,
+        activeConnections: connections,
+        pinnedRow,
+        providersToSearch,
+        allowedConnectionIds: allowedConnections ?? null,
+        nowMs,
+        lastProbeAtMs: lastExplicitProbeTime(forcedConnectionId),
+        intervalMs: EXPLICIT_INACTIVE_PROBE_INTERVAL_MS,
+      });
+      explicitProbeKind = decision.kind;
+      if (decision.kind === "probe" && pinnedRow) {
+        noteExplicitProbe(forcedConnectionId, nowMs);
+        connections = [pinnedRow];
+      }
+    }
+    const probeStamp =
+      explicitProbeKind === "probe" ? { reactivatedFromInactive: true as const } : {};
     const forcedConnectionEligible = connections.some((conn) => conn.id === forcedConnectionId);
     if (options.lease && forcedConnectionId && !forcedConnectionEligible) return null;
     if (options.lease?.mode === "request" && forcedConnectionId) {
@@ -1355,8 +1364,15 @@ export async function getProviderCredentials(
         connections,
         allowRateLimitedConnections,
         bypassQuotaPolicy,
-        isQuotaExhausted: (connectionId) =>
-          isQuotaExhaustedForRequest(connectionId, provider, requestedModel),
+        isQuotaExhausted: (connectionId) => {
+          const conn = connections.find((candidate) => candidate.id === connectionId);
+          return isQuotaExhaustedForRequest(
+            connectionId,
+            provider,
+            requestedModel,
+            conn?.providerSpecificData
+          );
+        },
         isQuotaPolicyBlocked: (connection) =>
           evaluateQuotaLimitPolicy(provider, connection as ProviderConnectionView, requestedModel)
             .blocked,
@@ -1518,7 +1534,7 @@ export async function getProviderCredentials(
         connectionFilterStatus.set(c.id, "modelNotAdvertised");
         return false;
       }
-      if (!allowSuppressedConnections) {
+      if (!allowSuppressedConnections && explicitProbeKind !== "probe") {
         if (!allowRateLimitedConnections && isAccountUnavailable(c.rateLimitedUntil)) {
           connectionFilterStatus.set(c.id, "rateLimited");
           return false;
@@ -1835,7 +1851,12 @@ export async function getProviderCredentials(
     const withQuota: typeof policyEligibleConnections = [];
     const exhaustedQuota: typeof policyEligibleConnections = [];
     for (const c of policyEligibleConnections) {
-      const exhausted = isQuotaExhaustedForRequest(c.id, provider, requestedModel);
+      const exhausted = isQuotaExhaustedForRequest(
+        c.id,
+        provider,
+        requestedModel,
+        c.providerSpecificData
+      );
       const existing = quotaResults.get(c.id);
       if (existing) existing.exhausted = exhausted;
       if (!exhausted) {
@@ -2146,6 +2167,7 @@ export async function getProviderCredentials(
         return materializeConnection(connection, options, {
           commitSelectionSideEffects,
           selectNextLeaseCandidate,
+          ...probeStamp,
         });
       }
       let claim = mutateExclusiveConnectionLease(
@@ -2165,7 +2187,12 @@ export async function getProviderCredentials(
       exclusiveLease = claim.lease;
       await commitSelectionSideEffects?.();
       if (options.materializeCredentials === false) {
-        return { exclusiveLease, connectionId: connection.id, provider: connection.provider };
+        return {
+          exclusiveLease,
+          connectionId: connection.id,
+          provider: connection.provider,
+          ...probeStamp,
+        };
       }
     }
 
@@ -2176,7 +2203,10 @@ export async function getProviderCredentials(
       );
     }
 
-    return materializeConnection(connection, options, { exclusiveLease });
+    return materializeConnection(connection, options, {
+      exclusiveLease,
+      ...probeStamp,
+    });
   } finally {
     selectionLock?.release();
   }
@@ -2428,9 +2458,12 @@ export async function getProviderCredentialsWithQuotaPreflight(
 }
 
 /**
- * #10334 — Guard for the agentrouter-exclusive "connection scope" quota
- * cooldown branch in markAccountUnavailable. The "never terminal" invariant of
- * that branch is NOT structurally guaranteed by `ruleScope === "connection"`
+ * #10334 — Guard for the "connection scope" quota cooldown branch in
+ * markAccountUnavailable (agentrouter-exclusive in practice: no opencode-family
+ * rule matches 403 today, so only agentrouter's "额度不足" rule reaches this
+ * predicate via 403 — but opencode-family 429 header-quota hits also qualify
+ * via the 429 path). The "never terminal" invariant of that branch is NOT
+ * structurally guaranteed by `ruleScope === "connection"`
  * alone — it also depends on the provider rule table only ever pairing scope
  * "connection" with a genuinely transient reason. Today
  * (`buildAgentrouterRules()` in providerErrorRules.ts) that is true: the only
@@ -2468,7 +2501,7 @@ export function isAgentrouterConnectionQuotaScope(
 }
 
 async function resolveDailyResetForProvider(
-  provider: string | null,
+  provider: string | null
 ): Promise<{ timezone?: unknown; hour?: unknown } | null> {
   if (!provider) return null;
   try {
@@ -2574,6 +2607,26 @@ async function applyEgressIpLockout(
   }
 }
 
+/** Build the options for markAccountUnavailable on the chat exhaustion path.
+ * Single place that forwards the request id so no chat sender can forget it:
+ * every chat caller passes its in-scope id through here. */
+export function buildExhaustionOptions(
+  correlationId: string | null,
+  rest: {
+    persistUnavailableState?: boolean;
+    /** Caller is the combo engine — it records its own model-level lockouts. */
+    isCombo?: boolean;
+    headers?: Headers | Record<string, string> | null;
+  } = {}
+): {
+  persistUnavailableState?: boolean;
+  isCombo?: boolean;
+  headers?: Headers | Record<string, string> | null;
+  correlationId: string | null;
+} {
+  return { ...rest, correlationId };
+}
+
 /** Persist exponential-backoff state for an unavailable provider connection. */
 export async function markAccountUnavailable(
   connectionId: string,
@@ -2587,6 +2640,7 @@ export async function markAccountUnavailable(
     /** Caller is the combo engine — it records its own model-level lockouts. */
     isCombo?: boolean;
     headers?: Headers | Record<string, string> | null;
+    correlationId?: string | null;
   } = {}
 ) {
   const currentMutex = markMutexes.get(connectionId) || Promise.resolve();
@@ -2706,7 +2760,7 @@ export async function markAccountUnavailable(
       effectiveProviderProfile,
       null,
       null,
-      await resolveDailyResetForProvider(provider),
+      await resolveDailyResetForProvider(provider)
     );
 
     // T-PROBE: probe-origin failures (model test-all) must never remove the
@@ -2717,14 +2771,13 @@ export async function markAccountUnavailable(
     // the opt-in setting probeCanDisable restores the historical behavior.
     if (await shouldIsolateProbeFailures()) {
       await updateProviderConnection(connectionId, {
-        // lastError kept RAW (full text) — maximal probe visibility; the
-        // divergence vs the normal path's slice(0,100) is intentional.
+        // Persist safe wording only after classification has consumed the raw provider text.
         // backoffLevel is deliberately NOT written: a positive backoff
         // triggers the selection-time auto-decay (resetConnectionBackoff,
         // auth.ts getProviderCredentials) which wipes lastError back to
         // NULL on the next attempt — silently destroying the probe record.
         // The backoff is also routing state a probe must not touch (#9817).
-        lastError: errorText,
+        lastError: sanitizeErrorMessage(errorText) || "Provider request failed",
         lastErrorType: fallbackResult.reason || null,
         errorCode: status,
         lastErrorAt: new Date().toISOString(),
@@ -2755,8 +2808,10 @@ export async function markAccountUnavailable(
 
     const isPerModelQuotaProvider = hasPerModelQuota(provider, model, connectionPassthroughModels);
 
-    // #10334 — agentrouter EXCLUSIVE: the matched provider rule declared scope
-    // "connection" for account-wide quota exhaustion ("额度不足"). agentrouter is
+    // #10334 — connection-scope branch: the matched provider rule declared scope
+    // "connection" for account-wide quota exhaustion (agentrouter "额度不足";
+    // exclusive in practice — no opencode-family rule matches 403 today).
+    // agentrouter is
     // a passthroughModels provider (isPerModelQuotaProvider === true), so without
     // this branch the next `if` would treat it like any other passthrough 429 and
     // lock a SINGLE model — leaving combo routing to burn one upstream call per
@@ -2782,6 +2837,15 @@ export async function markAccountUnavailable(
     // of cooldown" ends up producing a LONGER effective block for this one rule.
     // Not addressed here; flagged for a future #2997 follow-up if it proves to be
     // a real operator complaint.
+    //
+    // HONORS note: since the opencode family joined HONORS, an opencode-family
+    // 429 carrying upstream quota headers (x-ratelimit-remaining-*) also lands
+    // here with ruleScope "connection" — before the #10880 egress branch below,
+    // so sibling cooling is skipped on that path. Latent today: the only
+    // request-path caller forwarding headers is chat.ts:2383 (chat completions),
+    // and opencode upstreams rarely send those headers on 429 (the observed
+    // envelope is the headers-less "monthly usage limit" body, which keeps
+    // flowing to the egress block with ruleScope undefined).
     if (ruleScopeIsConnection && provider && !disableCooling) {
       const connectionCooldownMs =
         fallbackResult.cooldownMs > 0 ? fallbackResult.cooldownMs : COOLDOWN_MS.rateLimit;
@@ -2876,6 +2940,45 @@ export async function markAccountUnavailable(
 
     const isNvidiaModelGone = provider === "nvidia" && status === 410;
     const modelLockoutOptions = { maxCooldownMs: effectiveProviderProfile?.maxCooldownMs };
+    // Same persisted reason the agentrouter 403 model-scope branch hard-codes
+    // ("forbidden"): the lock key is the getModelLockKey tuple shared with the
+    // combo path, and the declared 1h (same order as that combo lock) is
+    // operator-clamped by recordModelLockoutFailure to mlSettings.maxCooldownMs
+    // (~30min default) — the verbatim 1h never escapes operator control.
+    // Narrow scope: status === 400 only (never a 403/429 rule), adjacent to
+    // :2843's per-model-quota status set (which excludes 400) — malformed 400s
+    // carry no ruleScope and fall through unchanged.
+    if (model && provider && status === 400 && fallbackResult.ruleScope === "model") {
+      // Single source of truth: the rule's own cooldownMs (surfaced on
+      // fallbackResult by the 400 pre-check in checkFallbackError). The literal
+      // is only the fallback for a rule that declares no cooldown — editing
+      // the rule's cooldownMs takes effect without touching this call site.
+      const ruleCooldownMs =
+        typeof fallbackResult.cooldownMs === "number" && fallbackResult.cooldownMs > 0
+          ? fallbackResult.cooldownMs
+          : 3_600_000;
+      const lockout = recordModelLockoutFailure(
+        provider,
+        connectionId,
+        model,
+        "model_capacity",
+        400,
+        ruleCooldownMs,
+        effectiveProviderProfile,
+        { exactCooldownMs: ruleCooldownMs, maxCooldownMs: mlSettings.maxCooldownMs }
+      );
+      updateProviderConnection(connectionId, {
+        lastErrorType: "model_capacity",
+        lastError: `Model ${model} model_capacity`,
+        lastErrorAt: new Date().toISOString(),
+        errorCode: status,
+      }).catch(() => {});
+      log.info(
+        "AUTH",
+        `Model-only lockout for ${provider}:${model} — ${status} model_capacity ${Math.ceil(lockout.cooldownMs / 1000)}s (rule scope=model, connection stays active)`
+      );
+      return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
+    }
     if (
       isPerModelQuotaProvider &&
       provider &&
@@ -2906,7 +3009,10 @@ export async function markAccountUnavailable(
         }).catch(() => {});
         log.info(
           "AUTH",
-          `Server error for ${provider}:${model} — ${status} ${reason} (no model lockout, connection stays active for sibling models)`
+          `Server error for ${provider}:${model} — ${status} ${reason} (no model lockout, connection stays active for sibling models)`,
+          {
+            ...(options.correlationId ? { correlationId: options.correlationId } : {}),
+          }
         );
         return { shouldFallback: true, cooldownMs: 0 };
       }
@@ -2961,10 +3067,21 @@ export async function markAccountUnavailable(
         "AUTH",
         `Model-only lockout for ${provider}:${model} — ${status} ${reason} ${Math.ceil(lockout.cooldownMs / 1000)}s (failureCount=${lockout.failureCount}, connection stays active)`
       );
-      persistAntigravityFamilyCooldownIfQuota({ provider, connectionId, model, cooldownMs: lockout.cooldownMs, reason });
+      persistAntigravityFamilyCooldownIfQuota({
+        provider,
+        connectionId,
+        model,
+        cooldownMs: lockout.cooldownMs,
+        reason,
+      });
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
     const result = fallbackResult;
+    if (isSharedWalletCredits402(provider, status, errorText)) {
+      result.creditsExhausted = true;
+      result.reason = result.reason || RateLimitReason.QUOTA_EXHAUSTED;
+      result.shouldFallback = true;
+    }
     const { shouldFallback, cooldownMs: rawCooldownMs, newBackoffLevel, reason } = result;
     if (!shouldFallback) return { shouldFallback: false, cooldownMs: 0 };
     const providerErrorType = classifyProviderError(status, errorText, provider);
@@ -3038,13 +3155,25 @@ export async function markAccountUnavailable(
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
 
-    const terminalStatus = resolveTerminalConnectionStatus(
+    let terminalStatus = resolveTerminalConnectionStatus(
       status,
-      result as { permanent?: boolean; creditsExhausted?: boolean },
+      result as { permanent?: boolean; creditsExhausted?: boolean; ambiguousAuth?: boolean },
       providerErrorType,
       provider,
-      isPerModelQuotaProvider
+      isPerModelQuotaProvider,
+      errorText,
+      connectionId
     );
+    // A still-valid access token after a successful refresh is not "expired".
+    // A follow-up 401 (timeout, hop, race) must cooldown, not park the account.
+    const tokenExpiryMs = Date.parse(String(conn?.tokenExpiresAt || conn?.expiresAt || ""));
+    if (
+      terminalStatus === "expired" &&
+      Number.isFinite(tokenExpiryMs) &&
+      tokenExpiryMs > Date.now() + 60_000
+    ) {
+      terminalStatus = null;
+    }
     const cachedQuotaResetAt =
       providerErrorType === PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED ||
       reason === RateLimitReason.QUOTA_EXHAUSTED
@@ -3072,6 +3201,7 @@ export async function markAccountUnavailable(
       provider &&
       model &&
       !terminalStatus &&
+      !isSharedWalletCredits402(provider, status, errorText) &&
       !(provider === "vertex" && isVertexConnectionWidePermissionDenied(errorText))
     ) {
       const lockoutReason = status === 402 ? "credits" : "forbidden";
@@ -3140,8 +3270,8 @@ export async function markAccountUnavailable(
       );
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
-
-    const errorMsg = describeUpstreamFailure(errorText);
+    const errorMsg =
+      sanitizeErrorMessage(describeUpstreamFailure(errorText)) || "Provider request failed";
 
     // T09: Codex per-scope lockout (do not block the whole account globally).
     if (
@@ -3193,7 +3323,12 @@ export async function markAccountUnavailable(
       // the DB, but record an in-memory model lockout so credential selection
       // skips this exact provider+connection+model while it cools down — other
       // models on the same connection stay usable.
-      if (provider && model && cooldownMs > 0) {
+      if (
+        provider &&
+        model &&
+        cooldownMs > 0 &&
+        !isSharedWalletCredits402(provider, status, errorText)
+      ) {
         lockModel(provider, connectionId, model, reason || "unknown", cooldownMs);
       }
       await updateProviderConnection(connectionId, {

@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Bütün tamamlanmış partiyaları silin",
     "batchListBatchesTable": "Partiyalar",
     "changelogViewerLoading": "GitHub-dan dəyişiklik jurnalı yüklənir...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Profil yüklənir...",
     "profileHowToEarn": "Necə qazanmaq olar",
     "bootstrapBannerDismiss": "Rədd et",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "/v1/models üzərində claude/&lt;provider&gt;/&lt;model&gt; güzgü id-lərini reklam edin ki, Claude Code keçid modeli kəşfiyyatında qeyri-Claude modelləri siyahıya alsın. Diqqət: qlobal olaraq aktivləşdirildikdə bütün müştərilər üçün kataloq girişlərini ikiqat artırır.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Təchizatçı göndərişi üçün hər bir icarəçi (tenant) üzrə adaptiv virtual qəbul zolaqlarını aktivləşdirin (#9654): bir icarəçinin ani yükü artıq digərinə 503 qaytarmır. OMNIROUTE_CHAT_VIRTUAL_LANES mühit dəyişəni bu idarəetmə paneli ayarından üstündür; dəyişikliklər server yenidən işə salındıqda qüvvəyə minir.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Health Monitor",
     "reportIssue": "Report issue",
     "activeError": "{active} active · {errors} error",
+    "topologyLegendActive": "__MISSING__:Active",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "__MISSING__:Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} reqs",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Update started...",
     "reloadingPageAutomatically": "Səhifə avtomatik yenidən yüklənir...",
     "providerTopology": "Provayder Topologiyası",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMG-ni Yükləyin (macOS)",
     "downloadDmgDescription": "OmniRoute masaüstü tətbiqinin yeni versiyası mövcuddur. Zəhmət olmasa, yeniləmək üçün macOS DMG quraşdırıcısını yükləyin və quraşdırın (hazırkı: v{version}).",
     "downloadExe": "EXE-ni Yükləyin (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gateway modeli kəşfi üçün settings.json",
     "ccOnboardingCopy": "Kopyala",
     "ccOnboardingCopied": "Kopyalandı",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API açarınız>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API açarınız>'",
     "ccOnboardingWindowNote": "Claude Code tanımadığı hər hansı model id üçün 200K kontekst pəncərəsi qəbul edir. Fərqli real pəncərəyə malik bir model üçün, avtomatik sıxılmanın çox tez başlamaması üçün onun altına CLAUDE_CODE_AUTO_COMPACT_WINDOW əlavə edin.",
     "failedSave": "Yadda saxlamaq mümkün olmadı",
     "profileSyncTitle": "CLI profilinin avtomatik sinxronizasiyası",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Balances remaining quota against 5h and weekly resets, then round-robins similar scores",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Birləşmə",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5 daxil olmaqla 40-dan çox model üçün endirimli API proksisi. API açarınızı https://freeaiapikey.com/dashboard ünvanından əldə edin. Baza URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "https://freemodel.dev ünvanında $300 pulsuz API krediti əldə edin — ödəniş məlumatı tələb olunmur. OpenAI ilə uyğun son nöqtə. GPT-5.4 və GPT-5.5 modelləri mövcuddur.",
       "friendliai": "Serverless çıxarış üçün pulsuz tarif — kredit kartı tələb olunmur",
-      "gemini": "Həmişə pulsuz: Gemini 2.5 Flash üçün gündə 1,500 sorğu — kredit kartı yoxdur, açarı aistudio.google.com ünvanından əldə edin",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "GigaChat (Sber)-ı API açarı ilə qoşun.",
       "gitlab": "İctimai Code Suggestions API üçün GitLab şəxsi giriş tokeni. gitlab.com istifadə etmədikdə, self-hosted baza URL-i konfiqurasiya edin.",
       "gitlawb-gmi": "API açarınızı Gitlawb Opengateway idarəetmə panelindən əldə edin.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "GLM Coding (China)-i API açarı ilə qoşun.",
       "glmt": "Daha yüksək token büdcəsi, düşünmə aktivləşdirilmiş və daha uzun vaxt aşımı olan hazır GLM profili.",
       "getgoapi": "GoAPI-ni API açarı ilə qoşun.",
-      "groq": "Pulsuz tarif: 30 RPM / 14.4K RPD — kredit kartı tələb olunmur",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "API açarını haiper.ai/haiper-api ünvanından əldə edin",
       "heroku": "Heroku AI-ı API açarı ilə qoşun.",
       "hcnsec": "API açarını api.hcnsec.cn ünvanından əldə edin",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Komanda Kodu auth başlamaqda uğursuz oldu",
     "connectionDeleted": "Bağlantı silindi",
     "connectionFallback": "bağlantı",
-    "coolingConnectionsDescription": "Bu bağlantılar son sorğularında 429 (sürət limiti) aldı. OmniRoute onları zamanlayıcı bitənə qədər atlayacaq — əl ilə deaktiv etməyə ehtiyac yoxdur.",
+    "coolingConnectionsDescription": "Bu bağlantılar son sorğudan sonra soyumaqdadır. OmniRoute taymer bitənə qədər onları atlayacaq — əl ilə söndürmək lazım deyil.",
     "coolingConnectionsTitle": "Hazırda soyudulur ({count})",
     "failedDeleteAlias": "Alias silinmədi",
     "failedDeleteConnection": "Bağlantını silmək mümkün olmadı",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Prefer cheapest available account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Prefer accounts with healthy remaining quota and nearer resets",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Aktivləşdirildikdə, uğursuz provayderlər qlobal olaraq izlənilir və soyuma müddəti ərzində ötürülür.",
     "resilienceProviderCooldownMin": "Minimum soyuma müddəti",
     "resilienceProviderCooldownMax": "Maksimum soyuma müddəti",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Etibarnamə sağlamlıq yoxlaması",
+    "resilienceCredentialHealthScope": "Bütün aktiv API-açar və OAuth bağlantıları",
+    "resilienceCredentialHealthTrigger": "Dövri, sabit ritmlə",
+    "resilienceCredentialHealthEffect": "Hər bağlantının etibarnaməsini yoxlayır və aktiv/xəta kimi işarələyir; uğursuz bağlantılar eksponensial geriləyir",
+    "resilienceCredentialHealthDesc": "Hər aktiv bağlantının etibarnaməsini provayderə zəng edərək yoxlayan fon tarama. Tamamilə söndürmək üçün 0 təyin edin. Hər bağlantının öz Sağlamlıq Yoxlaması dəyəri (redaktə dialoqunda) həmişə bu qlobal standartı üstələyir.",
+    "resilienceCredentialHealthInterval": "Qlobal yoxlama intervalı",
+    "resilienceCredentialHealthEveryMinutes": "Hər {minutes} dəq",
+    "resilienceCredentialHealthHint": "0 fon taramasını söndürür (maks. 1440 dəq = 24 saat). Öz Sağlamlıq Yoxlaması dəyəri olan bağlantılar bu qlobal standartı nəzərə almır; bir bağlantıda 0 onu qlobal tarama açıq olsa belə çıxarır.",
     "forcedFingerprintTitle": "{provider} üçün həmişə aktivdir — OAuth hesabının təhlükəsizliyi üçün tələb olunur; söndürülə bilməz.",
     "forcedFingerprintBadge": "Tələb olunur",
     "sessionAffinityTitle": "Sessiya yaxınlığı (affinity)",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Dil paketləri: {packs}",
     "dragToReorder": "Addımın sırasını dəyişmək üçün sürükləyin",
     "engine": "Mühərrik",
-    "intensity": "İntensivlik"
+    "intensity": "İntensivlik",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Heç bir sıxılma icrası mövcud deyil.",
@@ -8692,6 +8705,7 @@
     "run": "İcra et",
     "laneRejected": "rədd edildi: {reason}",
     "error": "xəta",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Kombinə edilmiş axın",
     "eachLayer": "Hər qat ayrıca",
     "diff": "Fərq",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "maksimum",
     "grokAutoTopUpMonth": "ay",
     "grokAdditionalCredits": "Əlavə Kreditlər",
+    "kiloAccountBalance": "Hesab Balansı",
+    "kiloPassBonus": "Mövcud bonus",
+    "kiloPassMeterLabel": "Kilo Pass istifadə sayğacı",
+    "kiloPassPaid": "Ödənilmiş",
+    "kiloPassRemaining": "Qalan",
+    "kiloPassRenews": "{count} gündən sonra yenilənir",
+    "kiloPassUsageLabel": "Bu ayın istifadəsi",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Gecikməyə görə optimallaşdırılmış",
     "poolMembersLabel": "Hovuz üzvləri ({count})",
     "poolNoMembers": "Bu hovuzda hələ proksi yoxdur.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Çıxar",
     "poolRemoveFailed": "Proksini hovuzdan çıxarmaq mümkün olmadı",
     "poolAddLabel": "Proksi əlavə et",
@@ -11327,11 +11351,11 @@
       "copy": "Kopyala",
       "autoscrollOn": "Avtomatik Sürüş: açıq",
       "autoscrollOff": "Avtomatik Sürüş: söndürüldü",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Hamısını yığ",
+      "collapseOneLevel": "Bir səviyyə yığ",
+      "currentExpandLevel": "Cari açılma səviyyəsi",
+      "expandOneLevel": "Bir səviyyə aç",
+      "expandAllLevels": "Hamısını aç",
       "payload": {
         "clientRawRequest": "Müştəri Xam Sorğu",
         "clientRequest": "Müştəri Tələbi",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Baytlar artıq müştəriyə çatdıqdan sonra axının bərpasına cavabı yenidən sorğulamağa və onu birləşdirməyə icazə verin."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Axın heç bir faydalı çərçivə göndərmədən bağlandıqda və eyni bağlantıda məhdud təkrar cəhd tükəndikdə bir dəfə qardaş bağlantıya keçin. Uyğun qardaş bağlantı yoxdursa, ilkin early-EOF xətası qaytarılır. Söndürülüb: early-EOF təkrar cəhddən sonra son nəticə olaraq qalır."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "/v1/models cavablarına göstərilməsi asan olan ad sahələrini daxil edin. Bunu yalnız model ID-lərini qəbul edən müştərilər üçün sıradan çıxarın."
       },
@@ -12982,7 +13012,7 @@
         "description": "Provayder-model sinxronizasiyasından sonra canlı kataloqdan ~/.codex/*.config.toml profillərini yenidən yaradın. Bu, heç vaxt aktiv və ya defolt Codex konfiqurasiyasını dəyişmir və defolt olaraq qapalıdır."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Provayder-model sinxronizasiyasından sonra canlı kataloqdan ~/.claude/profiles/<name>/settings.json profillərini yenidən yaradın. Bu, heç vaxt aktiv və ya defolt Claude konfiqurasiyasını dəyişmir və defolt olaraq qapalıdır."
+        "description": "Provayder-model sinxronizasiyasından sonra canlı kataloqdan ~/.claude/profiles/'<name>'/settings.json profillərini yenidən yaradın. Bu, heç vaxt aktiv və ya defolt Claude konfiqurasiyasını dəyişmir və defolt olaraq qapalıdır."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Yerli instansiyanın sağlamlıq yoxlaması son nöqtəsini sıradan çıxarın."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Bacarıqlar sandbox-unda şəbəkəyə girişi aktivləşdirin."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Sırala",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Əl ilə",
+        "provider": "Provayder",
+        "score": "Bal (pulsuz modellər)",
+        "name": "Ad"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "Bal sıralaması yalnız pulsuz provayderlərə aiddir; qalanlar yerində qalır."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Hər seqment = bir pulsuz hovuz · hovuz üzrə təkrarlanmayan, dürüst sayım (şişirdilmiş sorğu limiti tavanları olmadan).",
     "boost": "Birdəfəlik $10 OpenRouter balans artımı ilə ayda ~{tokens} daha çox əldə edin (50 → 1000 sorğu/gün)",
     "uncapped": "Həmişəlik pulsuz, dərc edilmiş limit yoxdur (sorğu sayı məhdudlaşdırılıb) — real giriş, əsas göstəricidə sayılmır:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# model} other {# model}} ToS ilə məhdudlaşdırılmış kimi qeyd edilib — qərar sizindir",
     "provider": "Provayder",
     "model": "Model",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "yeni",
     "setupGuide": "Quraşdırma bələdçisi",
     "disabledByFeed": "Radar axını tərəfindən deaktiv edilmişdir",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tələb olunan imkanlar (görmə, alətlər, strukturlaşdırılmış çıxış, kontekst pəncərəsi) olmayan hədəf modelində göndərilmədən əvvəl tələbləri rədd edin. Kombinasiya qatının uyğunluq filtrini keçən birbaşa tək təminatçı tələblərini qoruyur.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Səhifə tapılmadı",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 saat",
     "historyRange7d": "7 gün",
     "historyRange30d": "30 gün",
+    "compareMode": "İcraları müqayisə et",
+    "compareExit": "Müqayisə rejimindən çıx",
+    "compareHint": "Müqayisə etmək üçün iki icra seçin",
+    "compareTitle": "Müqayisə",
+    "compareDetailFailed": "Bu icranın təfərrüatları yüklənə bilmədi",
+    "compareDifferentIdentity": "Fərqli mənbələr və ya bacarıqlar — fərqlər yalnız məlumat xarakterlidir",
+    "compareDuration": "Müddət",
+    "compareCost": "Xərc",
+    "compareEvents": "Hadisələr",
+    "compareDeltaLegend": "Δ sağ − sol",
     "showCompleted": "Tamamlananları göstər",
     "searchPlaceholder": "Tapşırıqları axtar…",
     "filterStates": "Statuslar",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Ləğv edildi",
     "overflowMore": "+{count} daha",
     "emptyTitle": "Hələ heç nə işləmir",
+    "noMatches": "Bu filtrlərə uyğun tapşırıq yoxdur",
     "emptyCloudAgentCta": "Bulud agentlərini qurun",
     "emptyA2ACta": "A2A-nı aç",
     "emptyConductorCta": "İdarəçini aç",

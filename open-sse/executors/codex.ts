@@ -38,6 +38,7 @@ import { applyReasoningInputPolicy } from "../services/reasoningInputPolicy.ts";
 import { normalizeCodexVerbosity } from "../services/codexVerbosity.ts";
 import { getThinkingBudgetConfig, ThinkingMode } from "../services/thinkingBudget.ts";
 import { CORS_HEADERS } from "../utils/cors.ts";
+import { projectCodexPublicError } from "../utils/codexPublicError.ts";
 import { errorResponse } from "../utils/error.ts";
 import { normalizeCodexResponsesInput } from "../utils/responsesInputNormalization.ts";
 import * as prl from "../utils/providerRequestLogging.ts";
@@ -53,7 +54,7 @@ export {
 import { isCodexFreePlan, normalizeCodexTools } from "./codex/tools.ts";
 import {
   CODEX_EFFORT_ORDER as EFFORT_ORDER,
-  GPT_5_6_ULTRA_ALIAS_MODELS,
+  CODEX_ULTRA_ALIAS_MODELS,
   splitCodexReasoningSuffix,
   type CodexEffortLevel as EffortLevel,
 } from "./codex/reasoningSuffix.ts";
@@ -166,13 +167,13 @@ function isCodexResponsesLiteRequest(
   );
 }
 
-// GPT-5.6 ultra-tier (sol/terra at "ultra") and luna at "max" coordinate delegation to
+// Astra/Sol/Terra at "ultra" and Luna at "max" coordinate delegation to
 // sub-agents via parallel tool calls (see the effort-clamp comment near clampEffort()).
 // Responses Lite must not strip parallel_tool_calls for those model/effort combos, or
 // delegation silently breaks while the request still returns HTTP 200 (issue #7821).
 function isCodexDelegationDependentModel(model: unknown): boolean {
   const { baseModel, effort } = splitCodexReasoningSuffix(model);
-  if (effort === "ultra" && GPT_5_6_ULTRA_ALIAS_MODELS.has(baseModel)) return true;
+  if (effort === "ultra" && CODEX_ULTRA_ALIAS_MODELS.has(baseModel)) return true;
   if (effort === "max" && baseModel === "gpt-5.6-luna") return true;
   return false;
 }
@@ -323,12 +324,9 @@ function normalizeServiceTierValue(value: unknown): string | undefined {
   return normalized;
 }
 
-/**
- * Maximum reasoning effort allowed per Codex model.
- * Models not listed here retain the legacy xhigh cap.
- * Update this table when Codex releases new models with different caps.
- */
+/** Maximum reasoning effort per Codex model; unlisted models keep the xhigh cap. */
 const MAX_EFFORT_BY_MODEL: Record<string, EffortLevel> = {
+  "gpt-6-astra": "ultra",
   "gpt-5.6-sol": "ultra",
   "gpt-5.6-terra": "ultra",
   "gpt-5.6-luna": "max",
@@ -493,7 +491,6 @@ function toCodexResponseFailedEvent(parsed: Record<string, unknown>): Record<str
     typeof upstreamError.message === "string" && upstreamError.message.trim()
       ? upstreamError.message
       : "Codex upstream error";
-  const error: Record<string, unknown> = { code, message };
   const explicitStatus =
     toStatusCode(parsed.status_code) ??
     toStatusCode(parsed.status) ??
@@ -503,8 +500,10 @@ function toCodexResponseFailedEvent(parsed: Record<string, unknown>): Record<str
     toStatusCode(upstreamError.status);
   const statusCode =
     explicitStatus ?? (looksLikeQuotaOrRateLimit(code, type, message) ? 429 : null);
+  const error: Record<string, unknown> = {
+    ...projectCodexPublicError({ status: statusCode, code, type }),
+  };
 
-  if (type) error.type = type;
   if (statusCode !== null) error.status_code = statusCode;
 
   return {
@@ -955,7 +954,7 @@ export class CodexExecutor extends BaseExecutor {
       }
     };
 
-    const failController = (code: string, message: string) => {
+    const failController = (code: string, _message: string) => {
       if (closed) return;
       const controller = streamController;
       const payload = JSON.stringify({
@@ -963,7 +962,7 @@ export class CodexExecutor extends BaseExecutor {
         response: {
           id: null,
           status: "failed",
-          error: { code, message },
+          error: projectCodexPublicError({ status: 502, code, type: "provider_error" }),
         },
       });
       try {

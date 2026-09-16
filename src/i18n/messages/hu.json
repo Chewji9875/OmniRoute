@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "Törölje az összes befejezett köteget",
     "batchListBatchesTable": "Batches",
     "changelogViewerLoading": "Változásnapló betöltése a GitHubról...",
-    "profile": "__MISSING__:Profile",
+    "profile": "Profil",
     "profileLoading": "Loading profile...",
     "profileHowToEarn": "How to earn",
     "bootstrapBannerDismiss": "Elvetés",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "Hirdesse a claude/&lt;provider&gt;/&lt;model&gt; tükör azonosítókat a /v1/models-on, hogy a Claude Code átjáró modell felfedezése nem Claude modelleket is listázzon. Figyelmeztetés: globális engedélyezés esetén megduplázza a katalógus bejegyzéseket minden kliens számára.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "Tegye lehetővé a bérlőnkénti adaptív virtuális beléptetősávokat a szolgáltatók felé történő továbbításhoz (#9654): az egyik bérlő kiugró terhelése már nem okoz 503-as hibát egy másiknál. Az OMNIROUTE_CHAT_VIRTUAL_LANES környezeti változó felülírja ezt a vezérlőpult-beállítást; a változtatások a szerver újraindításakor lépnek életbe.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Otthon",
     "dashboard": "Irányítópult",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Egészségügyi Monitor",
     "reportIssue": "Probléma bejelentése",
     "activeError": "{active} aktív · {errors} hiba",
+    "topologyLegendActive": "Aktív",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "Hiba",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API kulcs",
     "requestsShort": "{count} igény",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Frissítés elindult...",
     "reloadingPageAutomatically": "Oldal automatikus újratöltése...",
     "providerTopology": "Szolgáltató topológia",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMG letöltése (macOS)",
     "downloadDmgDescription": "Új verzió érhető el az OmniRoute asztali alkalmazásból. Kérjük, töltse le és telepítse a macOS DMG telepítőt a frissítéshez (jelenlegi: v{version}).",
     "downloadExe": "Letöltés EXE (Windows)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json a gateway modell felfedezéshez",
     "ccOnboardingCopy": "Másolás",
     "ccOnboardingCopied": "Másolt",
-    "ccOnboardingKeyPlaceholder": "<az OmniRoute API kulcsod>",
+    "ccOnboardingKeyPlaceholder": "'<az OmniRoute API kulcsod>'",
     "ccOnboardingWindowNote": "A Claude Code 200K kontextusablakot feltételez bármely olyan modellazonosító esetén, amelyet nem ismer fel. Ha a modellnek eltérő valós ablaka van, add hozzá a CLAUDE_CODE_AUTO_COMPACT_WINDOW-t közvetlenül alá, hogy az automatikus tömörítés ne lépjen működésbe túl korán.",
     "failedSave": "Nem sikerült menteni",
     "profileSyncTitle": "CLI-profil automatikus szinkronizálása",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Kiegyenlíti a fennmaradó kvótát az 5 órával és a heti visszaállításokkal szemben, majd hasonló pontszámokat hajt végre",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "Fúzió",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "Kedvezményes API-proxy több mint 40 modellhez, beleértve a GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5 modelleket. Szerezze be API-kulcsát a https://freeaiapikey.com/dashboard oldalon. Alap URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "Szerezzen $300 ingyenes API-kreditet a https://freemodel.dev oldalon — fizetési adat nem szükséges. OpenAI-kompatibilis végpont. GPT-5.4 és GPT-5.5 modellek érhetők el.",
       "friendliai": "Ingyenes csomag szerver nélküli következtetéshez — bankkártya nem szükséges",
-      "gemini": "Örökké ingyenes: 1500 kérés/nap a Gemini 2.5 Flash-hez — bankkártya nem szükséges, kulcs beszerzése: aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "Csatlakoztassa a GigaChatet (Sber) egy API-kulccsal.",
       "gitlab": "GitLab személyes hozzáférési token a nyilvános Code Suggestions API-hoz. Állítson be saját üzemeltetésű alap URL-t, ha nem a gitlab.com-ot használja.",
       "gitlawb-gmi": "Szerezze be API-kulcsát a Gitlawb Opengateway irányítópultjáról.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "Csatlakoztassa a GLM Coding (Kína) szolgáltatást egy API-kulccsal.",
       "glmt": "Előre beállított GLM-profil magasabb tokenkerettel, engedélyezett gondolkodással és hosszabb időtúllépéssel.",
       "getgoapi": "Csatlakoztassa a GoAPI-t egy API-kulccsal.",
-      "groq": "Ingyenes csomag: 30 RPM / 14,4K RPD — bankkártya nem szükséges",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "Szerezzen API-kulcsot a haiper.ai/haiper-api oldalon",
       "heroku": "Csatlakoztassa a Heroku AI-t egy API-kulccsal.",
       "hcnsec": "Szerezzen API-kulcsot itt: api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Nem sikerült elindítani a Command Code auth-ot",
     "connectionDeleted": "Kapcsolat törölve",
     "connectionFallback": "kapcsolat",
-    "coolingConnectionsDescription": "Ezek a kapcsolatok 429 (rate-limit) választ adtak az utolsó kérésükre. Az OmniRoute kihagyja őket, amíg az időzítő le nem jár — manuális letiltás nem szükséges.",
+    "coolingConnectionsDescription": "Ezek a kapcsolatok az utolsó kérés után hűlnek. Az OmniRoute kihagyja őket, amíg az időzítő le nem jár — nincs szükség kézi tiltásra.",
     "coolingConnectionsTitle": "Jelenleg hűtés ({count})",
     "failedDeleteAlias": "Nem sikerült törölni az alias-t",
     "failedDeleteConnection": "A kapcsolat törlése nem sikerült",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "A legolcsóbb elérhető fiók előnyben részesítése",
     "resetAware": "Reset-Aware RR",
     "resetAwareDesc": "Előnyben részesítse az egészséges fennmaradó kvótával és közelebbi visszaállításokkal rendelkező fiókokat",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Ragadós határ",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "Ha engedélyezve van, a hibás szolgáltatókat a rendszer globálisan követi, és egy lehűlési időszakra kihagyja őket.",
     "resilienceProviderCooldownMin": "Minimális lehűlési idő",
     "resilienceProviderCooldownMax": "Maximális lehűlési idő",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "Hitelesítőadat-egészségellenőrzés",
+    "resilienceCredentialHealthScope": "Minden aktív API-kulcsos és OAuth kapcsolat",
+    "resilienceCredentialHealthTrigger": "Időszakosan, rögzített ütemben",
+    "resilienceCredentialHealthEffect": "Ellenőrzi minden kapcsolat hitelesítő adatát, és aktív/hiba jelzést ad; a sikertelen kapcsolatok exponenciális várakozásba lépnek",
+    "resilienceCredentialHealthDesc": "Háttérvizsgálat, amely minden aktív kapcsolat hitelesítő adatát a szolgáltatójának hívásával ellenőrzi. Állítsa 0-ra a teljes kikapcsoláshoz. A kapcsolatonkénti egészségellenőrzési értékek (a szerkesztőablakban) mindig felülírják ezt a globális alapértéket.",
+    "resilienceCredentialHealthInterval": "Globális ellenőrzési időköz",
+    "resilienceCredentialHealthEveryMinutes": "Minden {minutes} percben",
+    "resilienceCredentialHealthHint": "0 kikapcsolja a háttérvizsgálatot (max. 1440 perc = 24 óra). Saját egészségellenőrzési értékkel rendelkező kapcsolatok figyelmen kívül hagyják ezt a globális alapértéket; egy kapcsolaton a 0 akkor is kiveszi, ha a globális vizsgálat be van kapcsolva.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "Munkamenet-affinitás",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "Nyelvi csomagok: {packs}",
     "dragToReorder": "Húzza a lépés átrendezéséhez",
     "engine": "Motor",
-    "intensity": "Intenzitás"
+    "intensity": "Intenzitás",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "Nem áll rendelkezésre tömörítési futtatás.",
@@ -8692,6 +8705,7 @@
     "run": "Futtatás",
     "laneRejected": "elutasítva: {reason}",
     "error": "hiba",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "Összevont folyamat",
     "eachLayer": "Minden réteg külön-külön",
     "diff": "Különbség",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "max",
     "grokAutoTopUpMonth": "hónap",
     "grokAdditionalCredits": "További Kiadások",
+    "kiloAccountBalance": "Számlaegyenleg",
+    "kiloPassBonus": "Elérhető bónusz",
+    "kiloPassMeterLabel": "Kilo Pass használatjelző",
+    "kiloPassPaid": "Kifizetve",
+    "kiloPassRemaining": "Fennmaradó",
+    "kiloPassRenews": "Megújul {count} nap múlva",
+    "kiloPassUsageLabel": "E havi használat",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "Késleltetésre optimalizált",
     "poolMembersLabel": "Készlet tagjai ({count})",
     "poolNoMembers": "Még nincsenek proxyk ebben a készletben.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "Eltávolítás",
     "poolRemoveFailed": "Nem sikerült eltávolítani a proxyt a készletből",
     "poolAddLabel": "Proxy hozzáadása",
@@ -11327,11 +11351,11 @@
       "copy": "Másolás",
       "autoscrollOn": "Automatikus görgetés: be",
       "autoscrollOff": "Automatikus Görgetés: ki",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "Összes összecsukása",
+      "collapseOneLevel": "Egy szint összecsukása",
+      "currentExpandLevel": "Jelenlegi kinyitási szint",
+      "expandOneLevel": "Egy szint kinyitása",
+      "expandAllLevels": "Összes kinyitása",
       "payload": {
         "clientRawRequest": "Kliens Nyers Kérés",
         "clientRequest": "Ügyfél Kérés",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "Az adatfolyam-helyreállítás engedélyezése a válasz újbóli lekérésére és összefűzésére, miután a bájtok már elérték az ügyfelet."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "Egyszeri átállás egy testvérkapcsolatra, ha az adatfolyam még az első hasznos keret előtt lezárul, és az ugyanazon a kapcsolaton végzett korlátozott újrapróbálkozás elfogyott. Használható testvérkapcsolat hiányában az eredeti early-EOF hiba kerül visszaadásra. Kikapcsolva: az early-EOF az újrapróbálkozás után végleges marad."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "Megjelenítésbarát névmezők szerepeltetése a /v1/models válaszokban. Tiltsa le ezt azon ügyfelek esetében, amelyek csak modell-azonosítókat fogadnak el."
       },
@@ -12982,7 +13012,7 @@
         "description": "A szolgáltató-modell szinkronizálás után a ~/.codex/*.config.toml profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Codex konfigurációt, és alapértelmezés szerint ki van kapcsolva."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "A szolgáltató-modell szinkronizálás után a ~/.claude/profiles/<name>/settings.json profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Claude konfigurációt, és alapértelmezés szerint ki van kapcsolva."
+        "description": "A szolgáltató-modell szinkronizálás után a ~/.claude/profiles/'<name>'/settings.json profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Claude konfigurációt, és alapértelmezés szerint ki van kapcsolva."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "A helyi példány állapotellenőrző végpontjának letiltása."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "Hálózati hozzáférés engedélyezése a készségek homokozójában."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "Rendezés",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "Kézi",
+        "provider": "Szolgáltató",
+        "score": "Pontszám (ingyenes modellek)",
+        "name": "Név"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "A pontszám szerinti sorrend csak az ingyenes szolgáltatókra vonatkozik; a többiek a helyükön maradnak."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "Each segment = one free pool · pool-deduped, honest counting (no inflated rate-limit ceilings).",
     "boost": "Oldjon fel további ~{tokens}/hó-t egy egyszeri 10 dolláros OpenRouter feltöltéssel (50 → 1000 req/day)",
     "uncapped": "Tartósan ingyenes, nincs közzétett korlát (sebességkorlátozott) — valós hozzáférés, nem számít bele a főcímbe:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# modell} other {# modell}} ÁSZF-korlátozottként megjelölve — Ön dönt",
     "provider": "Provider",
     "model": "Model",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "új",
     "setupGuide": "Beállítási útmutató",
     "disabledByFeed": "A Radar feed letiltotta",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "Elutasítja a kéréseket a kiszállítás előtt, amikor a célmodell hiányzik a szükséges képességekből (látás, eszközök, strukturált kimenet, kontextusablak). Védi a közvetlen, egy szolgáltatótól érkező kéréseket, amelyek megkerülik a kombinált réteg kompatibilitási szűrőt.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "Az oldal nem található",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 óra",
     "historyRange7d": "7 nap",
     "historyRange30d": "30 nap",
+    "compareMode": "Futások összehasonlítása",
+    "compareExit": "Kilépés az összehasonlítás módból",
+    "compareHint": "Válasszon két futást az összehasonlításhoz",
+    "compareTitle": "Összehasonlítás",
+    "compareDetailFailed": "Nem sikerült betölteni ennek a futásnak a részleteit",
+    "compareDifferentIdentity": "Eltérő források vagy képességek — az eltérések csak tájékoztató jellegűek",
+    "compareDuration": "Időtartam",
+    "compareCost": "Költség",
+    "compareEvents": "Események",
+    "compareDeltaLegend": "Δ jobb − bal",
     "showCompleted": "Befejezettek megjelenítése",
     "searchPlaceholder": "Feladatok keresése…",
     "filterStates": "Állapotok",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "Megszakítva",
     "overflowMore": "+{count} további",
     "emptyTitle": "Még semmi sem fut",
+    "noMatches": "Egyetlen feladat sem felel meg ezeknek a szűrőknek",
     "emptyCloudAgentCta": "Felhőügynökök beállítása",
     "emptyA2ACta": "A2A megnyitása",
     "emptyConductorCta": "Vezető megnyitása",

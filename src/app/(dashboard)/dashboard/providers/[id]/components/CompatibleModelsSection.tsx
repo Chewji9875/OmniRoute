@@ -22,7 +22,8 @@ import {
   type CompatModelRow,
 } from "../providerPageHelpers";
 import { ModelVisibilityToolbar } from "./ModelRow";
-import { sortModelsFreeFirst, isFreeModel } from "@/shared/utils/freeModels";
+import { sortModelsFreeFirst, isModelFreeBadge } from "@/shared/utils/freeModels";
+import { useStrictFreeBadge } from "./useStrictFreeBadge";
 import PassthroughModelRow, { type PassthroughModelRowProps } from "./PassthroughModelRow";
 
 // ---------------------------------------------------------------------------
@@ -127,6 +128,7 @@ export default function CompatibleModelsSection({
   const [freeFilter, setFreeFilter] = useState<"all" | "free" | "paid">("all");
   const [sortFreeFirst, setSortFreeFirst] = useState(false);
   const notify = useNotificationStore();
+  const strictFreeBadge = useStrictFreeBadge();
   const customModelMap = useMemo(() => buildCompatMap(customModels), [customModels]);
 
   const providerAliases = useMemo(
@@ -164,11 +166,16 @@ export default function CompatibleModelsSection({
         alias: aliasByModelId.get(model.id) || null,
         displayName: model.name || model.id,
         source,
-        isFree:
-          Boolean((model as any).free) ||
-          model.id.endsWith(":free") ||
-          /\bgr[aá]tis\b|\bfree\b/i.test(model.name || "") ||
-          isFreeModel(providerStorageAlias, { id: model.id, isFree: (model as any).isFree }),
+        isFree: isModelFreeBadge(
+          providerStorageAlias,
+          {
+            id: model.id,
+            name: model.name,
+            free: (model as { free?: unknown }).free,
+            isFree: model.isFree,
+          },
+          { strict: strictFreeBadge }
+        ),
         isHidden: isModelHidden(model.id),
       });
       seenModelIds.add(model.id);
@@ -201,11 +208,16 @@ export default function CompatibleModelsSection({
         alias: displayAlias,
         displayName: displayAlias,
         source: customModel ? customModel.source || "custom" : "alias",
-        isFree:
-          modelId.endsWith(":free") ||
-          Boolean((customModel as any)?.free) ||
-          /\bgr[aá]tis\b|\bfree\b/i.test(customModel?.name || alias || "") ||
-          isFreeModel(providerStorageAlias, { id: modelId, isFree: (customModel as any)?.isFree }),
+        isFree: isModelFreeBadge(
+          providerStorageAlias,
+          {
+            id: modelId,
+            name: customModel?.name || (alias as string) || "",
+            free: (customModel as { free?: unknown } | undefined)?.free,
+            isFree: customModel?.isFree,
+          },
+          { strict: strictFreeBadge }
+        ),
         isHidden: isModelHidden(modelId),
       });
       seenModelIds.add(modelId);
@@ -220,6 +232,7 @@ export default function CompatibleModelsSection({
     isModelHidden,
     providerAliases,
     providerStorageAlias,
+    strictFreeBadge,
   ]);
 
   const filteredModels = allModels.filter((model) => {

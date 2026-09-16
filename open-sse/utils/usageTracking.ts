@@ -293,6 +293,7 @@ export function filterUsageForFormat(usage: UsageLike | null | undefined, target
       "cache_read_input_tokens",
       "cache_creation_input_tokens",
       "estimated",
+      "tokens_per_second",
     ],
     [FORMATS.GEMINI]: [
       "promptTokenCount",
@@ -301,6 +302,7 @@ export function filterUsageForFormat(usage: UsageLike | null | undefined, target
       "cachedContentTokenCount",
       "thoughtsTokenCount",
       "estimated",
+      "tokens_per_second",
     ],
     [FORMATS.OPENAI_RESPONSES]: [
       "input_tokens",
@@ -312,6 +314,7 @@ export function filterUsageForFormat(usage: UsageLike | null | undefined, target
       "cost_in_usd_ticks",
       "server_side_tool_usage_details",
       "server_side_tool_usage",
+      "tokens_per_second",
     ],
     // OpenAI format (default for OPENAI, CODEX, KIRO, etc.)
     default: [
@@ -327,6 +330,7 @@ export function filterUsageForFormat(usage: UsageLike | null | undefined, target
       "cache_read_input_tokens",
       "cache_creation_input_tokens",
       "estimated",
+      "tokens_per_second",
     ],
   };
 
@@ -638,6 +642,33 @@ export function normalizeUsage(usage: UsageLike | null | undefined) {
   return normalized;
 }
 
+// Internal marker for usage that was estimated locally (a web/cookie executor with no
+// upstream metering). A NON-enumerable symbol: JSON.stringify, object spread and
+// filterUsageForFormat never copy it, so it cannot reach a client payload or change any
+// usage field, cost or budget — it only lets the call-log sink tell estimated usage apart
+// after extraction rebuilt the object without the provider's `estimated` flag.
+const ESTIMATED_USAGE_MARKER = Symbol.for("omniroute.usage.estimated");
+
+export function carryEstimatedUsageMarker<T>(source: unknown, rebuilt: T): T {
+  const estimated =
+    !!source && typeof source === "object" && (source as UsageLike).estimated === true;
+  if (estimated && rebuilt && typeof rebuilt === "object") {
+    Object.defineProperty(rebuilt, ESTIMATED_USAGE_MARKER, { value: true, enumerable: false });
+  }
+  return rebuilt;
+}
+
+/**
+ * True when token usage was estimated locally instead of reported by the provider: either
+ * the usage still carries `estimated: true` (OmniRoute's own estimateUsage fallback) or
+ * extraction kept the internal marker. Observability only — billing does not read it.
+ */
+export function isEstimatedUsage(usage: unknown): boolean {
+  if (!usage || typeof usage !== "object") return false;
+  if ((usage as UsageLike).estimated === true) return true;
+  return Reflect.get(usage, ESTIMATED_USAGE_MARKER) === true;
+}
+
 /**
  * Check if usage has valid token data
  * Valid = has at least one token field with value > 0
@@ -671,9 +702,20 @@ export function hasValidUsage(usage: UsageLike | null | undefined) {
 export function isEmptyUsage(usage: unknown): boolean {
   if (!usage || typeof usage !== "object" || Array.isArray(usage)) return true;
   const u = usage as Record<string, unknown>;
-  for (const k of ["prompt_tokens","completion_tokens","total_tokens","input_tokens","output_tokens","promptTokenCount","candidatesTokenCount","totalTokenCount"]) {
+  for (const k of [
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+    "input_tokens",
+    "output_tokens",
+    "promptTokenCount",
+    "candidatesTokenCount",
+    "totalTokenCount",
+  ]) {
     const v = u[k];
-    if (typeof v === "number" && Number.isFinite(v)) { if (v > 0) return false; }
+    if (typeof v === "number" && Number.isFinite(v)) {
+      if (v > 0) return false;
+    }
   }
   return true;
 }
@@ -771,7 +813,7 @@ export function extractUsage(chunk: UsagePayloadLike | null | undefined) {
     typeof chunk.usage === "object" &&
     (chunk.usage.prompt_tokens !== undefined || chunk.usage.input_tokens !== undefined)
   ) {
-    return normalizeUsage({
+    const normalized = normalizeUsage({
       prompt_tokens: chunk.usage.prompt_tokens ?? chunk.usage.input_tokens ?? 0,
       completion_tokens: chunk.usage.completion_tokens ?? chunk.usage.output_tokens ?? 0,
       cached_tokens:
@@ -789,6 +831,7 @@ export function extractUsage(chunk: UsagePayloadLike | null | undefined) {
       // xAI's exact provider-reported cost (port of decolua/9router#2453, capability A).
       cost_in_usd_ticks: chunk.usage.cost_in_usd_ticks,
     });
+    return carryEstimatedUsageMarker(chunk.usage, normalized);
   }
 
   // Gemini format (Antigravity)

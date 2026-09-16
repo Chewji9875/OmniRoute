@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "పూర్తయిన అన్ని బ్యాచ్‌లను తొలగించండి",
     "batchListBatchesTable": "బ్యాచ్‌లు",
     "changelogViewerLoading": "GitHub నుండి చేంజ్లాగ్ లోడ్ అవుతోంది...",
-    "profile": "__MISSING__:Profile",
+    "profile": "ప్రొఫైల్",
     "profileLoading": "ప్రొఫైల్ లోడ్ అవుతోంది...",
     "profileHowToEarn": "ఎలా సంపాదించాలి",
     "bootstrapBannerDismiss": "తొలగించు",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "/v1/models లో claude/&lt;provider&gt;/&lt;model&gt; మిర్రర్ ఐడీలను ప్రచారం చేయండి కాబట్టి Claude Code గేట్వే మోడల్ డిస్కవరీ non-Claude మోడళ్లను జాబితా చేస్తుంది. హెచ్చరిక: ఇది ప్రపంచవ్యాప్తంగా ప్రారంభించినప్పుడు అన్ని క్లయింట్ల కోసం కాటలాగ్ ఎంట్రీలను డబుల్ చేస్తుంది.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "ప్రొవైడర్ డిస్పాచ్ కోసం ప్రతి-టెనెంట్ అడాప్టివ్ వర్చువల్ అడ్మిషన్ లేన్లను ప్రారంభించండి (#9654): ఒక టెనెంట్ బర్స్ట్ ఇకపై మరొక టెనెంట్కు 503 ఇవ్వదు. OMNIROUTE_CHAT_VIRTUAL_LANES ఎన్విరాన్మెంట్ వేరియబుల్ ఈ డాష్బోర్డ్ సెట్టింగ్ కంటే ప్రాధాన్యత పొందుతుంది; మార్పులు సర్వర్ పునఃప్రారంభంలో ప్రభావం చూపుతాయి.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "Health Monitor",
     "reportIssue": "Report issue",
     "activeError": "{active} active · {errors} error",
+    "topologyLegendActive": "__MISSING__:Active",
+    "topologyLegendRecent": "__MISSING__:Recent",
+    "topologyLegendError": "__MISSING__:Error",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "API Key",
     "requestsShort": "{count} reqs",
@@ -1819,11 +1826,11 @@
     "updateStarted": "Update started...",
     "reloadingPageAutomatically": "పేజీని స్వయంచాలకంగా రీలోడ్ చేస్తోంది...",
     "providerTopology": "ప్రొవైడర్ టోపాలజీ",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "DMG డౌన్‌లోడ్ చేయండి (macOS)",
     "downloadDmgDescription": "ఒక కొత్త సంచిక OmniRoute డెస్క్‌టాప్ యాప్ అందుబాటులో ఉంది. దయచేసి నవీకరించడానికి macOS DMG ఇన్‌స్టాలర్‌ను డౌన్‌లోడ్ చేసి ఇన్‌స్టాల్ చేయండి (ప్రస్తుత: v{version}).",
     "downloadExe": "EXE డౌన్‌లోడ్ చేయండి (విండోస్)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "gateway మోడల్ డిస్కవరీ కోసం settings.json",
     "ccOnboardingCopy": "కాపీ",
     "ccOnboardingCopied": "కాపీ చేయబడింది",
-    "ccOnboardingKeyPlaceholder": "<మీ OmniRoute API కీ>",
+    "ccOnboardingKeyPlaceholder": "'<మీ OmniRoute API కీ>'",
     "ccOnboardingWindowNote": "Claude Code గుర్తించని ఏ మోడల్ ఐడికి 200K సందర్భం కిటికీని అనుకుంటుంది. వేరే వాస్తవ కిటికీ ఉన్న మోడల్ కోసం, ఆటో-కంపాక్షన్ చాలా త్వరగా జరగకుండా ఉండటానికి దాని కింద CLAUDE_CODE_AUTO_COMPACT_WINDOWని జోడించండి.",
     "failedSave": "సేవ్ చేయడం విఫలమైంది",
     "profileSyncTitle": "CLI ప్రొఫైల్ ఆటో-సింక్",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "రీసెట్-అవేర్ RR",
     "resetAwareDesc": "5గం మరియు వారపు రీసెట్‌లకు వ్యతిరేకంగా మిగిలిన కోటాను బ్యాలెన్స్ చేస్తుంది, ఆపై రౌండ్-రాబిన్‌లు సారూప్య స్కోర్‌లు",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each model once before reshuffling",
     "fusion": "ఫ్యూజన్",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "GPT-5, Claude Opus 4.6, Claude Sonnet 4.6, Qwen 3.5 తో సహా 40+ మోడల్‌ల కోసం డిస్కౌంట్ పొందిన API ప్రాక్సీ. https://freeaiapikey.com/dashboard వద్ద మీ API కీని పొందండి. బేస్ URL: https://freeaiapikey.com/v1.",
       "freemodel-dev": "https://freemodel.dev వద్ద $300 ఉచిత API క్రెడిట్‌లను పొందండి — చెల్లింపు సమాచారం అవసరం లేదు. OpenAI-అనుకూల ఎండ్‌పాయింట్. GPT-5.4 మరియు GPT-5.5 మోడల్‌లు అందుబాటులో ఉన్నాయి.",
       "friendliai": "సర్వర్‌లెస్ ఇన్ఫరెన్స్ కోసం ఉచిత టైర్ — క్రెడిట్ కార్డ్ అవసరం లేదు",
-      "gemini": "ఎప్పటికీ ఉచితం: Gemini 2.5 Flash కోసం రోజుకు 1,500 అభ్యర్థనలు — క్రెడిట్ కార్డ్ అవసరం లేదు, aistudio.google.com వద్ద కీని పొందండి",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "API కీతో GigaChat (Sber) ని కనెక్ట్ చేయండి.",
       "gitlab": "పబ్లిక్ Code Suggestions API కోసం GitLab వ్యక్తిగత యాక్సెస్ టోకెన్. gitlab.com ని ఉపయోగించనప్పుడు సెల్ఫ్-హోస్టెడ్ బేస్ URLని కాన్ఫిగర్ చేయండి.",
       "gitlawb-gmi": "Gitlawb Opengateway డ్యాష్‌బోర్డ్ నుండి మీ API కీని పొందండి.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "API కీతో GLM Coding (China) ని కనెక్ట్ చేయండి.",
       "glmt": "ఎక్కువ టోకెన్ బడ్జెట్, థింకింగ్ ఎనేబుల్ చేయబడిన మరియు ఎక్కువ టైమ్‌అవుట్‌తో కూడిన ప్రీసెట్ GLM ప్రొఫైల్.",
       "getgoapi": "API కీతో GoAPI ని కనెక్ట్ చేయండి.",
-      "groq": "ఉచిత టైర్: 30 RPM / 14.4K RPD — క్రెడిట్ కార్డ్ అవసరం లేదు",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "haiper.ai/haiper-api వద్ద API కీని పొందండి",
       "heroku": "API కీతో Heroku AI ని కనెక్ట్ చేయండి.",
       "hcnsec": "api.hcnsec.cn వద్ద API కీని పొందండి",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "Command Code auth ప్రారంభించడంలో విఫలమైంది",
     "connectionDeleted": "కనెక్షన్ తొలగించబడింది",
     "connectionFallback": "కనెక్షన్",
-    "coolingConnectionsDescription": "ఈ కనెక్షన్లు వారి చివరి అభ్యర్థనపై 429 (రేట్-లిమిట్) ను తిరిగి ఇచ్చాయి. OmniRoute సమయ పరిమితి ముగిసే వరకు వాటిని దాటిస్తుంది — మాన్యువల్ డిసేబుల్ అవసరం లేదు.",
+    "coolingConnectionsDescription": "ఈ కనెక్షన్లు చివరి అభ్యర్థన తర్వాత చల్లబడుతున్నాయి. టైమర్ అయిపోయే వరకు OmniRoute వాటిని దాటవేస్తుంది — చేతితో ఆపాల్సిన అవసరం లేదు.",
     "coolingConnectionsTitle": "ప్రస్తుతం కూలింగ్ ({count})",
     "failedDeleteAlias": "అలియాస్‌ను తొలగించడంలో విఫలమైంది",
     "failedDeleteConnection": "కనెక్షన్ తొలగించడంలో విఫలమైంది",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "Prefer cheapest available account",
     "resetAware": "రీసెట్-అవేర్ RR",
     "resetAwareDesc": "ఆరోగ్యకరమైన మిగిలిన కోటా మరియు సమీప రీసెట్‌లతో ఖాతాలకు ప్రాధాన్యత ఇవ్వండి",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "Strict Random",
     "strictRandomDesc": "Shuffle deck — uses each account once before reshuffling",
     "stickyLimit": "Sticky Limit",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "ప్రారంభించినప్పుడు, విఫలమైన ప్రొవైడర్‌లు ప్రపంచవ్యాప్తంగా ట్రాక్ చేయబడతాయి మరియు కూల్‌డౌన్ వ్యవధి కోసం దాటవేయబడతాయి.",
     "resilienceProviderCooldownMin": "కనీస కూల్‌డౌన్",
     "resilienceProviderCooldownMax": "గరిష్ట కూల్‌డౌన్",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "క్రెడెన్షియల్ ఆరోగ్య తనిఖీ",
+    "resilienceCredentialHealthScope": "అన్ని క్రియాశీల API-కీ మరియు OAuth కనెక్షన్లు",
+    "resilienceCredentialHealthTrigger": "నిర్ణీత లయలో కాలానుగుణంగా",
+    "resilienceCredentialHealthEffect": "ప్రతి కనెక్షన్ క్రెడెన్షియల్‌ను పరిశీలించి క్రియాశీల/లోపం అని గుర్తిస్తుంది; విఫలమైన కనెక్షన్లు ఘాతాంక బ్యాకాఫ్‌లోకి వెళ్తాయి",
+    "resilienceCredentialHealthDesc": "ప్రతి క్రియాశీల కనెక్షన్ క్రెడెన్షియల్‌ను దాని ప్రొవైడర్‌ను పిలిచి ధృవీకరించే నేపథ్య స్కాన్. పూర్తిగా ఆపడానికి 0 సెట్ చేయండి. కనెక్షన్ వారీ ఆరోగ్య తనిఖీ విలువలు (సవరణ డైలాగ్‌లో) ఎల్లప్పుడూ ఈ గ్లోబల్ డిఫాల్ట్‌ను ఓవర్‌రైడ్ చేస్తాయి.",
+    "resilienceCredentialHealthInterval": "గ్లోబల్ తనిఖీ విరామం",
+    "resilienceCredentialHealthEveryMinutes": "ప్రతి {minutes} నిమి",
+    "resilienceCredentialHealthHint": "0 నేపథ్య స్కాన్‌ను ఆపుతుంది (గరిష్ఠం 1440 నిమి = 24 గం). స్వంత ఆరోగ్య తనిఖీ విలువ ఉన్న కనెక్షన్లు ఈ గ్లోబల్ డిఫాల్ట్‌ను విస్మరిస్తాయి; ఒక కనెక్షన్‌పై 0 గ్లోబల్ స్కాన్ ఆన్‌లో ఉన్నా దాన్ని మినహాయిస్తుంది.",
     "forcedFingerprintTitle": "Always enabled for {provider} — required for OAuth account safety; cannot be turned off.",
     "forcedFingerprintBadge": "Required",
     "sessionAffinityTitle": "సెషన్ అఫినిటీ",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "భాషా ప్యాక్‌లు: {packs}",
     "dragToReorder": "దశను క్రమబద్ధీకరించడానికి డ్రాగ్ చేయండి",
     "engine": "ఇంజిన్",
-    "intensity": "తీవ్రత"
+    "intensity": "తీవ్రత",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "ఎటువంటి కంప్రెషన్ రన్ అందుబాటులో లేదు.",
@@ -8692,6 +8705,7 @@
     "run": "రన్ చేయండి",
     "laneRejected": "తిరస్కరించబడింది: {reason}",
     "error": "లోపం",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "కంబైన్డ్ ఫ్లో",
     "eachLayer": "ప్రతి లేయర్ విడివిడిగా",
     "diff": "వ్యత్యాసం",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "గరిష్టం",
     "grokAutoTopUpMonth": "మాసం",
     "grokAdditionalCredits": "అదనపు క్రెడిట్స్",
+    "kiloAccountBalance": "ఖాతా బ్యాలెన్స్",
+    "kiloPassBonus": "అందుబాటులో ఉన్న బోనస్",
+    "kiloPassMeterLabel": "Kilo Pass వినియోగ మీటర్",
+    "kiloPassPaid": "చెల్లించినది",
+    "kiloPassRemaining": "మిగిలినది",
+    "kiloPassRenews": "{count} రోజుల్లో పునరుద్ధరించబడుతుంది",
+    "kiloPassUsageLabel": "ఈ నెల వినియోగం",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "లేటెన్సీ-ఆప్టిమైజ్డ్",
     "poolMembersLabel": "పూల్ సభ్యులు ({count})",
     "poolNoMembers": "ఈ పూల్‌లో ఇంకా ప్రాక్సీలు లేవు.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "తొలగించు",
     "poolRemoveFailed": "పూల్ నుండి ప్రాక్సీని తొలగించడం విఫలమైంది",
     "poolAddLabel": "ప్రాక్సీని జోడించండి",
@@ -11327,11 +11351,11 @@
       "copy": "కాపీ",
       "autoscrollOn": "ఆటోస్క్రోల్: ఆన్",
       "autoscrollOff": "ఆటోస్క్రోల్: ఆఫ్",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "అన్నీ కుదించు",
+      "collapseOneLevel": "ఒక స్థాయి కుదించు",
+      "currentExpandLevel": "ప్రస్తుత విస్తరణ స్థాయి",
+      "expandOneLevel": "ఒక స్థాయి విస్తరించు",
+      "expandAllLevels": "అన్నీ విస్తరించు",
       "payload": {
         "clientRawRequest": "క్లయింట్ రా అభ్యర్థన",
         "clientRequest": "క్లయింట్ అభ్యర్థన",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "బైట్లు ఇప్పటికే క్లయింట్‌కు చేరిన తర్వాత కూడా ప్రతిస్పందనను మళ్లీ అభ్యర్థించడానికి మరియు దానిని జత చేయడానికి స్ట్రీమ్ రికవరీని అనుమతించండి."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "స్ట్రీమ్ ఉపయోగకరమైన ఏ ఫ్రేమ్‌నూ పంపకముందే మూసుకుపోయి, అదే కనెక్షన్‌పై పరిమిత పునఃప్రయత్నం కూడా అయిపోతే, ఒకసారి సోదర కనెక్షన్‌కు ఫెయిల్‌ఓవర్ చేయండి. ఉపయోగించదగిన సోదర కనెక్షన్ లేకపోతే అసలు early-EOF లోపం తిరిగి ఇవ్వబడుతుంది. ఆఫ్: పునఃప్రయత్నం తర్వాత early-EOF తుది ఫలితంగానే ఉంటుంది."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "/v1/models ప్రతిస్పందనలలో ప్రదర్శనకు అనుకూలమైన పేరు ఫీల్డ్‌లను చేర్చండి. మోడల్ IDలను మాత్రమే ఆమోదించే క్లయింట్‌ల కోసం దీనిని నిలిపివేయండి."
       },
@@ -12982,7 +13012,7 @@
         "description": "ప్రొవైడర్-మోడల్ సమకాలీకరణ తర్వాత, లైవ్ కేటలాగ్ నుండి ~/.codex/*.config.toml ప్రొఫైల్‌లను తిరిగి సృష్టించండి. ఇది సక్రియ లేదా డిఫాల్ట్ Codex కాన్గ్రిగేషన్‌ను ఎప్పటికీ మార్చదు మరియు డిఫాల్ట్‌గా ఆఫ్‌లో ఉంటుంది."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "ప్రొవైడర్-మోడల్ సమకాలీకరణ తర్వాత, లైవ్ కేటలాగ్ నుండి ~/.claude/profiles/<name>/settings.json ప్రొఫైల్‌లను తిరిగి సృష్టించండి. ఇది సక్రియ లేదా డిఫాల్ట్ Claude కాన్ఫిగరేషన్‌ను ఎప్పటికీ మార్చదు మరియు డిఫాల్ట్‌గా ఆఫ్‌లో ఉంటుంది."
+        "description": "ప్రొవైడర్-మోడల్ సమకాలీకరణ తర్వాత, లైవ్ కేటలాగ్ నుండి ~/.claude/profiles/'<name>'/settings.json ప్రొఫైల్‌లను తిరిగి సృష్టించండి. ఇది సక్రియ లేదా డిఫాల్ట్ Claude కాన్ఫిగరేషన్‌ను ఎప్పటికీ మార్చదు మరియు డిఫాల్ట్‌గా ఆఫ్‌లో ఉంటుంది."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "స్థానిక ఇన్‌స్టాన్స్ హెల్త్-చెక్ ఎండ్‌పాయింట్‌ను నిలిపివేయండి."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "స్కిల్స్ శాండ్‌బాక్స్‌లో నెట్‌వర్క్ యాక్సెస్‌ను ప్రారంభించండి."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "దీని ప్రకారం క్రమం",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "మాన్యువల్",
+        "provider": "ప్రొవైడర్",
+        "score": "స్కోరు (ఉచిత మోడళ్లు)",
+        "name": "పేరు"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "స్కోరు క్రమం ఉచిత ప్రొవైడర్లకు మాత్రమే; మిగతావి చోటులోనే ఉంటాయి."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "ప్రతి విభాగం = ఒక ఉచిత పూల్ · పూల్-డూప్లికేట్ తీసివేసినది, నిజాయితీ గల లెక్కింపు (ఎక్కువ చేసి చూపిన రేట్-పరిమితి గరిష్టాలు లేవు).",
     "boost": "ఒకేసారి $10 OpenRouter టాప్-అప్‌తో నెలకు మరో ~{tokens} అన్‌లాక్ చేయండి (రోజుకు 50 → 1000 అభ్యర్థనలు)",
     "uncapped": "శాశ్వతంగా ఉచితం, ప్రచురించిన పరిమితి లేదు (రేట్-పరిమితం చేయబడింది) — నిజమైన యాక్సెస్, హెడ్‌లైన్‌లో లెక్కించబడదు:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# మోడల్} other {# మోడల్స్}} ToS-పరిమితం చేయబడినట్లుగా ఫ్లాగ్ చేయబడ్డాయి — మీరే నిర్ణయించుకోండి",
     "provider": "ప్రొవైడర్",
     "model": "మోడల్",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "కొత్త",
     "setupGuide": "సెటప్ గైడ్",
     "disabledByFeed": "రాడార్ ఫీడ్ ద్వారా అచ్ఛుతమైంది",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "ప్రయోజనాలు అవసరమైన సామర్థ్యాలు (దృష్టి, సాధనాలు, నిర్మిత అవుట్‌పుట్, సందర్భం విండో) లేని లక్ష్య మోడల్ ముందు పంపిణీకి అభ్యర్థనలను తిరస్కరించండి. కాంబో-లేయర్ అనుకూలత ఫిల్టర్‌ను దాటించే ప్రత్యక్ష సింగిల్-ప్రొవైడర్ అభ్యర్థనలను రక్షిస్తుంది.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "పేజీ కనుగొనబడలేదు",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 గంటలు",
     "historyRange7d": "7 రోజులు",
     "historyRange30d": "30 రోజులు",
+    "compareMode": "రన్‌లను పోల్చండి",
+    "compareExit": "పోలిక మోడ్ నుండి నిష్క్రమించండి",
+    "compareHint": "పోల్చడానికి రెండు రన్‌లను ఎంచుకోండి",
+    "compareTitle": "పోలిక",
+    "compareDetailFailed": "ఈ రన్ యొక్క వివరాలను లోడ్ చేయలేకపోయాము",
+    "compareDifferentIdentity": "వేర్వేరు మూలాలు లేదా స్కిల్స్ — తేడాలు కేవలం సమాచార ప్రయోజనం కోసమే",
+    "compareDuration": "వ్యవధి",
+    "compareCost": "ఖర్చు",
+    "compareEvents": "ఈవెంట్‌లు",
+    "compareDeltaLegend": "Δ కుడి − ఎడమ",
     "showCompleted": "పూర్తయినవి చూపించు",
     "searchPlaceholder": "పనులను వెతకండి…",
     "filterStates": "స్థితులు",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "రద్దు చేయబడింది",
     "overflowMore": "+{count} మరిన్ని",
     "emptyTitle": "ఇంకా ఏమీ నడవడం లేదు",
+    "noMatches": "ఈ ఫిల్టర్‌లకు సరిపోలే పనులు ఏవీ లేవు",
     "emptyCloudAgentCta": "క్లౌడ్ ఏజెంట్లను సెటప్ చేయండి",
     "emptyA2ACta": "A2A తెరవండి",
     "emptyConductorCta": "కండక్టర్‌ని తెరవండి",

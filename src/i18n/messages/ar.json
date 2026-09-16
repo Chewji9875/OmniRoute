@@ -771,7 +771,7 @@
     "batchListDeleteAllCompletedTitle": "حذف كافة الدفعات المكتملة",
     "batchListBatchesTable": "دفعات",
     "changelogViewerLoading": "جارٍ تحميل سجل التغيير من GitHub...",
-    "profile": "__MISSING__:Profile",
+    "profile": "الملف الشخصي",
     "profileLoading": "جارٍ تحميل الملف الشخصي...",
     "profileHowToEarn": "كيف تكسب",
     "bootstrapBannerDismiss": "استبعاد",
@@ -992,6 +992,10 @@
   "featureFlagExposeCcDiscoveryAliasesDescription": "اعلن عن معرفات مرآة claude/&lt;provider&gt;/&lt;model&gt; على /v1/models حتى تظهر قائمة اكتشاف نماذج بوابة Claude Code نماذج غير Claude. تحذير: يؤدي إلى تكرار إدخالات الكتالوج لجميع العملاء عند تفعيله عالميًا.",
   "featureFlagNoThinkingAliasEnabledDescription": "__MISSING__:Master switch for the no-think/&lt;provider&gt;/&lt;model&gt; gateway aliases. On (default): /v1/models advertises a no-thinking variant for every eligible thinking-capable Claude model, and a no-think/ id sent on a request resolves back to the real model with reasoning suppressed. Off: no variants are advertised and a no-think/ id is treated like any other unknown model id. The per-model ModelSpec.noThinkingAlias opt-in/opt-out still applies while this is on.",
   "featureFlagChatVirtualLanesEnabledDescription": "فعّل مسارات القبول الافتراضية التكيفية لكل مستأجر (tenant) لتوزيع المزودين (#9654): لم يعد انفجار حركة أحد المستأجرين يسبب خطأ 503 لمستأجر آخر. متغير البيئة OMNIROUTE_CHAT_VIRTUAL_LANES له الأولوية على هذا الإعداد في لوحة التحكم؛ تصبح التغييرات سارية بعد إعادة تشغيل الخادم.",
+  "featureFlagFreeBadgeRequiresProviderFreeTierDescription": "Dashboard provider pages: show the Free badge only on signals the provider honors — drops the display-name heuristic, non-boolean free fields and :free suffixes on registered providers without a documented free tier. Off keeps the historical badge rule.",
+  "featureFlagProxySkipRecentlyFailedDescription": "__MISSING__:Proxy pools and the per-account rotation of opencode stop re-serving a proxy that just failed (refused TCP probe, or a 429 received through it) for a per-process period that doubles on each repeat, up to a cap. No proxy status is written; with every candidate set aside the choice is unchanged. Off by default: selection order is exactly the plain rotation.",
+  "featureFlagProxyPoolEgressObservationDescription": "__MISSING__:Show, under a proxy pool in the dashboard, how many observed egress IPs served its members over the last 24 h, how many connections used them and the most seen behind one IP. Read-only, computed from the proxy log, never used for routing. Off by default: the pool editor is unchanged and the observation route answers null.",
+  "featureFlagProxyHealthBlockedResetsStreakDescription": "__MISSING__:In the proxy health sweep, let a probe the target refused (401/403/429: the proxy relayed, the destination refused this egress IP) reset the consecutive-failure streak of the proxy, like a served probe. Off by default: a refusal stays neutral and keeps the streak. A 5xx stays inconclusive either way, and a refusal never removes, disables or re-activates a proxy.",
   "sidebar": {
     "home": "الصفحة الرئيسية",
     "dashboard": "لوحة القيادة",
@@ -1807,6 +1811,9 @@
     "healthMonitor": "مراقب الصحة",
     "reportIssue": "الإبلاغ عن مشكلة",
     "activeError": "{active} نشط · {errors} خطأ",
+    "topologyLegendActive": "نشط",
+    "topologyLegendRecent": "الأحدث",
+    "topologyLegendError": "خطأ",
     "oauthLabel": "OAuth",
     "apiKeyLabel": "مفتاح واجهة برمجة التطبيقات",
     "requestsShort": "{count} طلب",
@@ -1819,11 +1826,11 @@
     "updateStarted": "بدأ التحديث...",
     "reloadingPageAutomatically": "جارٍ إعادة تحميل الصفحة تلقائيًا...",
     "providerTopology": "طوبولوجيا الموفر",
-    "recentRequests": "Recent Requests",
-    "recentRequestsEmpty": "No requests yet.",
-    "recentRequestsModel": "Model",
-    "recentRequestsTokens": "In / Out",
-    "recentRequestsWhen": "When",
+    "recentRequests": "__MISSING__:Recent Requests",
+    "recentRequestsEmpty": "__MISSING__:No requests yet.",
+    "recentRequestsModel": "__MISSING__:Model",
+    "recentRequestsTokens": "__MISSING__:In / Out",
+    "recentRequestsWhen": "__MISSING__:When",
     "downloadDmg": "تحميل DMG (macOS)",
     "downloadDmgDescription": "يتوفر إصدار جديد من تطبيق OmniRoute لسطح المكتب. يرجى تنزيل وتثبيت مثبت DMG لنظام macOS للتحديث (الحالي: v{version}).",
     "downloadExe": "تحميل EXE (ويندوز)",
@@ -2710,7 +2717,7 @@
     "ccOnboardingTitle": "settings.json لاكتشاف نموذج البوابة",
     "ccOnboardingCopy": "نسخ",
     "ccOnboardingCopied": "تم النسخ",
-    "ccOnboardingKeyPlaceholder": "<مفتاح واجهة برمجة تطبيقات OmniRoute الخاص بك>",
+    "ccOnboardingKeyPlaceholder": "'<مفتاح واجهة برمجة تطبيقات OmniRoute الخاص بك>'",
     "ccOnboardingWindowNote": "يفترض Claude Code وجود نافذة سياق تبلغ 200K لأي معرف نموذج لا يتعرف عليه. بالنسبة لنموذج له نافذة حقيقية مختلفة، أضف CLAUDE_CODE_AUTO_COMPACT_WINDOW أسفلها مباشرة حتى لا يتم تشغيل الضغط التلقائي في وقت مبكر جدًا.",
     "failedSave": "فشل الحفظ",
     "profileSyncTitle": "المزامنة التلقائية لملفات تعريف CLI",
@@ -3261,6 +3268,8 @@
     "cacheOptimizedDesc": "Routes each reusable prompt prefix consistently to the same provider account",
     "resetAware": "توزيع دوري مراعي لإعادة التعيين",
     "resetAwareDesc": "يوازن الحصة المتبقية بين نافذتي إعادة التعيين لخمس ساعات ولأسبوع، ثم يناوب بين النتائج المتقاربة",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "عشوائي صارم",
     "strictRandomDesc": "يخلط الترتيب ويستخدم كل نموذج مرة واحدة قبل إعادة الخلط",
     "fusion": "الدمج",
@@ -6166,7 +6175,7 @@
       "freeaiapikey": "بروكسي API مخفض لأكثر من 40 نموذجًا بما في ذلك GPT-5 و Claude Opus 4.6 و Claude Sonnet 4.6 و Qwen 3.5. احصل على مفتاح API الخاص بك من https://freeaiapikey.com/dashboard. عنوان URL الأساسي: https://freeaiapikey.com/v1.",
       "freemodel-dev": "احصل على رصيد API مجاني بقيمة 300 دولار على https://freemodel.dev — لا يلزم إدخال معلومات الدفع. نقطة نهاية متوافقة مع OpenAI. تتوفر نماذج GPT-5.4 و GPT-5.5.",
       "friendliai": "فئة مجانية للاستدلال بدون خادم — لا يلزم وجود بطاقة ائتمان",
-      "gemini": "مجاني للأبد: 1,500 طلب/يوم لـ Gemini 2.5 Flash — بدون بطاقة ائتمان، احصل على المفتاح من aistudio.google.com",
+      "gemini": "__MISSING__:Free tier through Google AI Studio; per-model quotas are no longer published (check the quota page in AI Studio) — no credit card.",
       "gigachat": "ربط GigaChat (Sber) بمفتاح API.",
       "gitlab": "رمز وصول شخصي لـ GitLab لواجهة برمجة تطبيقات مقترحات الأكواد العامة. قم بتكوين عنوان URL أساسي مستضاف ذاتيًا عند عدم استخدام gitlab.com.",
       "gitlawb-gmi": "احصل على مفتاح API الخاص بك من لوحة تحكم Gitlawb Opengateway.",
@@ -6175,7 +6184,7 @@
       "glm-cn": "ربط GLM Coding (الصين) بمفتاح API.",
       "glmt": "ملف تعريف GLM مسبق الضبط بميزانية رموز أعلى، وتمكين التفكير، ومهلة أطول.",
       "getgoapi": "ربط GoAPI بمفتاح API.",
-      "groq": "الفئة المجانية: 30 طلبًا في الدقيقة / 14.4 ألف طلب في اليوم — بدون بطاقة ائتمان",
+      "groq": "__MISSING__:Free plan: per-model caps (200K tokens/day per chat model; see console.groq.com/docs/rate-limits for RPM/RPD) — no payment method on file.",
       "haiper": "احصل على مفتاح API من haiper.ai/haiper-api",
       "heroku": "ربط Heroku AI بمفتاح API.",
       "hcnsec": "احصل على مفتاح API من api.hcnsec.cn",
@@ -6426,7 +6435,7 @@
     "commandCodeStartFailed": "فشل في بدء الأمر Code auth",
     "connectionDeleted": "تم حذف الاتصال",
     "connectionFallback": "الاتصال",
-    "coolingConnectionsDescription": "أعادت هذه الاتصالات 429 (حد معدل) في آخر طلب لها. ستتخطى OmniRoute هذه الاتصالات حتى تنتهي مدة المؤقت - لا حاجة لتعطيل يدوي.",
+    "coolingConnectionsDescription": "هذه الاتصالات في فترة تبريد بعد آخر طلب. ستتخطاها OmniRoute حتى ينتهي المؤقت — لا حاجة للتعطيل اليدوي.",
     "coolingConnectionsTitle": "التبريد الحالي ({count})",
     "failedDeleteAlias": "فشل في حذف الاسم المستعار",
     "failedDeleteConnection": "فشل في حذف الاتصال",
@@ -7058,6 +7067,8 @@
     "costOptDesc": "تفضيل أرخص حساب متاح",
     "resetAware": "تناوب دوري واعٍ بإعادة الضبط",
     "resetAwareDesc": "تفضيل الحسابات ذات الحصة السليمة المتبقية وأقرب وقت لإعادة الضبط",
+    "quotaWeighted": "Quota-Weighted",
+    "quotaWeightedDesc": "Skip exhausted accounts, then pick among the rest in proportion to reset-aware leftover.",
     "strictRandom": "عشوائي صارم",
     "strictRandomDesc": "يخلط المجموعة ويستخدم كل حساب مرة قبل إعادة الخلط",
     "stickyLimit": "حد الرسائل المثبتة",
@@ -8110,14 +8121,14 @@
     "resilienceProviderCooldownEnabledDesc": "عند التمكين، يتم تتبع المزودين الفاشلين عالمياً وتخطيهم لفترة تهدئة.",
     "resilienceProviderCooldownMin": "الحد الأدنى لفترة التهدئة",
     "resilienceProviderCooldownMax": "الحد الأقصى لفترة التهدئة",
-    "resilienceCredentialHealthTitle": "__MISSING__:Credential Health Check",
-    "resilienceCredentialHealthScope": "__MISSING__:All active API-key and OAuth connections",
-    "resilienceCredentialHealthTrigger": "__MISSING__:Periodically, on a fixed cadence",
-    "resilienceCredentialHealthEffect": "__MISSING__:Probes each connection's credential and marks it active/error; failed connections back off exponentially",
-    "resilienceCredentialHealthDesc": "__MISSING__:Background sweep that validates every active connection's credential by calling its provider. Set 0 to disable the sweep entirely. Per-connection Health Check values (on each connection's edit dialog) always override this global default.",
-    "resilienceCredentialHealthInterval": "__MISSING__:Global check interval",
-    "resilienceCredentialHealthEveryMinutes": "__MISSING__:Every {minutes} min",
-    "resilienceCredentialHealthHint": "__MISSING__:0 disables the background sweep (max 1440 min = 24 h). Connections with their own Health Check value ignore this global default; a per-connection 0 opts that connection out even when the global sweep is on.",
+    "resilienceCredentialHealthTitle": "فحص صحة بيانات الاعتماد",
+    "resilienceCredentialHealthScope": "جميع اتصالات مفتاح API وOAuth النشطة",
+    "resilienceCredentialHealthTrigger": "دورياً، وفق إيقاع ثابت",
+    "resilienceCredentialHealthEffect": "يفحص بيانات اعتماد كل اتصال ويعلّمه نشطاً/خطأ؛ الاتصالات الفاشلة تتراجع أسياً",
+    "resilienceCredentialHealthDesc": "مسح خلفي يتحقق من بيانات اعتماد كل اتصال نشط باستدعاء مزوّده. عيّن 0 لتعطيل المسح بالكامل. قيم فحص الصحة لكل اتصال (في حوار تعديل الاتصال) تتجاوز دائماً هذا الإعداد العام.",
+    "resilienceCredentialHealthInterval": "فاصل الفحص العام",
+    "resilienceCredentialHealthEveryMinutes": "كل {minutes} دقائق",
+    "resilienceCredentialHealthHint": "0 يعطّل المسح الخلفي (الحد الأقصى 1440 دقيقة = 24 ساعة). الاتصالات ذات قيمة فحص صحة خاصة تتجاهل هذا الإعداد العام؛ القيمة 0 لاتصال معيّن تستثنيه حتى مع تشغيل المسح العام.",
     "forcedFingerprintTitle": "مُمكّن دائمًا لـ {provider} — مطلوب لسلامة حساب OAuth؛ لا يمكن إيقاف تشغيله.",
     "forcedFingerprintBadge": "مطلوب",
     "sessionAffinityTitle": "ترابط الجلسة",
@@ -8663,7 +8674,9 @@
     "languagePacksList": "حزم اللغات: {packs}",
     "dragToReorder": "اسحب لإعادة ترتيب الخطوة",
     "engine": "المحرك",
-    "intensity": "الشدة"
+    "intensity": "الشدة",
+    "activeProfileMasterSwitchOffWarning": "__MISSING__:The active profile below will not run until the master \"Prompt Compression\" switch is turned on.",
+    "activeProfileMasterSwitchOffCta": "__MISSING__:Turn it on in Settings"
   },
   "compressionStudio": {
     "noRun": "لا يوجد تشغيل ضغط متاح.",
@@ -8692,6 +8705,7 @@
     "run": "تشغيل",
     "laneRejected": "تم الرفض: {reason}",
     "error": "خطأ",
+    "combinedError": "__MISSING__:Combined pipeline preview failed: {reason}",
     "combinedFlow": "التدفق المدمج",
     "eachLayer": "كل طبقة على حدة",
     "diff": "الفرق",
@@ -9256,6 +9270,13 @@
     "grokAutoTopUpMax": "أقصى",
     "grokAutoTopUpMonth": "شهر",
     "grokAdditionalCredits": "أرصدة إضافية",
+    "kiloAccountBalance": "رصيد الحساب",
+    "kiloPassBonus": "المكافأة المتاحة",
+    "kiloPassMeterLabel": "مقياس استخدام Kilo Pass",
+    "kiloPassPaid": "المدفوع",
+    "kiloPassRemaining": "المتبقي",
+    "kiloPassRenews": "يتجدد خلال {count} أيام",
+    "kiloPassUsageLabel": "استخدام هذا الشهر",
     "kimiExtraUsageCredits": "Extra Usage Credits",
     "kimiExtraUsage": "Extra Usage",
     "kimiExtraUsageEnabled": "Enabled",
@@ -10940,6 +10961,9 @@
     "strategyLatency": "محسن لزمن الاستجابة",
     "poolMembersLabel": "أعضاء التجمع ({count})",
     "poolNoMembers": "لا توجد وكلاء في هذا التجمع بعد.",
+    "poolEgressObservation": "__MISSING__:{exits, plural, one {# exit} other {# exits}} used by {connections, plural, one {# connection} other {# connections}} · up to {max} on one exit · last {hours} h",
+    "poolEgressObservationEmpty": "__MISSING__:No traffic observed in the last {hours} h",
+    "poolEgressObservationHint": "__MISSING__:Counted from the proxy log over the window: distinct egress IPs observed for the members of this pool, and the OmniRoute connections that used them. \"On one exit\" means over the window, not at the same time. The per-IP 429 lockout only pauses connections of the same provider family.",
     "poolRemove": "إزالة",
     "poolRemoveFailed": "فشل إزالة الوكيل من التجمع",
     "poolAddLabel": "إضافة وكيل",
@@ -11327,11 +11351,11 @@
       "copy": "نسخ",
       "autoscrollOn": "التمرير التلقائي: تشغيل",
       "autoscrollOff": "التScroll التلقائي: إيقاف",
-      "collapseAllLevels": "__MISSING__:Collapse all",
-      "collapseOneLevel": "__MISSING__:Collapse one level",
-      "currentExpandLevel": "__MISSING__:Current expand level",
-      "expandOneLevel": "__MISSING__:Expand one level",
-      "expandAllLevels": "__MISSING__:Expand all",
+      "collapseAllLevels": "طي الكل",
+      "collapseOneLevel": "طي مستوى واحد",
+      "currentExpandLevel": "مستوى التوسيع الحالي",
+      "expandOneLevel": "توسيع مستوى واحد",
+      "expandAllLevels": "توسيع الكل",
       "payload": {
         "clientRawRequest": "طلب العميل الخام",
         "clientRequest": "طلب العميل",
@@ -12960,6 +12984,12 @@
       "STREAM_RECOVERY_MIDSTREAM_ENABLED": {
         "description": "السماح لاسترداد التدفق بطلب الاستجابة مرة أخرى ودمجها بعد وصول البايتات بالفعل إلى العميل."
       },
+      "STREAM_RECOVERY_TOOLCALL_ORDER_FIX": {
+        "description": "__MISSING__:Make mid-stream continuation tool-call safe: never resume a cut stream after a tool call was sent (still in progress or already finished), and stop after one empty continuation instead of using the whole retry budget."
+      },
+      "STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED": {
+        "description": "الانتقال مرة واحدة إلى اتصال شقيق عندما يُغلق التدفق قبل إرسال أي إطار مفيد وتُستنفد إعادة المحاولة المحدودة على الاتصال نفسه. إذا لم يتوفر اتصال شقيق صالح، يُعاد خطأ early-EOF الأصلي. عند التعطيل: يبقى early-EOF نهائيًا بعد إعادة المحاولة."
+      },
       "MODEL_CATALOG_INCLUDE_NAMES": {
         "description": "تضمين حقول الأسماء المناسبة للعرض في استجابات /v1/models. عطل هذا للعملاء الذين يقبلون معرفات النماذج فقط."
       },
@@ -12982,7 +13012,7 @@
         "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.codex/*.config.toml من الكتالوج المباشر. لا يغير هذا أبداً تكوين Codex النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.claude/profiles/<name>/settings.json من الكتالوج المباشر. لا يغير هذا أبداً تكوين Claude النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
+        "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.claude/profiles/'<name>'/settings.json من الكتالوج المباشر. لا يغير هذا أبداً تكوين Claude النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "تعطيل نقطة نهاية فحص صحة المثيل المحلي."
@@ -12992,19 +13022,27 @@
       },
       "SKILLS_SANDBOX_NETWORK_ENABLED": {
         "description": "تمكين الوصول إلى الشبكة في بيئة اختبار المهارات المعزولة."
+      },
+      "RETRY_AFTER_PROVENANCE_ENABLED": {
+        "label": "__MISSING__:Retry-After Provenance",
+        "description": "__MISSING__:On aggregated 429/503 unavailable responses, omit Retry-After when no concrete future retry time is known instead of sending a synthetic 1s, add error.retry_after_provenance, and read prose retry hints on combo drain paths."
+      },
+      "PROTECTED_PRIORITY_INFRA_502_ENABLED": {
+        "label": "__MISSING__:Protected-Priority Infra Stops as 502",
+        "description": "__MISSING__:Answer 502 instead of 503 when a quota-only-fallback priority target stops the combo for a cause that is provably not quota: an open provider circuit breaker or a predictive latency skip."
       }
     }
   },
   "combo": {
     "sort": {
-      "label": "__MISSING__:Sort by",
+      "label": "ترتيب حسب",
       "method": {
-        "manual": "__MISSING__:Manual",
-        "provider": "__MISSING__:Provider",
-        "score": "__MISSING__:Score (free models)",
-        "name": "__MISSING__:Name"
+        "manual": "يدوي",
+        "provider": "المزوّد",
+        "score": "النقاط (النماذج المجانية)",
+        "name": "الاسم"
       },
-      "scoreHint": "__MISSING__:Score ranking applies to free providers only; others stay in place."
+      "scoreHint": "ترتيب النقاط ينطبق على المزوّدين المجانيين فقط؛ البقية تبقى في مكانها."
     }
   },
   "comboControl": {
@@ -13133,6 +13171,7 @@
     "segmentHint": "كل شريحة = مجمع مجاني واحد · مجمع مفرود من التكرار، عدّ صادق (بدون حدود قصوى مضخمة لمعدل الطلبات).",
     "boost": "افتح حوالي {tokens} إضافية/شهرياً بشحن رصيد OpenRouter لمرة واحدة بقيمة 10$ (50 ← 1000 طلب/يوم)",
     "uncapped": "مجاني بشكل دائم، بدون حد أقصى معلن (محدود بمعدل الطلبات) — وصول حقيقي، لا يُحتسب في العنوان الرئيسي:",
+    "gated": "__MISSING__:~{tokens}/mo more behind a regional identity check (e.g. mainland-China real-name verification) — real quota, not counted in the headline:",
     "tosRestricted": "{count, plural, one {# نموذج تم وضع علامة عليه كمقيد بشروط الخدمة} other {# نماذج تم وضع علامة عليها كمقيدة بشروط الخدمة}} — القرار لك",
     "provider": "المزود",
     "model": "النموذج",
@@ -13406,6 +13445,9 @@
     "colLimits": "__MISSING__:Rate limits",
     "trainsOnPrompts": "__MISSING__:Trains on prompts",
     "trainsOnPromptsHelp": "__MISSING__:This provider's terms state it may train on the prompts you send. Models without this badge either state they do not, or do not document it — an absent statement is not a guarantee.",
+    "limitsUnknownHelp": "__MISSING__:Limits reported by Radar feed only; no published limits for this entry",
+    "contextUnknownHelp": "__MISSING__:Context window unknown for this entry",
+    "capabilityUnknownHelp": "__MISSING__:Capability not reported by the feed",
     "newBadge": "جديد",
     "setupGuide": "دليل الإعداد",
     "disabledByFeed": "معطل بواسطة تغذية الرادار",
@@ -13601,6 +13643,7 @@
   },
   "featureFlagCapabilityFilterEnabledDescription": "رفض الطلبات قبل الإرسال عندما يفتقر النموذج المستهدف إلى القدرات المطلوبة (الرؤية، الأدوات، المخرجات المنظمة، نافذة السياق). يحمي الطلبات المباشرة من مزود واحد التي تتجاوز فلتر توافق الطبقة المجمعة.",
   "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "featureFlagSearchStatsHideDeletedConnectionsDescription": "Search stats and recent searches only count providers that still have a live connection (keyless providers such as duckduckgo-free always count). Off keeps every retained search row with a provider id.",
   "publicSystem": {
     "notFound": {
       "title": "الصفحة غير موجودة",
@@ -13981,6 +14024,16 @@
     "historyRange1d": "24 ساعة",
     "historyRange7d": "7 أيام",
     "historyRange30d": "30 يومًا",
+    "compareMode": "مقارنة التشغيلات",
+    "compareExit": "الخروج من وضع المقارنة",
+    "compareHint": "اختر تشغيلين للمقارنة",
+    "compareTitle": "المقارنة",
+    "compareDetailFailed": "تعذّر تحميل تفاصيل هذا التشغيل",
+    "compareDifferentIdentity": "مصادر أو مهارات مختلفة — الفروقات إعلامية فقط",
+    "compareDuration": "المدة",
+    "compareCost": "التكلفة",
+    "compareEvents": "الأحداث",
+    "compareDeltaLegend": "Δ يمين − يسار",
     "showCompleted": "إظهار المكتمل",
     "searchPlaceholder": "البحث في المهام…",
     "filterStates": "الحالات",
@@ -14002,6 +14055,7 @@
     "stateCancelled": "ملغى",
     "overflowMore": "+{count} أخرى",
     "emptyTitle": "لا شيء يعمل بعد",
+    "noMatches": "لا توجد مهام تطابق عوامل التصفية هذه",
     "emptyCloudAgentCta": "إعداد الوكلاء السحابيين",
     "emptyA2ACta": "فتح A2A",
     "emptyConductorCta": "فتح موصل",

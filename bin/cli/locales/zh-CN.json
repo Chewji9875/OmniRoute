@@ -254,6 +254,7 @@
     "max_restarts": "30 秒内的最大崩溃重启次数（默认：2）",
     "tray": "显示系统托盘图标（仅桌面，选择加入）",
     "no_tray": "禁用系统托盘图标",
+    "ready_timeout": "就绪探测超时（毫秒）（也可用 OMNIROUTE_READY_TIMEOUT_MS，默认 60000）",
     "tls_cert": "用于提供 HTTPS 服务的 TLS 证书（PEM）路径（也可用 OMNIROUTE_TLS_CERT）",
     "tls_key": "用于提供 HTTPS 服务的 TLS 私钥（PEM）路径（也可用 OMNIROUTE_TLS_KEY）"
   },

@@ -223,6 +223,9 @@ const IGNORE_FROM_CODE = new Set([
   // Test-only override: points setup-open-code.mjs at a fixture plugin dir without
   // requiring the real bundled plugin to be built.
   "OMNIROUTE_OPENCODE_PLUGIN_DIR",
+  // Test-only escape hatch: makes getMachineIdRaw() skip the macOS ioreg strategy so
+  // machineId tests reach the fallback strategies on darwin (#13539). Not user config.
+  "DISABLE_IOREG_STRATEGY",
 ]);
 
 // Vars documented in ENVIRONMENT.md but intentionally absent from .env.example.
@@ -283,6 +286,9 @@ const ENV_ONLY_ALLOWLIST = new Set([
   "PII_WINDOW_SIZE",
   "TRAE_STREAM_TIMEOUT_MS",
   "TRAE_TOKEN",
+  // #12190: Trae host/Origin override. ENVIRONMENT.md documents no Trae variable at
+  // all; this joins its two siblings above under the same .env.example-only tier.
+  "TRAE_WEB_ORIGIN",
 ]);
 
 // ─── Parsing helpers ───────────────────────────────────────────────────────
