@@ -1,4 +1,5 @@
 import { generateModels, generateAliasMap, type RegistryModel } from "./providerRegistry.ts";
+import { getVertexModelTargetFormat } from "./vertexModels.ts";
 
 // Lazy PROVIDER_MODELS: deferred until first property access to speed up startup.
 // The Proxy defers `generateModels()` from module-evaluation time to the first read.
@@ -228,9 +229,10 @@ export function getModelTargetFormat(aliasOrId: string, modelId: string): string
   // executor's /codex/i routing, 9router#102). Scoped to the openai alias so other
   // providers shipping *-pro ids keep their own endpoint semantics.
   if (alias === "openai" && /-pro$/i.test(bareModelId)) return "openai-responses";
-  // ponytail: Claude models on Vertex use rawPredict with Anthropic Messages format,
-  // not the Gemini generateContent format. Mirrors executor isClaudeModel() check.
-  if ((alias === "vertex" || alias === "vp") && /^claude-/i.test(bareModelId)) return "claude";
+  // Vertex uses three protocol families: Gemini generateContent, Anthropic Messages rawPredict,
+  // and OpenAI-shaped Mistral/Open-MaaS requests. Resource names retain enough publisher data to
+  // route future dynamically-synced models without adding another pinned prefix here.
+  if (alias === "vertex" || alias === "vp") return getVertexModelTargetFormat(bareModelId);
   // #10867: Muse Spark is served by OpenCode / Zen / Go / Freebuff only on the
   // OpenAI Responses API (/responses), not /chat/completions.
   if (

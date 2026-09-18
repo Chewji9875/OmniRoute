@@ -50,6 +50,7 @@ const SAFE_PUBLIC_ERROR_IDENTIFIERS = new Set([
   "admission_shutdown",
   "admission_unavailable",
   "all_accounts_inactive",
+  "all_targets_cooling_down",
   "all_targets_skipped",
   "antigravity_pre_response_timeout",
   "api_error",
@@ -75,7 +76,6 @@ const SAFE_PUBLIC_ERROR_IDENTIFIERS = new Set([
   "chatgpt_subscription_unavailable",
   "chatgpt_web_codex_error",
   "chatgpt_web_codex_turn_failed",
-  "chipotle_error",
   "claude_web_protocol_error",
   "cli_not_found",
   "client_cancelled",
@@ -173,6 +173,7 @@ const SAFE_PUBLIC_ERROR_IDENTIFIERS = new Set([
   "lease_unsupported_route",
   "lease_unsupported_transport",
   "lmarena_error",
+  "lmarena_stream_error",
   "message_limit",
   "meta_ai_empty_response",
   "meta_ai_mode_switch_failed",
@@ -1134,7 +1135,8 @@ export function makeExecutorErrorResult(
   status: number,
   message: string,
   body: unknown,
-  url: string
+  url: string,
+  extraResponseHeaders?: Record<string, string>
 ) {
   return {
     response: new Response(
@@ -1145,7 +1147,10 @@ export function makeExecutorErrorResult(
           code: `HTTP_${status}`,
         },
       }),
-      { status, headers: { "Content-Type": "application/json" } }
+      {
+        status,
+        headers: { "Content-Type": "application/json", ...extraResponseHeaders },
+      }
     ),
     url,
     headers: {} as Record<string, string>,

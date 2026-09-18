@@ -349,6 +349,10 @@ const nextConfig = {
     "keytar",
     "wreq-js",
     "zod",
+    // jsdom relies on Node class relationships that Turbopack's server-chunk transform can break
+    // (observed as "Class extends value undefined" during Vertex metadata sync). Keep the native
+    // package boundary; standalone file tracing still copies the runtime dependency.
+    "jsdom",
     "@ngrok/ngrok",
     "@huggingface/transformers",
     // The ESM entry imports tiktoken_bg.wasm as a module. Turbopack can compile
@@ -362,6 +366,13 @@ const nextConfig = {
     "ws",
     "bufferutil",
     "utf-8-validate",
+    // The SDK's client graph has a module-level `class extends Client` cycle
+    // against the TLA Client module. Bundled into route chunks it throws
+    // "Cannot access 'l' before initialization" during evaluation and every
+    // /api/mcp/stream initialize answers HTTP 500. Node's native ESM loader
+    // resolves the same circular graph via live bindings, so keep the SDK
+    // out of the webpack server bundle.
+    "@modelcontextprotocol/sdk",
     "child_process",
     "fs",
     "path",

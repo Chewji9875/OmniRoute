@@ -726,6 +726,18 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     requiresRestart: false,
     warningLevel: "caution",
   },
+  {
+    key: "BATCH_AND_FILE_AUTO_CLEANUP_ENABLED",
+    label: "Batch & File Auto-Cleanup",
+    description:
+      "Let the automatic cleanup sweep delete terminal (completed/failed/cancelled/expired) Batch API jobs older than OMNIROUTE_BATCH_RETENTION_DAYS, along with their per-line checkpoints, and clear the BLOB content of uploaded files past their own expires_at. Off by default: every existing install keeps this data exactly as before until an operator opts in. The operator-triggered DELETE /api/v1/batches/delete-completed route is unaffected either way -- it is a separate, unconditional public API contract.",
+    descriptionI18nKey: "featureFlagBatchAndFileAutoCleanupEnabledDescription",
+    category: "runtime",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "danger",
+  },
 
   // ──────────────── CLI (5) ────────────────
   {
@@ -832,5 +844,29 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     type: "boolean",
     requiresRestart: false,
     warningLevel: "info",
+  },
+  {
+    key: "XAI_OAUTH_LIVE_MODEL_DISCOVERY",
+    label: "xAI OAuth Live Model Discovery",
+    description:
+      "Fetch the live xAI model catalog for xai-oauth connections from https://api.x.ai/v1/models using the OAuth bearer token, instead of the frozen static seed. Off by default: xai-oauth keeps serving the static seed unchanged. On any resolution error, discovery falls back to the seed (unverified whether x.ai accepts an OAuth bearer at this endpoint).",
+    descriptionI18nKey: "featureFlagXaiOauthLiveModelDiscoveryDescription",
+    category: "runtime",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "caution",
+  },
+  {
+    key: "DB_HEALTHCHECK_STARTUP_DEFERRED_ENABLED",
+    label: "DB Health Check: Defer Startup Scan",
+    description:
+      "Run the startup DB integrity/health check after the server starts accepting requests (via setImmediate) instead of blocking startup until it completes. Off by default: startup blocks on the check exactly like before #13717, so a corrupt database is still caught before the first request is served. On: startup returns immediately and the check (now bounded/paged and, for a real file-backed DB, isolated in a cancellable child process) runs right after.",
+    descriptionI18nKey: "featureFlagDbHealthcheckStartupDeferredEnabledDescription",
+    category: "health",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "caution",
   },
 ];

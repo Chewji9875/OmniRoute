@@ -21,7 +21,7 @@
   },
   "open-sse/config/providers/registry/claude/index.ts": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 7
+      "count": 6
     }
   },
   "open-sse/config/providers/registry/vertex/index.ts": {
@@ -69,11 +69,6 @@
       "count": 1
     }
   },
-  "open-sse/executors/chipotle.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "open-sse/executors/claude-web.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -92,11 +87,6 @@
   "open-sse/executors/copilot-web.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 3
-    }
-  },
-  "open-sse/executors/cursor.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "open-sse/executors/deepseek-web.ts": {
@@ -167,11 +157,6 @@
   "open-sse/executors/muse-spark-web.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
-    }
-  },
-  "open-sse/executors/notion-web.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "open-sse/executors/opencode.ts": {
@@ -613,11 +598,6 @@
       "count": 1
     }
   },
-  "open-sse/services/tlsClientBase.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "open-sse/services/tokenLimitCounter.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -729,11 +709,6 @@
   "open-sse/utils/bypassHandler.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    }
-  },
-  "open-sse/utils/cursorAgentProtobuf.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "open-sse/utils/earlyStreamKeepalive.ts": {
@@ -931,19 +906,9 @@
       "count": 1
     }
   },
-  "src/app/(dashboard)/dashboard/providers/[id]/hooks/useModelImportHandlers.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/app/(dashboard)/dashboard/providers/[id]/hooks/useModelVisibilityHandlers.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
-    }
-  },
-  "src/app/(dashboard)/dashboard/providers/[id]/hooks/useProviderConnections.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/(dashboard)/dashboard/providers/page.tsx": {
@@ -1087,11 +1052,6 @@
     }
   },
   "src/app/(dashboard)/dashboard/usage/components/SessionsTab.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/(dashboard)/dashboard/webhooks/__tests__/webhook-wizard.test.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
@@ -1698,11 +1658,6 @@
     }
   },
   "src/lib/providers/validation/searchProviders.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/providers/validation/webProvidersB.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
@@ -2720,7 +2675,7 @@
   },
   "tests/unit/build/check-licenses.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 5
+      "count": 4
     }
   },
   "tests/unit/bypass-handler.test.ts": {
@@ -2824,7 +2779,7 @@
   },
   "tests/unit/chatcore-translation-paths.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 31
+      "count": 30
     }
   },
   "tests/unit/check-docs-symbols.test.ts": {
@@ -2835,11 +2790,6 @@
   "tests/unit/check-route-guard-membership.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    }
-  },
-  "tests/unit/chipotle-executor.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
     }
   },
   "tests/unit/claude-code-compatible-helpers.test.ts": {
@@ -3310,7 +3260,7 @@
   },
   "tests/unit/combo-routing-engine.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 268
+      "count": 267
     }
   },
   "tests/unit/combo-same-provider-cascade.test.ts": {
@@ -3593,7 +3543,7 @@
   },
   "tests/unit/db-health-check.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 29
+      "count": 25
     }
   },
   "tests/unit/db-health-route.test.ts": {
@@ -4433,11 +4383,6 @@
   "tests/unit/provider-models-token-limits.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    }
-  },
-  "tests/unit/provider-models-v1-route.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
     }
   },
   "tests/unit/provider-node-icon-url.test.ts": {

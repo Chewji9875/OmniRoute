@@ -68,7 +68,7 @@ describe("isServerOwnedToolLoopEnabled wrapper", () => {
 
 describe("feature-flags-settings count update", () => {
   it("flag count matches updated expected value", () => {
-    assert.equal(FEATURE_FLAG_DEFINITIONS.length, 69);
+    assert.equal(FEATURE_FLAG_DEFINITIONS.length, 72);
   });
 });
 
